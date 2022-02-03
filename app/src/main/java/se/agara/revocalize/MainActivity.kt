@@ -75,7 +75,7 @@ class MainActivity : AppCompatActivity() {
             loadPhrase()
         }
 
-        val itemTouchHelper = ItemTouchHelper(simpleCallback)
+        //val itemTouchHelper = ItemTouchHelper(simpleCallback)
         itemTouchHelper.attachToRecyclerView(myRecyclerView)
 
 
@@ -99,7 +99,7 @@ class MainActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.tvSentence).text = currentPhrase.text
     }
 
-
+    /*
     private var simpleCallback = object : ItemTouchHelper.SimpleCallback(
 
         ItemTouchHelper.LEFT.or(
@@ -130,7 +130,7 @@ class MainActivity : AppCompatActivity() {
 
         }
     }
-
+    */
 
     fun checkIfCorrect(): Boolean {
 
@@ -149,4 +149,52 @@ class MainActivity : AppCompatActivity() {
     }
 
 
+    private val itemTouchHelper by lazy {
+        // 1. Note that I am specifying all 4 directions.
+        //    Specifying START and END also allows
+        //    more organic dragging than just specifying UP and DOWN.
+
+
+        val simpleItemTouchCallback =
+            object : ItemTouchHelper.SimpleCallback(
+                ItemTouchHelper.LEFT or
+                        ItemTouchHelper.RIGHT or
+                        ItemTouchHelper.START or
+                        ItemTouchHelper.END, 0) {
+
+                override fun onMove(recyclerView: RecyclerView,
+                                    viewHolder: RecyclerView.ViewHolder,
+                                    target: RecyclerView.ViewHolder): Boolean {
+
+                    val adapter = myRecycleAdapter //recyclerView.adapter as MainRecyclerViewAdapter
+                    val from = viewHolder.adapterPosition
+                    val to = target.adapterPosition
+                    // 2. Update the backing model. Custom implementation in
+                    //    MainRecyclerViewAdapter. You need to implement
+                    //    reordering of the backing model inside the method.
+
+
+                    Collections.swap(currentPhrase.slizes, from, to)
+                    
+                    recyclerView.adapter?.notifyItemMoved(from, to)
+
+                    return true
+                }
+                override fun onSwiped(viewHolder: RecyclerView.ViewHolder,
+                                      direction: Int) {
+                    // 4. Code block for horizontal swipe.
+                    //    ItemTouchHelper handles horizontal swipe as well, but
+                    //    it is not relevant with reordering. Ignoring here.
+                }
+
+                override fun isLongPressDragEnabled(): Boolean {
+                    return true
+                }
+            }
+        ItemTouchHelper(simpleItemTouchCallback)
+    }
+
+    fun startDragging(viewHolder: RecyclerView.ViewHolder) {
+        itemTouchHelper.startDrag(viewHolder)
+    }
 }

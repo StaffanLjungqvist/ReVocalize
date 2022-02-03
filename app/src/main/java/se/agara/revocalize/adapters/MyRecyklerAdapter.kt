@@ -6,10 +6,14 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.ItemTouchHelper.*
 import androidx.recyclerview.widget.RecyclerView
+import se.agara.revocalize.MainActivity
 import se.agara.revocalize.R
 import se.agara.revocalize.models.Slize
 
@@ -17,6 +21,8 @@ import se.agara.revocalize.models.Slize
 class MyRecyclerAdapter(val context : Context, var slizes : List<Slize>, var audioHelper : AudioAdapter) : RecyclerView.Adapter<MyRecyclerAdapter.MyViewHolder>() {
 
     var blinknumber = -1
+
+
 
     inner class MyViewHolder(view : View) : RecyclerView.ViewHolder(view) {
         var btnSlice = view.findViewById<Button>(R.id.btnbutton)
@@ -33,21 +39,37 @@ class MyRecyclerAdapter(val context : Context, var slizes : List<Slize>, var aud
         val slice = slizes[position]
 
         if (position == blinknumber) {
-            holder.btnSlice.setBackgroundColor(Color.WHITE)
+            holder.itemView.setBackgroundColor(Color.WHITE)
         } else {
-            holder.btnSlice.setBackgroundColor(Color.parseColor(slice.color))
+            holder.itemView.setBackgroundColor(Color.parseColor(slice.color))
         }
 
         //  holder.btnSlice.text = slice.number.toString()
 
-
+        /*
         holder.btnSlice.setOnClickListener {
 
             audioHelper.playAudio(slice)
 
             println("playing audio from slice ${slice}")
 
+
         }
+
+         */
+
+        holder.itemView.setOnTouchListener { view, event ->
+            if (event.actionMasked == MotionEvent.ACTION_DOWN) {
+                // 2. When we detect touch-down event, we call the
+                //    startDragging(...) method we prepared above
+                (context as MainActivity).startDragging(holder)
+                audioHelper.playAudio(slice)
+
+                println("playing audio from slice ${slice}")
+            }
+            return@setOnTouchListener true
+        }
+
     }
 
     override fun getItemCount(): Int {
@@ -79,6 +101,8 @@ class MyRecyclerAdapter(val context : Context, var slizes : List<Slize>, var aud
         })
 
     }
+
+
 
 
 }
