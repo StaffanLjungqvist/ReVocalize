@@ -19,7 +19,7 @@ import java.util.*
 
 
 val TAG = "kolla"
-
+// hej
 
 class MainActivity : AppCompatActivity() {
 
