@@ -23,6 +23,8 @@ val TAG = "kolla"
 
 //hej hej från mac
 
+// osså från pc igen
+
 class MainActivity : AppCompatActivity() {
 
     private lateinit var myRecyclerView: RecyclerView
