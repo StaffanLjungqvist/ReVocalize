@@ -19,7 +19,9 @@ import java.util.*
 
 
 val TAG = "kolla"
-// hej
+// hej från pc
+
+//hej hej från mac
 
 class MainActivity : AppCompatActivity() {
 

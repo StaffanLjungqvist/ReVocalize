@@ -14,8 +14,6 @@
         android:id="@+id/btnbutton"
         android:layout_width="1dp"
         android:layout_height="1dp"
-
-
         android:background="@drawable/rounded_button"
         android:soundEffectsEnabled="false"
         app:layout_constraintBottom_toBottomOf="parent"
