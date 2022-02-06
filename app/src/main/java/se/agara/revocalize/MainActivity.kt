@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView
 import se.agara.revocalize.adapters.AudioAdapter
 import se.agara.revocalize.adapters.GameAdapter
 import se.agara.revocalize.adapters.MyRecyclerAdapter
-import se.agara.revocalize.builders.PhraseLoader
 import se.agara.revocalize.models.Phrase
 import java.util.*
 
@@ -42,10 +41,10 @@ class MainActivity : AppCompatActivity() {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
 
-        gameAdapter = GameAdapter()
+        gameAdapter = GameAdapter(this)
 
         //To do - safecast
-        currentPhrase = PhraseLoader(this).loadPhrase(level)!!
+        currentPhrase = gameAdapter.loadPhrase(level)!!
 
         audioHelper = AudioAdapter(this, currentPhrase.audioFile.file)
 
@@ -61,9 +60,7 @@ class MainActivity : AppCompatActivity() {
         //Knappar
 
         findViewById<Button>(R.id.btnCheck).setOnClickListener {
-
             myRecycleAdapter.runLight(currentPhrase.slizes)
-
             if (checkIfCorrect()) {
                 audioHelper.playAudio()
             } else {
@@ -87,7 +84,7 @@ class MainActivity : AppCompatActivity() {
 
     fun loadPhrase() {
         level = gameAdapter.advanceLevel()
-        currentPhrase = PhraseLoader(this).loadPhrase(level)!!
+        currentPhrase = gameAdapter.loadPhrase(level)!!
 
         //To do, optimera release mediaplayer
         audioHelper = AudioAdapter(this, currentPhrase.audioFile.file)

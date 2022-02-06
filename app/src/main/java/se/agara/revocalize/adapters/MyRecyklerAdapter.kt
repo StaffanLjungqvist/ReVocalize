@@ -44,28 +44,39 @@ class MyRecyclerAdapter(val context : Context, var slizes : List<Slize>, var aud
             holder.itemView.setBackgroundColor(Color.parseColor(slice.color))
         }
 
-        //  holder.btnSlice.text = slice.number.toString()
+        holder.itemView.setOnClickListener {
 
-        /*
-        holder.btnSlice.setOnClickListener {
+   //    audioHelper.playAudio(slice)
 
-            audioHelper.playAudio(slice)
-
-            println("playing audio from slice ${slice}")
-
+    //        println("playing audio from slice ${slice}")
 
         }
 
-         */
+
 
         holder.itemView.setOnTouchListener { view, event ->
+
+            /*
+if(event.actionMasked == MotionEvent.ACTION_UP) {
+    audioHelper.playAudio(slice)
+
+    println("playing audio from slice ${slice}")
+}
+*/
+
+
+
             if (event.actionMasked == MotionEvent.ACTION_DOWN) {
-                // 2. When we detect touch-down event, we call the
-                //    startDragging(...) method we prepared above
+                /*
+                2. When we detect touch-down event, we call the
+                startDragging(...) method we prepared above
+                */
                 (context as MainActivity).startDragging(holder)
+
                 audioHelper.playAudio(slice)
 
                 println("playing audio from slice ${slice}")
+
             }
             return@setOnTouchListener true
         }
