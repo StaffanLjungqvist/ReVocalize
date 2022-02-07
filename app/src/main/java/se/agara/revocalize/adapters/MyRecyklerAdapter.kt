@@ -10,6 +10,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ItemTouchHelper.*
 import androidx.recyclerview.widget.RecyclerView
@@ -22,10 +23,8 @@ class MyRecyclerAdapter(val context : Context, var slizes : List<Slize>, var aud
 
     var blinknumber = -1
 
-
-
     inner class MyViewHolder(view : View) : RecyclerView.ViewHolder(view) {
-        var btnSlice = view.findViewById<Button>(R.id.btnbutton)
+        val cardView = view.findViewById<CardView>(R.id.cardView)
     }
 
 
@@ -39,44 +38,20 @@ class MyRecyclerAdapter(val context : Context, var slizes : List<Slize>, var aud
         val slice = slizes[position]
 
         if (position == blinknumber) {
-            holder.itemView.setBackgroundColor(Color.WHITE)
+            holder.cardView.setCardBackgroundColor(Color.WHITE)
         } else {
-            holder.itemView.setBackgroundColor(Color.parseColor(slice.color))
-        }
-
-        holder.itemView.setOnClickListener {
-
-   //    audioHelper.playAudio(slice)
-
-    //        println("playing audio from slice ${slice}")
-
+            holder.cardView.setCardBackgroundColor(Color.parseColor(slice.color))
         }
 
 
 
         holder.itemView.setOnTouchListener { view, event ->
 
-            /*
-if(event.actionMasked == MotionEvent.ACTION_UP) {
-    audioHelper.playAudio(slice)
-
-    println("playing audio from slice ${slice}")
-}
-*/
-
-
-
             if (event.actionMasked == MotionEvent.ACTION_DOWN) {
-                /*
-                2. When we detect touch-down event, we call the
-                startDragging(...) method we prepared above
-                */
                 (context as MainActivity).startDragging(holder)
 
                 audioHelper.playAudio(slice)
-
                 println("playing audio from slice ${slice}")
-
             }
             return@setOnTouchListener true
         }
@@ -104,16 +79,10 @@ if(event.actionMasked == MotionEvent.ACTION_UP) {
                     mainHandler.postDelayed(this, slizes[0].length)
                 } else {
                     blinknumber = -1
-                    Log.d("kolla", "blinknummer : ${blinknumber}")
+                    Log.d("kolla", "blinknummer : $blinknumber")
 
                 }
             }
-
         })
-
     }
-
-
-
-
 }

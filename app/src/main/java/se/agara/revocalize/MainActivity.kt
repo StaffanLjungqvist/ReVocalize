@@ -72,9 +72,6 @@ class MainActivity : AppCompatActivity() {
             loadPhrase()
         }
 
-        findViewById<Button>(R.id.btnSkip).setOnClickListener {
-            loadPhrase()
-        }
 
         //val itemTouchHelper = ItemTouchHelper(simpleCallback)
         itemTouchHelper.attachToRecyclerView(myRecyclerView)
@@ -155,7 +152,6 @@ class MainActivity : AppCompatActivity() {
         //    Specifying START and END also allows
         //    more organic dragging than just specifying UP and DOWN.
 
-
         val simpleItemTouchCallback =
             object : ItemTouchHelper.SimpleCallback(
                 ItemTouchHelper.LEFT or
@@ -173,8 +169,6 @@ class MainActivity : AppCompatActivity() {
                     // 2. Update the backing model. Custom implementation in
                     //    MainRecyclerViewAdapter. You need to implement
                     //    reordering of the backing model inside the method.
-
-
                     Collections.swap(currentPhrase.slizes, from, to)
                     
                     recyclerView.adapter?.notifyItemMoved(from, to)

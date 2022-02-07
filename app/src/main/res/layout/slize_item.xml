@@ -5,19 +5,15 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="8dp"
-    android:background="#C65F5F">
+    android:layout_margin="4dp"
+>
 
 
-
-    <Button
-        android:id="@+id/btnbutton"
-        android:layout_width="1dp"
-        android:layout_height="1dp"
-        android:background="@drawable/rounded_button"
-        android:soundEffectsEnabled="false"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:cardBackgroundColor="@color/green"
+        app:cardCornerRadius="10dp"
+        />
 </LinearLayout>

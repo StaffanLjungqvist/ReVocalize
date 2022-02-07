@@ -9,6 +9,8 @@ import se.agara.revocalize.models.AudioFile
 import se.agara.revocalize.models.Phrase
 import se.agara.revocalize.models.Slize
 
+val TAG = "ReVoDebug"
+
 class GameAdapter(val context : Context) {
 
     var level = 0
@@ -30,7 +32,7 @@ class GameAdapter(val context : Context) {
             duration = mediaPlayer.duration
             mediaPlayer.release()
         } catch (e: RuntimeException) {
-            Log.e("kolla", "Kunde inte läsa in ljudfilen")
+            Log.e(TAG, "Kunde inte läsa in ljudfilen")
         }
         if (duration != null) {
             audioFile = AudioFile(AudioList.audioFiles[level].file, duration)
@@ -58,7 +60,7 @@ class GameAdapter(val context : Context) {
             6 -> slizeDivisions = 8
             else -> slizeDivisions = 4
         }
-        val randomColors = colors.shuffled().take(slizeDivisions)
+        val randomColors = Colors.colors.shuffled().take(slizeDivisions)
         val sliceLength = (duration / slizeDivisions)
         for (number in 1..slizeDivisions) {
             sliceList.add(
@@ -90,23 +92,9 @@ class GameAdapter(val context : Context) {
                 }
             }
         }
-        Log.d("kolla", "Made ${list.size} slizes in the following order : ${list}")
+        Log.d(TAG, "Made ${list.size} slizes in the following order : ${list}")
         return list
     }
-
-    val colors = listOf(
-        "#FFFF58",
-        "#8F0DFF",
-        "#E51919",
-        "#FF6C00",
-        "#FF4BF8",
-        "#4BEBFF",
-        "#38FF75",
-        "#88FF00",
-        "#FACA00",
-        "#009FF8",
-    )
-
 }
 
 

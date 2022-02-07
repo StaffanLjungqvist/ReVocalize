@@ -22,8 +22,22 @@ object TextPhrases {
         "Believe you can and you are halfway, there.",
         "If you cannot do great things, do small things in a great way.",
         "Don't judge each day by the harvest you reap but by the seeds that you plant.",
-
         "Success is not final; failure is not fatal: It is the courage to continue that counts",
         "Tell me and I forget. Teach me and I remember. Involve me and I learn."
+    )
+}
+
+object Colors {
+    val colors = listOf(
+        "#FFFF58",
+        "#8F0DFF",
+        "#E51919",
+        "#FF6C00",
+        "#FF4BF8",
+        "#4BEBFF",
+        "#38FF75",
+        "#88FF00",
+        "#FACA00",
+        "#009FF8",
     )
 }
