@@ -10,6 +10,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.cardview.widget.CardView
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.ItemTouchHelper.*
 import androidx.recyclerview.widget.RecyclerView
 import se.staffanljungqvist.revocalize.MainActivity
@@ -20,6 +21,7 @@ import se.staffanljungqvist.revocalize.models.Slize
 class MyRecyclerAdapter(val context : Context, var slizes : List<Slize>, var audioHelper : AudioAdapter) : RecyclerView.Adapter<MyRecyclerAdapter.MyViewHolder>() {
 
     var blinknumber = -1
+    var hasChecked = MutableLiveData<Boolean>()
 
     inner class MyViewHolder(view : View) : RecyclerView.ViewHolder(view) {
         val cardView = view.findViewById<CardView>(R.id.cardView)
@@ -76,6 +78,7 @@ class MyRecyclerAdapter(val context : Context, var slizes : List<Slize>, var aud
 
                     mainHandler.postDelayed(this, slizes[0].length)
                 } else {
+                    hasChecked.value = true
                     blinknumber = -1
                     Log.d("kolla", "blinknummer : $blinknumber")
 

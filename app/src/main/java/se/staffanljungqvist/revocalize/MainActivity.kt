@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -32,6 +33,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var audioHelper: AudioAdapter
     private lateinit var gameAdapter : GameAdapter
     private var level = 0
+    private var isCorrect = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,6 +55,17 @@ class MainActivity : AppCompatActivity() {
         myRecycleAdapter = MyRecyclerAdapter(this, currentPhrase.slizes, audioHelper)
         myRecyclerView.adapter = myRecycleAdapter
         myRecyclerView.layoutManager = GridLayoutManager(this, currentPhrase.slizes.size)
+
+        myRecycleAdapter.hasChecked.observe(this, androidx.lifecycle.Observer {
+            if (isCorrect) {
+                findViewById<TextView>(R.id.tvSentence).text = "That is correct!"
+                findViewById<Button>(R.id.btnNext).isVisible = true
+                audioHelper.playSuccess()
+                isCorrect = false
+            } else {
+                findViewById<Button>(R.id.btnCheck).isVisible = true
+            }
+        })
 
         findViewById<TextView>(R.id.tvSentence).text = currentPhrase.text
 
@@ -80,6 +93,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun loadPhrase() {
+        findViewById<Button>(R.id.btnCheck).isVisible = true
         level = gameAdapter.advanceLevel()
         currentPhrase = gameAdapter.loadPhrase(level)!!
 
@@ -132,14 +146,16 @@ class MainActivity : AppCompatActivity() {
 
     fun checkIfCorrect(): Boolean {
 
+        findViewById<Button>(R.id.btnCheck).isVisible = false
         var sortedList = currentPhrase.slizes.sortedBy { it.number }
         Log.d("kolla", "listan i rätt ordning; ${sortedList}")
 
         if (sortedList.equals(currentPhrase.slizes)) {
-            audioHelper.playSuccess()
-            findViewById<TextView>(R.id.tvSentence).text = "That is correct!"
+            isCorrect = true
+
+
             //    findViewById<Button>(R.id.btnCheck).isVisible = false
-            findViewById<Button>(R.id.btnNext).isVisible = true
+
             Log.d("kolla", "Listan är i rätt ordning!")
             return true
         }
