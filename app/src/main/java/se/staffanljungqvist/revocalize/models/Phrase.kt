@@ -1,4 +1,4 @@
-package se.agara.revocalize.models
+package se.staffanljungqvist.revocalize.models
 
 data class Phrase(
 

@@ -1,4 +1,4 @@
-package se.agara.revocalize.adapters
+package se.staffanljungqvist.revocalize.adapters
 
 import android.content.Context
 import android.graphics.Color
@@ -9,14 +9,12 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import androidx.cardview.widget.CardView
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ItemTouchHelper.*
 import androidx.recyclerview.widget.RecyclerView
-import se.agara.revocalize.MainActivity
-import se.agara.revocalize.R
-import se.agara.revocalize.models.Slize
+import se.staffanljungqvist.revocalize.MainActivity
+import se.staffanljungqvist.revocalize.R
+import se.staffanljungqvist.revocalize.models.Slize
 
 
 class MyRecyclerAdapter(val context : Context, var slizes : List<Slize>, var audioHelper : AudioAdapter) : RecyclerView.Adapter<MyRecyclerAdapter.MyViewHolder>() {

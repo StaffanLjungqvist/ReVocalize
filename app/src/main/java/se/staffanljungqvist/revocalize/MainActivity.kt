@@ -1,4 +1,4 @@
-package se.agara.revocalize
+package se.staffanljungqvist.revocalize
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -10,10 +10,10 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import se.agara.revocalize.adapters.AudioAdapter
-import se.agara.revocalize.adapters.GameAdapter
-import se.agara.revocalize.adapters.MyRecyclerAdapter
-import se.agara.revocalize.models.Phrase
+import se.staffanljungqvist.revocalize.adapters.AudioAdapter
+import se.staffanljungqvist.revocalize.adapters.GameAdapter
+import se.staffanljungqvist.revocalize.adapters.MyRecyclerAdapter
+import se.staffanljungqvist.revocalize.models.Phrase
 import java.util.*
 
 

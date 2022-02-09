@@ -1,13 +1,12 @@
-package se.agara.revocalize.adapters
+package se.staffanljungqvist.revocalize.adapters
 
 import android.content.Context
 import android.media.MediaPlayer
 import android.util.Log
-import se.agara.revocalize.R
-import se.agara.revocalize.builders.*
-import se.agara.revocalize.models.AudioFile
-import se.agara.revocalize.models.Phrase
-import se.agara.revocalize.models.Slize
+import se.staffanljungqvist.revocalize.builders.*
+import se.staffanljungqvist.revocalize.models.AudioFile
+import se.staffanljungqvist.revocalize.models.Phrase
+import se.staffanljungqvist.revocalize.models.Slize
 
 val TAG = "ReVoDebug"
 

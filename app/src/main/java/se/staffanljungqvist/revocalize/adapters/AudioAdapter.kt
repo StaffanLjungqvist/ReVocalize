@@ -1,12 +1,12 @@
-package se.agara.revocalize.adapters
+package se.staffanljungqvist.revocalize.adapters
 
 import android.content.Context
 import android.media.MediaPlayer
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import se.agara.revocalize.R
-import se.agara.revocalize.models.Slize
+import se.staffanljungqvist.revocalize.R
+import se.staffanljungqvist.revocalize.models.Slize
 
 
 

@@ -1,7 +1,7 @@
-package se.agara.revocalize.builders
+package se.staffanljungqvist.revocalize.builders
 
-import se.agara.revocalize.R
-import se.agara.revocalize.models.AudioFile
+import se.staffanljungqvist.revocalize.R
+import se.staffanljungqvist.revocalize.models.AudioFile
 
 object AudioList {
     val audioFiles = listOf<AudioFile>(
