@@ -18,10 +18,11 @@ import se.staffanljungqvist.revocalize.R
 import se.staffanljungqvist.revocalize.models.Slize
 
 
-class MyRecyclerAdapter(val context : Context, var slizes : List<Slize>, var audioHelper : AudioAdapter) : RecyclerView.Adapter<MyRecyclerAdapter.MyViewHolder>() {
+class MyRecyclerAdapter(val context : Context, var audioHelper : AudioAdapter) : RecyclerView.Adapter<MyRecyclerAdapter.MyViewHolder>() {
 
     var blinknumber = -1
     var hasChecked = MutableLiveData<Boolean>()
+    var slizes = listOf<Slize>()
 
     inner class MyViewHolder(view : View) : RecyclerView.ViewHolder(view) {
         val cardView = view.findViewById<CardView>(R.id.cardView)
@@ -51,7 +52,7 @@ class MyRecyclerAdapter(val context : Context, var slizes : List<Slize>, var aud
                 (context as MainActivity).startDragging(holder)
 
                 audioHelper.playAudio(slice)
-                println("playing audio from slice ${slice}")
+                Log.d(TAG, "playing audio from slice ${slice}")
             }
             return@setOnTouchListener true
         }
@@ -70,7 +71,7 @@ class MyRecyclerAdapter(val context : Context, var slizes : List<Slize>, var aud
 
             override fun run() {
 
-                Log.d("kolla", "blinknummer : ${blinknumber}")
+                Log.d(TAG, "blinknummer : ${blinknumber}")
 
                 if (blinknumber < (slizes.size )) {
                     notifyItemChanged(blinknumber)
@@ -80,7 +81,7 @@ class MyRecyclerAdapter(val context : Context, var slizes : List<Slize>, var aud
                 } else {
                     hasChecked.value = true
                     blinknumber = -1
-                    Log.d("kolla", "blinknummer : $blinknumber")
+                    Log.d(TAG, "blinknummer : $blinknumber")
 
                 }
             }

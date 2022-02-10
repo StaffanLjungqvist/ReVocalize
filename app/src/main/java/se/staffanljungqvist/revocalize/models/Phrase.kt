@@ -3,9 +3,10 @@ package se.staffanljungqvist.revocalize.models
 data class Phrase(
 
     val text : String,
-    var audioFile : AudioFile,
-    val slizes : List<Slize>,
-)
+    var slizes : List<Slize>,
+    var audioFile : AudioFile? = null,
+
+    )
 
 data class AudioFile(
     var file : Int,

@@ -1,12 +1,13 @@
 package se.staffanljungqvist.revocalize
 
+import android.Manifest
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
+import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -14,26 +15,26 @@ import androidx.recyclerview.widget.RecyclerView
 import se.staffanljungqvist.revocalize.adapters.AudioAdapter
 import se.staffanljungqvist.revocalize.adapters.GameAdapter
 import se.staffanljungqvist.revocalize.adapters.MyRecyclerAdapter
+import se.staffanljungqvist.revocalize.adapters.TTSAdapter
+import se.staffanljungqvist.revocalize.builders.TextPhrases
 import se.staffanljungqvist.revocalize.models.Phrase
+import se.staffanljungqvist.revocalize.models.Slize
+import java.io.File
 import java.util.*
 
-
-val TAG = "kolla"
-// hej från pc
-
-//hej hej från mac
-
-// osså från pc igen
+val TAG = "revodebug"
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var myRecyclerView: RecyclerView
     private lateinit var myRecycleAdapter: MyRecyclerAdapter
     private lateinit var currentPhrase: Phrase
-    private lateinit var audioHelper: AudioAdapter
+    private lateinit var audioAdapter: AudioAdapter
     private lateinit var gameAdapter : GameAdapter
+    private lateinit var ttsAdapter : TTSAdapter
     private var level = 0
     private var isCorrect = false
+    private val EXTERNAL_STORAGE_PERMISSION_CODE = 23
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,25 +43,52 @@ class MainActivity : AppCompatActivity() {
         getSupportActionBar()?.hide();
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
+        ActivityCompat.requestPermissions(
+            this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+            EXTERNAL_STORAGE_PERMISSION_CODE
+        )
+
 
         gameAdapter = GameAdapter(this)
+        gameAdapter.loadPhrase()
+        currentPhrase = Phrase(TextPhrases.textlist[level], listOf<Slize>())
+        //
+        audioAdapter = AudioAdapter(this)
 
-        //To do - safecast
-        currentPhrase = gameAdapter.loadPhrase(level)!!
+        ttsAdapter = TTSAdapter(this)
 
-        audioHelper = AudioAdapter(this, currentPhrase.audioFile.file)
+
+
+        ttsAdapter.audioFileCreated.observe(this, androidx.lifecycle.Observer {
+            Log.d(TAG, "hej hej")
+            ttsAdapter.saveToAudioFile(currentPhrase.text)
+        })
+        ttsAdapter.audioFileWritten.observe(this, androidx.lifecycle.Observer {
+            audioAdapter.loadAudio(ttsAdapter.path)
+        })
+
+        audioAdapter.audioFile.observe(this, androidx.lifecycle.Observer {
+            val duration = audioAdapter.getDuration()
+            Log.d(TAG, "the duration is ${duration}")
+            currentPhrase.slizes = gameAdapter.makeSlices(duration)
+            myRecycleAdapter.slizes = currentPhrase.slizes
+            myRecyclerView.layoutManager = GridLayoutManager(this, currentPhrase.slizes.size)
+            myRecycleAdapter.notifyDataSetChanged()
+        })
+
 
         //Setting up recycler view
         myRecyclerView = findViewById<RecyclerView>(R.id.recyclerView)
-        myRecycleAdapter = MyRecyclerAdapter(this, currentPhrase.slizes, audioHelper)
+        myRecycleAdapter = MyRecyclerAdapter(this, audioAdapter)
         myRecyclerView.adapter = myRecycleAdapter
-        myRecyclerView.layoutManager = GridLayoutManager(this, currentPhrase.slizes.size)
+        var slizeSize = if (currentPhrase.slizes.size == 0) {1} else {currentPhrase.slizes.size}
+        myRecyclerView.layoutManager = GridLayoutManager(this, 1)
 
         myRecycleAdapter.hasChecked.observe(this, androidx.lifecycle.Observer {
             if (isCorrect) {
                 findViewById<TextView>(R.id.tvSentence).text = "That is correct!"
                 findViewById<Button>(R.id.btnNext).isVisible = true
-                audioHelper.playSuccess()
+                audioAdapter.playSuccess()
                 isCorrect = false
             } else {
                 findViewById<Button>(R.id.btnCheck).isVisible = true
@@ -73,11 +101,12 @@ class MainActivity : AppCompatActivity() {
         //Knappar
 
         findViewById<Button>(R.id.btnCheck).setOnClickListener {
-            myRecycleAdapter.runLight(currentPhrase.slizes)
+
+                myRecycleAdapter.runLight(currentPhrase.slizes)
             if (checkIfCorrect()) {
-                audioHelper.playAudio()
+                audioAdapter.playAudio()
             } else {
-                audioHelper.playSlices(currentPhrase.slizes)
+                audioAdapter.playSlices(currentPhrase.slizes)
             }
         }
 
@@ -88,61 +117,28 @@ class MainActivity : AppCompatActivity() {
 
         //val itemTouchHelper = ItemTouchHelper(simpleCallback)
         itemTouchHelper.attachToRecyclerView(myRecyclerView)
-
-
     }
 
     fun loadPhrase() {
         findViewById<Button>(R.id.btnCheck).isVisible = true
-        level = gameAdapter.advanceLevel()
-        currentPhrase = gameAdapter.loadPhrase(level)!!
-
+        gameAdapter.advanceLevel()
+        gameAdapter.loadPhrase()
+        currentPhrase = gameAdapter.currentPhrase
+        Log.d(TAG, "nuvarande text är ${currentPhrase.text}")
+        ttsAdapter.saveToAudioFile(currentPhrase.text)
         //To do, optimera release mediaplayer
-        audioHelper = AudioAdapter(this, currentPhrase.audioFile.file)
+       // audioAdapter = AudioAdapter(this, currentPhrase.audioFile.file)
 
         myRecycleAdapter.slizes = currentPhrase.slizes
-        myRecycleAdapter.audioHelper = audioHelper
+        myRecycleAdapter.audioHelper = audioAdapter
         myRecyclerView.adapter = myRecycleAdapter
-        myRecyclerView.layoutManager = GridLayoutManager(this, currentPhrase.slizes.size)
+        myRecyclerView.layoutManager = GridLayoutManager(this, 1)
 
 
         findViewById<Button>(R.id.btnCheck).isVisible = true
         findViewById<Button>(R.id.btnNext).isVisible = false
         findViewById<TextView>(R.id.tvSentence).text = currentPhrase.text
     }
-
-    /*
-    private var simpleCallback = object : ItemTouchHelper.SimpleCallback(
-
-        ItemTouchHelper.LEFT.or(
-            ItemTouchHelper.RIGHT
-        ), 0
-    ) {
-
-
-        override fun onMove(
-            recyclerView: RecyclerView,
-            viewHolder: RecyclerView.ViewHolder,
-            target: RecyclerView.ViewHolder
-        ): Boolean {
-            var startPosition = viewHolder.adapterPosition
-            var endPosition = target.adapterPosition
-
-
-            Collections.swap(currentPhrase.slizes, startPosition, endPosition)
-
-
-            recyclerView.adapter?.notifyItemMoved(startPosition, endPosition)
-
-            return true
-        }
-
-        override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-            TODO("Not yet implemented")
-
-        }
-    }
-    */
 
     fun checkIfCorrect(): Boolean {
 
