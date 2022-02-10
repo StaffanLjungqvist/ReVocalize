@@ -1,4 +1,4 @@
-package se.agara.revocalize.adapters
+package se.staffanljungqvist.revocalize.adapters
 
 import android.content.Context
 import android.graphics.Color
@@ -9,19 +9,20 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import androidx.cardview.widget.CardView
-import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.ItemTouchHelper.*
 import androidx.recyclerview.widget.RecyclerView
-import se.agara.revocalize.MainActivity
-import se.agara.revocalize.R
-import se.agara.revocalize.models.Slize
+import se.staffanljungqvist.revocalize.MainActivity
+import se.staffanljungqvist.revocalize.R
+import se.staffanljungqvist.revocalize.models.Slize
 
 
-class MyRecyclerAdapter(val context : Context, var slizes : List<Slize>, var audioHelper : AudioAdapter) : RecyclerView.Adapter<MyRecyclerAdapter.MyViewHolder>() {
+class MyRecyclerAdapter(val context : Context, var audioHelper : AudioAdapter) : RecyclerView.Adapter<MyRecyclerAdapter.MyViewHolder>() {
 
     var blinknumber = -1
+    var hasChecked = MutableLiveData<Boolean>()
+    var slizes = listOf<Slize>()
 
     inner class MyViewHolder(view : View) : RecyclerView.ViewHolder(view) {
         val cardView = view.findViewById<CardView>(R.id.cardView)
@@ -51,7 +52,7 @@ class MyRecyclerAdapter(val context : Context, var slizes : List<Slize>, var aud
                 (context as MainActivity).startDragging(holder)
 
                 audioHelper.playAudio(slice)
-                println("playing audio from slice ${slice}")
+                Log.d(TAG, "playing audio from slice ${slice}")
             }
             return@setOnTouchListener true
         }
@@ -70,7 +71,7 @@ class MyRecyclerAdapter(val context : Context, var slizes : List<Slize>, var aud
 
             override fun run() {
 
-                Log.d("kolla", "blinknummer : ${blinknumber}")
+                Log.d(TAG, "blinknummer : ${blinknumber}")
 
                 if (blinknumber < (slizes.size )) {
                     notifyItemChanged(blinknumber)
@@ -78,8 +79,9 @@ class MyRecyclerAdapter(val context : Context, var slizes : List<Slize>, var aud
 
                     mainHandler.postDelayed(this, slizes[0].length)
                 } else {
+                    hasChecked.value = true
                     blinknumber = -1
-                    Log.d("kolla", "blinknummer : $blinknumber")
+                    Log.d(TAG, "blinknummer : $blinknumber")
 
                 }
             }

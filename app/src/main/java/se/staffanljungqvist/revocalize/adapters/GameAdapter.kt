@@ -1,56 +1,33 @@
-package se.agara.revocalize.adapters
+package se.staffanljungqvist.revocalize.adapters
 
 import android.content.Context
-import android.media.MediaPlayer
 import android.util.Log
-import se.agara.revocalize.R
-import se.agara.revocalize.builders.*
-import se.agara.revocalize.models.AudioFile
-import se.agara.revocalize.models.Phrase
-import se.agara.revocalize.models.Slize
+import se.staffanljungqvist.revocalize.builders.*
+import se.staffanljungqvist.revocalize.models.Phrase
+import se.staffanljungqvist.revocalize.models.Slize
 
-val TAG = "ReVoDebug"
+
 
 class GameAdapter(val context : Context) {
 
     var level = 0
+    var currentPhrase = Phrase(TextPhrases.textlist[level], listOf<Slize>())
 
-    fun advanceLevel() : Int{
-        if (level < 5) {
-            level ++
-        }
-        return level
+
+
+    fun loadPhrase() {
+        var text = TextPhrases.textlist.random()
+        currentPhrase = Phrase(TextPhrases.textlist[level], listOf<Slize>())
     }
 
-    fun loadPhrase(level: Int): Phrase? {
-        var duration : Int? = null
-        var audioFile : AudioFile
-        var slizes : List<Slize>
-
-        try {
-            var mediaPlayer = MediaPlayer.create(context, AudioList.audioFiles[level].file!!)
-            duration = mediaPlayer.duration
-            mediaPlayer.release()
-        } catch (e: RuntimeException) {
-            Log.e(TAG, "Kunde inte läsa in ljudfilen")
-        }
-        if (duration != null) {
-            audioFile = AudioFile(AudioList.audioFiles[level].file, duration)
-        } else {
-            return null
-        }
-
-        slizes = makeSlices(duration, level)
-        return Phrase(TextPhrases.textlist[level], audioFile, slizes)
-    }
-
-    fun makeSlices(duration: Int, level: Int): List<Slize> {
-
+    fun makeSlices(duration: Int): List<Slize> {
         //lista av sliceobjekt initialiseras
         val sliceList = mutableListOf<Slize>()
-        var slizeDivisions : Int
+        var slizeDivisions: Int
 
-        when (level) {
+        val numbers = listOf(5, 6, 7, 8)
+        slizeDivisions = numbers.random()
+/*        when (level) {
             0 -> slizeDivisions = 5
             1 -> slizeDivisions = 5
             2 -> slizeDivisions = 6
@@ -59,7 +36,7 @@ class GameAdapter(val context : Context) {
             5 -> slizeDivisions = 8
             6 -> slizeDivisions = 8
             else -> slizeDivisions = 4
-        }
+        }*/
         val randomColors = Colors.colors.shuffled().take(slizeDivisions)
         val sliceLength = (duration / slizeDivisions)
         for (number in 1..slizeDivisions) {
@@ -73,11 +50,11 @@ class GameAdapter(val context : Context) {
             )
         }
         Log.d(TAG, "made ${sliceList.size} slices with the length of $sliceLength each")
-
         return superShuffle(sliceList)
     }
 
-    fun superShuffle(list: MutableList<Slize>): MutableList<Slize> {
+
+    fun superShuffle(list: MutableList<Slize>): List<Slize> {
 
         var superShuffled = false
 
@@ -95,6 +72,13 @@ class GameAdapter(val context : Context) {
         Log.d(TAG, "Made ${list.size} slizes in the following order : ${list}")
         return list
     }
+
+    fun advanceLevel(){
+        if (level < TextPhrases.textlist.size) {
+            level ++
+        }
+    }
+
 }
 
 

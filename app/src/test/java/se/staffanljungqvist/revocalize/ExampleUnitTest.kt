@@ -1,4 +1,4 @@
-package se.agara.revocalize
+package se.staffanljungqvist.revocalize
 
 import org.junit.Test
 

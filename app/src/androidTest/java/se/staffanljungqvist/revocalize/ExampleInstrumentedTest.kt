@@ -1,4 +1,4 @@
-package se.agara.revocalize
+package se.staffanljungqvist.revocalize
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
