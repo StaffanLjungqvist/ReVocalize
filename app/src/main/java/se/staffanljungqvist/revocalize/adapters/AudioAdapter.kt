@@ -21,7 +21,7 @@ class AudioAdapter(var context : Context) {
     var audioFile = MutableLiveData<Uri>()
     var fileTransformedFromUriToFile = MutableLiveData<Boolean>()
 
-
+    //En mediaplayer instans skapas för att läsa av längden på ljudklippet, skickar tillbaka resultatet och förstörs sen.
     fun getDuration() : Int {
         if (audioFile != null) {
             val mediaPlayer = MediaPlayer.create(context, audioFile.value)
@@ -67,7 +67,6 @@ fun loadAudio(filePath : String) {
                 Log.d(TAG, "No slice. Playing the full clip")
                 mediaPlayer.start()
             }
-
         }
     }
 
@@ -76,7 +75,7 @@ fun loadAudio(filePath : String) {
     }
 
     /*
-Tar in en lista med slices och spelar upp alla en efter en
+Tar in en lista med slices i den ordning dom ligger i recycleview, och spelar upp en efter en
  */
     fun playSlices(slizes : List<Slize>){
 

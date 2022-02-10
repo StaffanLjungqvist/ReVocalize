@@ -148,12 +148,10 @@ class MainActivity : AppCompatActivity() {
         ttsAdapter.saveToAudioFile(currentPhrase.text)
         //To do, optimera release mediaplayer
        // audioAdapter = AudioAdapter(this, currentPhrase.audioFile.file)
-
         myRecycleAdapter.slizes = currentPhrase.slizes
         myRecycleAdapter.audioHelper = audioAdapter
         myRecyclerView.adapter = myRecycleAdapter
         myRecyclerView.layoutManager = GridLayoutManager(this, 1)
-
     }
 
     fun checkIfCorrect(): Boolean {
