@@ -1,21 +1,13 @@
 package se.staffanljungqvist.revocalize.adapters
 
-import android.Manifest
 import android.content.Context
-import android.media.AudioFormat
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.*
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
 import android.util.Log
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
-import android.widget.Toast
-import androidx.core.app.ActivityCompat
 import androidx.lifecycle.MutableLiveData
-import se.staffanljungqvist.revocalize.R
 import java.io.File
 import java.util.*
 

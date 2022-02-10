@@ -48,7 +48,6 @@ fun loadAudio(filePath : String) {
             Log.d(TAG, "AA skapade mediaplayer från fil ${audioFile}")
             //Om slice som ska spelas upp är en del av en slicelista-uppspelning, så läggs 90 millisekunder till för att fylla upp luckor mellan slices.
             if (slize != null) {
-                //    var length = if (playAll) (slice.length + 90) else slice.length
                 Log.d(
                     TAG,
                     "playing clip number ${slize.number}, with the startposition ${slize.start} and the length of ${slize.length}"
@@ -68,9 +67,6 @@ fun loadAudio(filePath : String) {
 
         }
     }
-
-
-
 
     fun playSuccess() {
         successPlayer.start()

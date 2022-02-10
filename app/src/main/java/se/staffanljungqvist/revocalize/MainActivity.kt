@@ -5,8 +5,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.WindowManager
-import android.widget.Button
-import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
@@ -17,15 +15,16 @@ import se.staffanljungqvist.revocalize.adapters.GameAdapter
 import se.staffanljungqvist.revocalize.adapters.MyRecyclerAdapter
 import se.staffanljungqvist.revocalize.adapters.TTSAdapter
 import se.staffanljungqvist.revocalize.builders.TextPhrases
+import se.staffanljungqvist.revocalize.databinding.ActivityMainBinding
 import se.staffanljungqvist.revocalize.models.Phrase
 import se.staffanljungqvist.revocalize.models.Slize
-import java.io.File
 import java.util.*
 
 val TAG = "revodebug"
 
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var binding : ActivityMainBinding
     private lateinit var myRecyclerView: RecyclerView
     private lateinit var myRecycleAdapter: MyRecyclerAdapter
     private lateinit var currentPhrase: Phrase
@@ -38,31 +37,49 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
 
+        //Todo: Lägg in logik i en viewModel
+
+        //Göm navigation bar och action bar
         getSupportActionBar()?.hide();
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
+
+        //Frågar om tillåtelse att läsa externt lagerutrymme
+        //Todo : nödvändig? Släng?
         ActivityCompat.requestPermissions(
             this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
             EXTERNAL_STORAGE_PERMISSION_CODE
         )
 
-
+        //Initiera + Konfigurera adaptrar.
+        //Todo : Försök få in så mycket som möjligt i loadPhrase funktionen
         gameAdapter = GameAdapter(this)
         gameAdapter.loadPhrase()
-        currentPhrase = Phrase(TextPhrases.textlist[level], listOf<Slize>())
-        //
-        audioAdapter = AudioAdapter(this)
 
+        currentPhrase = Phrase(TextPhrases.textlist[level], listOf<Slize>())
+
+        audioAdapter = AudioAdapter(this)
         ttsAdapter = TTSAdapter(this)
 
+        myRecyclerView = binding.rvSlizes
+        myRecycleAdapter = MyRecyclerAdapter(this, audioAdapter)
+        myRecyclerView.adapter = myRecycleAdapter
+        myRecyclerView.layoutManager = GridLayoutManager(this, 1)
 
 
+
+        /*Observerar diverse  "är klar = true" booleans i diverse adaptrar för att vänta in färdiga processer
+        och göra saker i rätt ordning.
+        Todo : Finns ett bättre sätt?
+         */
         ttsAdapter.audioFileCreated.observe(this, androidx.lifecycle.Observer {
-            Log.d(TAG, "hej hej")
             ttsAdapter.saveToAudioFile(currentPhrase.text)
         })
+
         ttsAdapter.audioFileWritten.observe(this, androidx.lifecycle.Observer {
             audioAdapter.loadAudio(ttsAdapter.path)
         })
@@ -74,34 +91,33 @@ class MainActivity : AppCompatActivity() {
             myRecycleAdapter.slizes = currentPhrase.slizes
             myRecyclerView.layoutManager = GridLayoutManager(this, currentPhrase.slizes.size)
             myRecycleAdapter.notifyDataSetChanged()
+            binding.rvSlizes.isVisible = true
+            binding.tvSentence.isVisible = true
+            binding.tvSentence.text = currentPhrase.text
+            binding.btnCheck.isVisible = true
+            binding.tvLoading.isVisible = false
         })
-
-
-        //Setting up recycler view
-        myRecyclerView = findViewById<RecyclerView>(R.id.recyclerView)
-        myRecycleAdapter = MyRecyclerAdapter(this, audioAdapter)
-        myRecyclerView.adapter = myRecycleAdapter
-        var slizeSize = if (currentPhrase.slizes.size == 0) {1} else {currentPhrase.slizes.size}
-        myRecyclerView.layoutManager = GridLayoutManager(this, 1)
 
         myRecycleAdapter.hasChecked.observe(this, androidx.lifecycle.Observer {
             if (isCorrect) {
-                findViewById<TextView>(R.id.tvSentence).text = "That is correct!"
-                findViewById<Button>(R.id.btnNext).isVisible = true
+                binding.tvSentence.isVisible = true
+                binding.tvSentence.text = "That is correct!"
+                binding.btnNext.isVisible = true
+                binding.rvSlizes.isVisible = false
+                binding.tvLoading.isVisible = false
                 audioAdapter.playSuccess()
                 isCorrect = false
             } else {
-                findViewById<Button>(R.id.btnCheck).isVisible = true
+                binding.btnCheck.isVisible = true
             }
         })
 
-        findViewById<TextView>(R.id.tvSentence).text = currentPhrase.text
-
+        //Todo : Lägg in i loadPhrase()
+        binding.tvSentence.text = currentPhrase.text
 
         //Knappar
 
-        findViewById<Button>(R.id.btnCheck).setOnClickListener {
-
+        binding.btnCheck.setOnClickListener {
                 myRecycleAdapter.runLight(currentPhrase.slizes)
             if (checkIfCorrect()) {
                 audioAdapter.playAudio()
@@ -110,7 +126,11 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        findViewById<Button>(R.id.btnNext).setOnClickListener {
+        binding.btnNext.setOnClickListener {
+            binding.btnCheck.isVisible = false
+            binding.tvLoading.isVisible = true
+            binding.btnNext.isVisible = false
+            binding.tvSentence.isVisible = false
             loadPhrase()
         }
 
@@ -119,8 +139,8 @@ class MainActivity : AppCompatActivity() {
         itemTouchHelper.attachToRecyclerView(myRecyclerView)
     }
 
+    //Todo : Fixa så att funktionen kan köras när activity startas, för att initiera alla lateinits.
     fun loadPhrase() {
-        findViewById<Button>(R.id.btnCheck).isVisible = true
         gameAdapter.advanceLevel()
         gameAdapter.loadPhrase()
         currentPhrase = gameAdapter.currentPhrase
@@ -134,30 +154,24 @@ class MainActivity : AppCompatActivity() {
         myRecyclerView.adapter = myRecycleAdapter
         myRecyclerView.layoutManager = GridLayoutManager(this, 1)
 
-
-        findViewById<Button>(R.id.btnCheck).isVisible = true
-        findViewById<Button>(R.id.btnNext).isVisible = false
-        findViewById<TextView>(R.id.tvSentence).text = currentPhrase.text
     }
 
     fun checkIfCorrect(): Boolean {
 
-        findViewById<Button>(R.id.btnCheck).isVisible = false
+        binding.btnCheck.isVisible = false
         var sortedList = currentPhrase.slizes.sortedBy { it.number }
         Log.d("kolla", "listan i rätt ordning; ${sortedList}")
 
         if (sortedList.equals(currentPhrase.slizes)) {
             isCorrect = true
-
-
-            //    findViewById<Button>(R.id.btnCheck).isVisible = false
-
             Log.d("kolla", "Listan är i rätt ordning!")
             return true
         }
         return false
     }
 
+
+    //Kod för byta plats på recyclerView viewholders med drag and drop.
 
     private val itemTouchHelper by lazy {
         // 1. Note that I am specifying all 4 directions.
