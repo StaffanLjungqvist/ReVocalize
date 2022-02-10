@@ -49,7 +49,7 @@ class GameAdapter(val context : Context) {
                 )
             )
         }
-        Log.d(TAG, "made ${sliceList.size} slices with the length of $sliceLength each")
+        Log.d(TAG, "Skapade ${sliceList.size} slices med längd $sliceLength vardera")
         return superShuffle(sliceList)
     }
 
@@ -69,7 +69,7 @@ class GameAdapter(val context : Context) {
                 }
             }
         }
-        Log.d(TAG, "Made ${list.size} slizes in the following order : ${list}")
+        Log.d(TAG, "Blandade ${list.size} slizes till följande ordning ordning : ${list}")
         return list
     }
 

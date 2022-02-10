@@ -19,7 +19,7 @@ class AudioAdapter(var context : Context) {
 
     val successPlayer = MediaPlayer.create(context, R.raw.success)
     var audioFile = MutableLiveData<Uri>()
-    var fileLoaded = MutableLiveData<Boolean>()
+    var fileTransformedFromUriToFile = MutableLiveData<Boolean>()
 
 
     fun getDuration() : Int {
@@ -27,6 +27,7 @@ class AudioAdapter(var context : Context) {
             val mediaPlayer = MediaPlayer.create(context, audioFile.value)
             val duration = mediaPlayer.duration
             mediaPlayer.release()
+            Log.d(se.staffanljungqvist.revocalize.TAG, "Längden på ljudklippet : ${duration}")
             return duration
         } else {
             Log.d(TAG, "Audiofile not loaded")
@@ -36,7 +37,9 @@ class AudioAdapter(var context : Context) {
 
 fun loadAudio(filePath : String) {
     audioFile.value = Uri.parse(filePath)
-    Log.d(TAG, "AA Parsing file to URI : ${audioFile.value}")
+    Log.d(TAG, "AA Uri omgord till File : ${audioFile.value}")
+    fileTransformedFromUriToFile.value = true
+
 }
 
 

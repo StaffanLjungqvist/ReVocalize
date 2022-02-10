@@ -84,9 +84,9 @@ class MainActivity : AppCompatActivity() {
             audioAdapter.loadAudio(ttsAdapter.path)
         })
 
-        audioAdapter.audioFile.observe(this, androidx.lifecycle.Observer {
+        audioAdapter.fileTransformedFromUriToFile.observe(this, androidx.lifecycle.Observer {
+            Log.d(TAG, "ljudfil färdig")
             val duration = audioAdapter.getDuration()
-            Log.d(TAG, "the duration is ${duration}")
             currentPhrase.slizes = gameAdapter.makeSlices(duration)
             myRecycleAdapter.slizes = currentPhrase.slizes
             myRecyclerView.layoutManager = GridLayoutManager(this, currentPhrase.slizes.size)
