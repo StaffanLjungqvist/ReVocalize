@@ -13,16 +13,19 @@ import androidx.cardview.widget.CardView
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.ItemTouchHelper.*
 import androidx.recyclerview.widget.RecyclerView
+import se.staffanljungqvist.revocalize.InGameFragment
 import se.staffanljungqvist.revocalize.MainActivity
 import se.staffanljungqvist.revocalize.R
+import se.staffanljungqvist.revocalize.databinding.FragmentInGameBinding
 import se.staffanljungqvist.revocalize.models.Slize
 
 
-class MyRecyclerAdapter(val context : Context, var audioHelper : AudioAdapter) : RecyclerView.Adapter<MyRecyclerAdapter.MyViewHolder>() {
+class MyRecyclerAdapter() : RecyclerView.Adapter<MyRecyclerAdapter.MyViewHolder>() {
 
     var blinknumber = -1
     var hasChecked = MutableLiveData<Boolean>()
     var slizes = listOf<Slize>()
+    lateinit var fragment : InGameFragment
 
     inner class MyViewHolder(view : View) : RecyclerView.ViewHolder(view) {
         val cardView = view.findViewById<CardView>(R.id.cardView)
@@ -45,14 +48,17 @@ class MyRecyclerAdapter(val context : Context, var audioHelper : AudioAdapter) :
         }
 
 
-
         holder.itemView.setOnTouchListener { view, event ->
 
             if (event.actionMasked == MotionEvent.ACTION_DOWN) {
-                (context as MainActivity).startDragging(holder)
+                (fragment as InGameFragment).startDragging(holder)
 
-                audioHelper.playAudio(slice)
+                fragment.audioAdapter.playAudio(slice)
                 Log.d(TAG, "playing audio from slice ${slice}")
+            }
+
+            if(event.actionMasked == MotionEvent.ACTION_UP) {
+                Log.d(TAG, "Släppte knappen")
             }
             return@setOnTouchListener true
         }

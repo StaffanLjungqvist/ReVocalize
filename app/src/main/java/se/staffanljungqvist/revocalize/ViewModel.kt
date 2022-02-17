@@ -1,23 +1,25 @@
-package se.staffanljungqvist.revocalize.adapters
+package se.staffanljungqvist.revocalize
 
-import android.content.Context
 import android.util.Log
-import se.staffanljungqvist.revocalize.builders.*
+import androidx.core.view.isVisible
+import androidx.lifecycle.ViewModel
+import se.staffanljungqvist.revocalize.builders.Colors
+import se.staffanljungqvist.revocalize.builders.TextPhrases
 import se.staffanljungqvist.revocalize.models.Phrase
 import se.staffanljungqvist.revocalize.models.Slize
 
-
-
-class GameAdapter(val context : Context) {
+class ViewModel : ViewModel() {
 
     var level = 0
     var currentPhrase = Phrase(TextPhrases.textlist[level], listOf<Slize>())
-
+    var isCorrect = false
 
 
     fun loadPhrase() {
-        var text = TextPhrases.textlist.random()
         currentPhrase = Phrase(TextPhrases.textlist[level], listOf<Slize>())
+        if (level < TextPhrases.textlist.size) {
+            level ++
+        }
     }
 
     fun makeSlices(duration: Int): List<Slize> {
@@ -25,8 +27,8 @@ class GameAdapter(val context : Context) {
         val sliceList = mutableListOf<Slize>()
         var slizeDivisions: Int
 
-        val numbers = listOf(5, 6, 7, 8)
-        slizeDivisions = numbers.random()
+        val numbers = listOf(5, 6, 7, 8).random()
+        slizeDivisions = 4
 /*        when (level) {
             0 -> slizeDivisions = 5
             1 -> slizeDivisions = 5
@@ -49,15 +51,13 @@ class GameAdapter(val context : Context) {
                 )
             )
         }
-        Log.d(TAG, "Skapade ${sliceList.size} slices med längd $sliceLength vardera")
+        Log.d(se.staffanljungqvist.revocalize.adapters.TAG, "Skapade ${sliceList.size} slices med längd $sliceLength vardera")
         return superShuffle(sliceList)
     }
 
 
     fun superShuffle(list: MutableList<Slize>): List<Slize> {
-
         var superShuffled = false
-
         while (superShuffled == false) {
             superShuffled = true
             list.shuffle()
@@ -69,16 +69,21 @@ class GameAdapter(val context : Context) {
                 }
             }
         }
-        Log.d(TAG, "Blandade ${list.size} slizes till följande ordning ordning : ${list}")
+        Log.d(se.staffanljungqvist.revocalize.adapters.TAG, "Blandade ${list.size} slizes till följande ordning ordning : ${list}")
         return list
     }
 
-    fun advanceLevel(){
-        if (level < TextPhrases.textlist.size) {
-            level ++
+
+
+    fun checkIfCorrect(): Boolean {
+        var sortedList = currentPhrase.slizes.sortedBy { it.number }
+        Log.d("kolla", "listan i rätt ordning; ${sortedList}")
+
+        if (sortedList.equals(currentPhrase.slizes)) {
+            isCorrect = true
+            Log.d("kolla", "Listan är i rätt ordning!")
+            return true
         }
+        return false
     }
-
 }
-
-
