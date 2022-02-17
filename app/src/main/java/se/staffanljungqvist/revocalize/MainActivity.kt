@@ -24,6 +24,7 @@ val TAG = "revodebug"
 
 class MainActivity : AppCompatActivity() {
 
+
     private lateinit var binding : ActivityMainBinding
     private lateinit var myRecyclerView: RecyclerView
     private lateinit var myRecycleAdapter: MyRecyclerAdapter
