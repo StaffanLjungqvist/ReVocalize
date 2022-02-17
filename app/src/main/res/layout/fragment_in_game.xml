@@ -28,11 +28,11 @@
         android:layout_marginTop="16dp"
         android:orientation="vertical"
 
-        app:layout_constraintVertical_weight="1"
         app:layout_constraintBottom_toTopOf="@+id/rvSlizes"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"></LinearLayout>
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_weight="1"></LinearLayout>
 
 
     <androidx.recyclerview.widget.RecyclerView
@@ -100,6 +100,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvSentence"
         tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/tvGuessAmount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="14dp"
+        android:text="Number of checks"
+        android:textColor="@color/white"
+        android:layout_marginHorizontal="32dp"
+        app:layout_constraintBottom_toBottomOf="@+id/linearLayout2"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

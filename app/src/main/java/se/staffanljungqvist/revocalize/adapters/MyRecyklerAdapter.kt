@@ -52,18 +52,16 @@ class MyRecyclerAdapter() : RecyclerView.Adapter<MyRecyclerAdapter.MyViewHolder>
 
             if (event.actionMasked == MotionEvent.ACTION_DOWN) {
                 (fragment as InGameFragment).startDragging(holder)
+                Log.d(TAG, "Tryckte ner knappen")
 
-                fragment.audioAdapter.playAudio(slice)
-                Log.d(TAG, "playing audio from slice ${slice}")
+            //    fragment.audioAdapter.playAudio(slice)
+
             }
 
-            if(event.actionMasked == MotionEvent.ACTION_UP) {
-                Log.d(TAG, "Släppte knappen")
-            }
             return@setOnTouchListener true
         }
 
-    }
+            }
 
     override fun getItemCount(): Int {
         return slizes.size

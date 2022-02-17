@@ -13,6 +13,7 @@ class ViewModel : ViewModel() {
     var level = 0
     var currentPhrase = Phrase(TextPhrases.textlist[level], listOf<Slize>())
     var isCorrect = false
+    var guesses = 1
 
 
     fun loadPhrase() {
@@ -20,6 +21,7 @@ class ViewModel : ViewModel() {
         if (level < TextPhrases.textlist.size) {
             level ++
         }
+        guesses = 1
     }
 
     fun makeSlices(duration: Int): List<Slize> {
@@ -28,7 +30,7 @@ class ViewModel : ViewModel() {
         var slizeDivisions: Int
 
         val numbers = listOf(5, 6, 7, 8).random()
-        slizeDivisions = 4
+        slizeDivisions = numbers
 /*        when (level) {
             0 -> slizeDivisions = 5
             1 -> slizeDivisions = 5
@@ -75,7 +77,10 @@ class ViewModel : ViewModel() {
 
 
 
+
+
     fun checkIfCorrect(): Boolean {
+        guesses++
         var sortedList = currentPhrase.slizes.sortedBy { it.number }
         Log.d("kolla", "listan i rätt ordning; ${sortedList}")
 

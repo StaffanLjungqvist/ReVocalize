@@ -107,6 +107,7 @@ class InGameFragment : Fragment() {
         //Knappar
 
         binding.btnCheck.setOnClickListener {
+            binding.tvGuessAmount.text = model.guesses.toString()
             myRecycleAdapter.runLight(model.currentPhrase.slizes)
             if (model.checkIfCorrect()) {
                 audioAdapter.playAudio()
@@ -124,6 +125,8 @@ class InGameFragment : Fragment() {
         }
 
 
+
+
         //val itemTouchHelper = ItemTouchHelper(simpleCallback)
         itemTouchHelper.attachToRecyclerView(myRecyclerView)
 
@@ -136,6 +139,7 @@ class InGameFragment : Fragment() {
 
     fun loadPhrase() {
         model.loadPhrase()
+        binding.tvGuessAmount.text = model.guesses.toString()
         binding.tvSentence.text = model.currentPhrase.text
         ttsAdapter.saveToAudioFile(model.currentPhrase.text)
         myRecycleAdapter.slizes = model.currentPhrase.slizes
