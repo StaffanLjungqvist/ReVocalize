@@ -68,6 +68,7 @@ class TTSAdapter(val context : Context) : TextToSpeech.OnInitListener {
 
 
             val listener = ttsUtteranceListener()
+            listener.ttsadapt = this
             tts.setOnUtteranceProgressListener(listener)
 
 
@@ -75,6 +76,7 @@ class TTSAdapter(val context : Context) : TextToSpeech.OnInitListener {
             //Todo : Obserera när ljudfilen är färdigprocesserad istället för statisk laddtid.
             tts!!.synthesizeToFile(text, null, testFile, mUtteranceID)
 
+            /*
             val mainHandler = Handler(Looper.getMainLooper())
             mainHandler.post(object : Runnable {
                 var number = 0
@@ -91,7 +93,7 @@ class TTSAdapter(val context : Context) : TextToSpeech.OnInitListener {
                     }
                 }
             })
-
+            */
 
 
         } else {
@@ -106,19 +108,30 @@ class TTSAdapter(val context : Context) : TextToSpeech.OnInitListener {
     }
 
 
-
+    fun synthDone()
+    {
+        Log.d(TAG, "handler är färdig")
+        val mainHandler = Handler(Looper.getMainLooper())
+        mainHandler.post(object : Runnable {
+            override fun run() {
+                audioFileWritten.value = true
+            }
+        })
+    }
 
 
 
 
     //Todo : Få pli på denna
     class ttsUtteranceListener : UtteranceProgressListener() {
+        lateinit var ttsadapt : TTSAdapter
         override fun onStart(start : String) {
             Log.d(TAG, "TTS Startar synthesize file")
         }
 
         override fun onDone(uttranceID : String) {
             Log.d(TAG, "TTS syntesize file färdig.")
+            ttsadapt.synthDone()
         }
 
         override fun onError(uttranceID : String) {

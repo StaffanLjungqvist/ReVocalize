@@ -5,7 +5,8 @@
       <map>
         <entry key="app/src/main/res/drawable/rounded_button.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/rounded_size.xml" value="0.145" />
-        <entry key="app/src/main/res/layout/activity_main.xml" value="0.518849840255591" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.46290130615234376" />
+        <entry key="app/src/main/res/layout/fragment_in_game.xml" value="0.15501519756838905" />
         <entry key="app/src/main/res/layout/item_view.xml" value="0.1" />
         <entry key="app/src/main/res/layout/slize_item.xml" value="0.23640899658203127" />
       </map>
