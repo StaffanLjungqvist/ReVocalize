@@ -6,7 +6,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
@@ -15,11 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import se.staffanljungqvist.revocalize.adapters.AudioAdapter
 import se.staffanljungqvist.revocalize.adapters.MyRecyclerAdapter
 import se.staffanljungqvist.revocalize.adapters.TTSAdapter
-import se.staffanljungqvist.revocalize.builders.TextPhrases
-import se.staffanljungqvist.revocalize.databinding.ActivityMainBinding
 import se.staffanljungqvist.revocalize.databinding.FragmentInGameBinding
-import se.staffanljungqvist.revocalize.models.Phrase
-import se.staffanljungqvist.revocalize.models.Slize
 import java.util.*
 
 
@@ -107,6 +102,7 @@ class InGameFragment : Fragment() {
         //Knappar
 
         binding.btnCheck.setOnClickListener {
+            it.isVisible = false
             binding.tvGuessAmount.text = model.guesses.toString()
             myRecycleAdapter.runLight(model.currentPhrase.slizes)
             if (model.checkIfCorrect()) {

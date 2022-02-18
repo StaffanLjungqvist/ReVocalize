@@ -29,18 +29,18 @@ class ViewModel : ViewModel() {
         val sliceList = mutableListOf<Slize>()
         var slizeDivisions: Int
 
-        val numbers = listOf(5, 6, 7, 8).random()
-        slizeDivisions = numbers
-/*        when (level) {
-            0 -> slizeDivisions = 5
-            1 -> slizeDivisions = 5
-            2 -> slizeDivisions = 6
-            3 -> slizeDivisions = 6
-            4 -> slizeDivisions = 7
-            5 -> slizeDivisions = 8
-            6 -> slizeDivisions = 8
+        val numbers = listOf(4, 5, 6).random()
+       // slizeDivisions = numbers
+        when (level) {
+            in 0..2 -> slizeDivisions = 4
+            in 3..5 -> slizeDivisions = 5
+            7 -> slizeDivisions = 6
+            3 -> slizeDivisions = 5
+            4 -> slizeDivisions = 5
+            5 -> slizeDivisions = 5
+            6 -> slizeDivisions = 6
             else -> slizeDivisions = 4
-        }*/
+        }
         val randomColors = Colors.colors.shuffled().take(slizeDivisions)
         val sliceLength = (duration / slizeDivisions)
         for (number in 1..slizeDivisions) {
@@ -65,7 +65,7 @@ class ViewModel : ViewModel() {
             list.shuffle()
             for (i in 0..list.size) {
                 if (i <= list.size - 2) {
-                    if ((list[i].number + 1) == list[i + 1].number || list[0].number == 1) {
+                    if ((list[i].number + 1) == list[i + 1].number) {
                         superShuffled = false
                     }
                 }
