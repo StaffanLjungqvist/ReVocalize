@@ -1,6 +1,5 @@
 package se.staffanljungqvist.revocalize.adapters
 
-import android.content.Context
 import android.graphics.Color
 import android.os.Handler
 import android.os.Looper
@@ -11,16 +10,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.cardview.widget.CardView
 import androidx.lifecycle.MutableLiveData
-import androidx.recyclerview.widget.ItemTouchHelper.*
 import androidx.recyclerview.widget.RecyclerView
-import se.staffanljungqvist.revocalize.InGameFragment
-import se.staffanljungqvist.revocalize.MainActivity
+import se.staffanljungqvist.revocalize.ui.InGameFragment
 import se.staffanljungqvist.revocalize.R
-import se.staffanljungqvist.revocalize.databinding.FragmentInGameBinding
 import se.staffanljungqvist.revocalize.models.Slize
 
 
-class MyRecyclerAdapter() : RecyclerView.Adapter<MyRecyclerAdapter.MyViewHolder>() {
+class SlizeRecAdapter() : RecyclerView.Adapter<SlizeRecAdapter.MyViewHolder>() {
 
     var blinknumber = -1
     var hasChecked = MutableLiveData<Boolean>()

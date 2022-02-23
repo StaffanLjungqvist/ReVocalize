@@ -26,7 +26,7 @@ class AudioAdapter(var context : Context) {
             val mediaPlayer = MediaPlayer.create(context, audioFile.value)
             val duration = mediaPlayer.duration
             mediaPlayer.release()
-            Log.d(se.staffanljungqvist.revocalize.TAG, "Längden på ljudklippet : ${duration}")
+            Log.d(TAG, "Längden på ljudklippet : ${duration}")
             return duration
         } else {
             Log.d(TAG, "Audiofile not loaded")

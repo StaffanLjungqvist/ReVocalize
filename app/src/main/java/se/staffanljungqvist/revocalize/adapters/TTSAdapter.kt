@@ -17,10 +17,11 @@ class TTSAdapter(val context : Context) : TextToSpeech.OnInitListener {
     private val mUtteranceID = "totts"
     private var tts = TextToSpeech(context, this)
     private val EXTERNAL_STORAGE_PERMISSION_CODE = 23
-    var testFile : File
-    var path = context.filesDir.toString() + "/myreq.wav"
-    var audioFileCreated = MutableLiveData<Boolean>()
-    var audioFileWritten = MutableLiveData<Boolean>()
+    var testFile = File(context.filesDir.toString() + "/myreq.wav")
+    val path = context.filesDir.toString() + "/myreq.wav"
+
+    var ttsInitiated = MutableLiveData<Boolean>()
+    var ttsAudiofileWritten = MutableLiveData<Boolean>()
 
     override fun onInit(status: Int) {
         if (status == TextToSpeech.SUCCESS) {
@@ -29,8 +30,13 @@ class TTSAdapter(val context : Context) : TextToSpeech.OnInitListener {
             if (result == TextToSpeech.LANG_MISSING_DATA) {
                 Log.e(TAG, "The language specified is not supported")
             }
-            Log.d(TAG, "TTS är nu initialiserad")
-            createAudioFile()
+            Log.d(TAG, "TTS initialiserades korrekt")
+            if (testFile.exists()) {
+                ttsInitiated.value = true
+            } else {
+                createAudioFile()
+            }
+
         } else {
             Log.e(TAG, "TTS Initialization Failed")
         }
@@ -38,9 +44,7 @@ class TTSAdapter(val context : Context) : TextToSpeech.OnInitListener {
 
 
 //Todo : Lägg in i onInit?
-    init {
-        testFile = File(path)
-    }
+
 
 
         //Skapar en tom fil i minnet vilket data senare kommer att skrivas till.
@@ -49,9 +53,9 @@ class TTSAdapter(val context : Context) : TextToSpeech.OnInitListener {
         val sddir = File(Environment.getExternalStorageDirectory().toString() + "/My File/")
         sddir.mkdir()
         mAudioFilename = sddir.absolutePath.toString() + "/" + mUtteranceID + ".wav"
-        testFile = File(path)
+
         Log.d(TAG, "tts skapade fil : ${mAudioFilename}")
-        audioFileCreated.value = true
+        ttsInitiated.value = true
     }
 
 
@@ -59,9 +63,12 @@ class TTSAdapter(val context : Context) : TextToSpeech.OnInitListener {
      fun saveToAudioFile(text : String) {
 
          //Tar ut alla röster tillgängliga i mobilen med engelsk språk, och sätter slumpmässigt till tts.
-         val voices = tts.voices.filter { it.locale.language == "en" }
+         val voicesAll = tts.voices.filter { it.locale.language == "en" }
+        val voices = voicesAll.filter { it.name.contains("in") == false || it.name.contains("ng") == false }
+        Log.d(TAG, "Voices : ${voices}")
          val voice = voices.random()
          tts.setVoice(voice)
+        Log.d(TAG, "Språk är satt till ${voice}")
         tts.setSpeechRate("0.7".toFloat())
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -73,35 +80,15 @@ class TTSAdapter(val context : Context) : TextToSpeech.OnInitListener {
 
 
             //Skapar filen.
-            //Todo : Obserera när ljudfilen är färdigprocesserad istället för statisk laddtid.
+
             tts!!.synthesizeToFile(text, null, testFile, mUtteranceID)
-
-            /*
-            val mainHandler = Handler(Looper.getMainLooper())
-            mainHandler.post(object : Runnable {
-                var number = 0
-                override fun run() {
-                    if (number < 1) {
-                        number++
-                        Log.d(TAG, "Jag förhalar")
-                        mainHandler.postDelayed(this, 4500)
-                    } else {
-                        Log.d(TAG, "handler är färdig")
-                        Log.d(TAG, "tts Skrev till " + testFile.absolutePath)
-                        audioFileWritten.value = true
-
-                    }
-                }
-            })
-            */
-
 
         } else {
             val hm = HashMap<String, String>()
             hm.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID,mUtteranceID)
             tts!!.synthesizeToFile("testing", hm, mAudioFilename)
             Log.d(TAG,"tts fulskrev  till" + mAudioFilename)
-            audioFileWritten.value = true
+            ttsAudiofileWritten.value = true
         }
 
 
@@ -114,15 +101,12 @@ class TTSAdapter(val context : Context) : TextToSpeech.OnInitListener {
         val mainHandler = Handler(Looper.getMainLooper())
         mainHandler.post(object : Runnable {
             override fun run() {
-                audioFileWritten.value = true
+                ttsAudiofileWritten.value = true
             }
         })
     }
 
 
-
-
-    //Todo : Få pli på denna
     class ttsUtteranceListener : UtteranceProgressListener() {
         lateinit var ttsadapt : TTSAdapter
         override fun onStart(start : String) {
@@ -136,17 +120,6 @@ class TTSAdapter(val context : Context) : TextToSpeech.OnInitListener {
 
         override fun onError(uttranceID : String) {
             TODO("Not yet implemented")
-        }
-    }
-
-    //Används endast fil felsökning
-    fun readAudioFile() {
-        try {
-            val mp = MediaPlayer.create(context, Uri.parse(path))
-            Log.d(TAG, "playing audiofile from $path")
-            mp.start()
-        } catch (e: java.lang.Exception) {
-            Log.d(TAG, "Something went wrong : ${e}")
         }
     }
 }

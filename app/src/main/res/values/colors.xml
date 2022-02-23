@@ -7,6 +7,14 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="green">#53c275</color>
+
+    <color name="green">#38FF75</color>
+    <color name="silver">#4BEBFF</color>
+    <color name="gold">#FFFF44</color>
+    <color name="bronze">#FF6C00</color>
+    <color name="pink">#FF4BF8</color>
+
+
+
     <color name="checkButton">#39367F</color>
 </resources>

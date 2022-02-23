@@ -3,7 +3,8 @@ package se.staffanljungqvist.revocalize.models
 data class Phrase(
 
     val text : String,
-    var slizes : List<Slize>,
+    val slizediv : Int,
+    var slizes : List<Slize> = listOf<Slize>(),
     var audioFile : AudioFile? = null,
 
     )

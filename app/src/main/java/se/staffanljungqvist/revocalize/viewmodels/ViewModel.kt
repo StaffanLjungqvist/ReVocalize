@@ -1,46 +1,76 @@
-package se.staffanljungqvist.revocalize
+package se.staffanljungqvist.revocalize.viewmodels
 
 import android.util.Log
-import androidx.core.view.isVisible
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import se.staffanljungqvist.revocalize.builders.Colors
 import se.staffanljungqvist.revocalize.builders.TextPhrases
+import se.staffanljungqvist.revocalize.models.Level
 import se.staffanljungqvist.revocalize.models.Phrase
 import se.staffanljungqvist.revocalize.models.Slize
 
+val TAG = "revodebug"
+
 class ViewModel : ViewModel() {
 
-    var level = 0
-    var currentPhrase = Phrase(TextPhrases.textlist[level], listOf<Slize>())
+    var currentStage : Int = 0
+    var currentLevel : Level? = null
+    var phraseIndex = 0
+    var slizes : List<Slize>? = null
+
+
+    val audioReady: MutableLiveData<Boolean> by lazy {
+        MutableLiveData<Boolean>(false)
+    }
+
+    var levelComplete = false
+
+
+
+    var currentPhrase = Phrase(TextPhrases.textlist[phraseIndex], 1, listOf<Slize>())
     var isCorrect = false
-    var guesses = 1
+    var currentGuesses = 0
+    var totalGuesses = 0
+
 
 
     fun loadPhrase() {
-        currentPhrase = Phrase(TextPhrases.textlist[level], listOf<Slize>())
-        if (level < TextPhrases.textlist.size) {
-            level ++
+        currentGuesses = 0
+        if (currentLevel != null) {
+            Log.d(TAG, "laddar in fras ${phraseIndex}")
+
+            if (phraseIndex < currentLevel!!.phraseList.size) {
+                levelComplete = false
+                currentPhrase = currentLevel!!.phraseList[phraseIndex]
+                phraseIndex++
+            } else {
+                levelComplete = true
+            }
+        } else {
+            Log.d(TAG, "Kunde inte ladda fras")
         }
-        guesses = 1
     }
 
-    fun makeSlices(duration: Int): List<Slize> {
+    fun makeSlices(duration: Int){
         //lista av sliceobjekt initialiseras
         val sliceList = mutableListOf<Slize>()
-        var slizeDivisions: Int
+        var slizeDivisions = currentPhrase.slizediv
+        Log.d(TAG, "the current phrases divisions is : ${currentPhrase.slizediv}")
 
         val numbers = listOf(4, 5, 6).random()
        // slizeDivisions = numbers
+/*
         when (level) {
-            in 0..2 -> slizeDivisions = 4
-            in 3..5 -> slizeDivisions = 5
-            7 -> slizeDivisions = 6
+            1 -> slizeDivisions = 3
+            2 -> slizeDivisions = 4
             3 -> slizeDivisions = 5
+            4 -> slizeDivisions = 6
             4 -> slizeDivisions = 5
             5 -> slizeDivisions = 5
             6 -> slizeDivisions = 6
             else -> slizeDivisions = 4
         }
+*/
         val randomColors = Colors.colors.shuffled().take(slizeDivisions)
         val sliceLength = (duration / slizeDivisions)
         for (number in 1..slizeDivisions) {
@@ -54,7 +84,7 @@ class ViewModel : ViewModel() {
             )
         }
         Log.d(se.staffanljungqvist.revocalize.adapters.TAG, "Skapade ${sliceList.size} slices med längd $sliceLength vardera")
-        return superShuffle(sliceList)
+        slizes = superShuffle(sliceList)
     }
 
 
@@ -75,18 +105,15 @@ class ViewModel : ViewModel() {
         return list
     }
 
-
-
-
-
     fun checkIfCorrect(): Boolean {
-        guesses++
-        var sortedList = currentPhrase.slizes.sortedBy { it.number }
-        Log.d("kolla", "listan i rätt ordning; ${sortedList}")
+        currentGuesses++
+        var sortedList = slizes!!.sortedBy { it.number }
 
-        if (sortedList.equals(currentPhrase.slizes)) {
+        if (sortedList.equals(slizes)) {
+            currentGuesses -= 1
+            totalGuesses += currentGuesses
             isCorrect = true
-            Log.d("kolla", "Listan är i rätt ordning!")
+            Log.d(TAG, "Totalt antal gissninger är ${totalGuesses}")
             return true
         }
         return false
