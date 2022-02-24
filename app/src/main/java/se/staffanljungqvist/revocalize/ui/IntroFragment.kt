@@ -5,17 +5,21 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
 import se.staffanljungqvist.revocalize.R
-import se.staffanljungqvist.revocalize.databinding.FragmentLevelCompleteBinding
+import se.staffanljungqvist.revocalize.databinding.FragmentInGameBinding
+import se.staffanljungqvist.revocalize.databinding.FragmentIntroBinding
 import se.staffanljungqvist.revocalize.viewmodels.ViewModel
 
 
-class LevelCompleteFragment : Fragment() {
+class IntroFragment : Fragment() {
 
     val model : ViewModel by activityViewModels()
 
-    private var _binding: FragmentLevelCompleteBinding? = null
+    private var _binding: FragmentIntroBinding? = null
     private val binding get() = _binding!!
 
 
@@ -23,29 +27,30 @@ class LevelCompleteFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentLevelCompleteBinding.inflate(inflater, container, false)
-        model.calculateScore()
+        // Inflate the layout for this fragment
+        _binding = FragmentIntroBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.tvCompleteGuesses.text = model.guessAmount.toString()
+        model.audioReady.observe(requireActivity(), Observer {
+            if (it) {
+                view.findViewById<Button>(R.id.btnStart).isVisible = true
+            }
+        })
 
-        binding.tvCompleteRank.text = model.rank
-
-        binding.btnReturnMain.setOnClickListener {
-            model.reset()
-            requireActivity().supportFragmentManager.beginTransaction().replace(R.id.fragmentContainerView, StartFragment()).commit()
+        binding.btnStart.setOnClickListener {
             requireActivity().supportFragmentManager.popBackStack()
-        }
 
+        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
+
 
 }

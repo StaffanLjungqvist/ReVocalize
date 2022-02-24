@@ -1,8 +1,6 @@
 package se.staffanljungqvist.revocalize.adapters
 
 import android.content.Context
-import android.media.MediaPlayer
-import android.net.Uri
 import android.os.*
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
@@ -63,10 +61,15 @@ class TTSAdapter(val context : Context) : TextToSpeech.OnInitListener {
      fun saveToAudioFile(text : String) {
 
          //Tar ut alla röster tillgängliga i mobilen med engelsk språk, och sätter slumpmässigt till tts.
-         val voicesAll = tts.voices.filter { it.locale.language == "en" }
-        val voices = voicesAll.filter { it.name.contains("in") == false || it.name.contains("ng") == false }
-        Log.d(TAG, "Voices : ${voices}")
-         val voice = voices.random()
+
+         val voicesAllEnglish = tts.voices.filter { it.locale.language == "en" }
+
+        val voicesFiltered = voicesAllEnglish.filterNot { it.name.toLowerCase().contains("en-in") || it.name.toLowerCase().contains("en-ng")}
+
+        Log.d(TAG, "Voices : ${voicesFiltered}")
+
+         val voice = voicesFiltered.random()
+
          tts.setVoice(voice)
         Log.d(TAG, "Språk är satt till ${voice}")
         tts.setSpeechRate("0.7".toFloat())

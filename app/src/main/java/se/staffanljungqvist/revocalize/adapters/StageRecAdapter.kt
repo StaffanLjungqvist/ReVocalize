@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import se.staffanljungqvist.revocalize.R
 import se.staffanljungqvist.revocalize.builders.Stages
 import se.staffanljungqvist.revocalize.ui.InGameFragment
+import se.staffanljungqvist.revocalize.ui.IntroFragment
 import se.staffanljungqvist.revocalize.ui.StartFragment
 
 class StageRecAdapter : RecyclerView.Adapter<StageRecAdapter.StageViewHolder>() {
@@ -56,11 +57,6 @@ class StageRecAdapter : RecyclerView.Adapter<StageRecAdapter.StageViewHolder>() 
             }
 
 
-
-
-
-
-
         if (stage.isComplete) {
             holder.tvStageBeatenRank.isVisible = true
             holder.tvStageBeatenRank.text = stage.beatenWithRank
@@ -73,9 +69,10 @@ class StageRecAdapter : RecyclerView.Adapter<StageRecAdapter.StageViewHolder>() 
         holder.tvStageDifficulty.text = stage.difficulty
 
         holder.cardView.setOnClickListener {
-            fragment.model.currentStage = Stages.StageList[position]
             fragment.requireActivity().supportFragmentManager.beginTransaction()
                 .replace(R.id.fragmentContainerView, InGameFragment()).commit()
+            fragment.model.loadStage(stage)
+
         }
 
 

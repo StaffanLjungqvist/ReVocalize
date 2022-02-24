@@ -1,13 +1,14 @@
 package se.staffanljungqvist.revocalize.ui
 
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import se.staffanljungqvist.revocalize.R
@@ -19,6 +20,7 @@ class SuccessFragment : Fragment() {
 
     private var _binding: FragmentSuccessBinding? = null
     private val binding get() = _binding!!
+    private var guesses = 0
 
     val model : ViewModel by activityViewModels()
 
@@ -43,8 +45,20 @@ class SuccessFragment : Fragment() {
         var bundle = arguments
 
         if (bundle != null) {
-            var guessAmount = bundle.getString("phraseguessamount")!!
-            binding.tvNumberOfTries.text = guessAmount
+
+            guesses = bundle.getString("phraseguessamount")!!.toInt()
+
+            var slizes = bundle.getString("slizes")!!.toInt()
+
+            if (guesses == 1) {
+                giveBonus(slizes)
+
+            } else {
+                binding.tvNumberOfTries.text = guesses.toString()
+                binding.tvGuessesRemaining.text = (model.guessAmount).toString()
+            }
+
+
         } else {
             Log.d(TAG, "gick inte att skicka string")
         }
@@ -54,28 +68,11 @@ class SuccessFragment : Fragment() {
 
         if (model.phraseIndex == 1) {
             binding.llCorrect.isVisible = false
-            binding.llTookYouTries.isVisible = false
         }
 
-        if (model.levelComplete) {
-            binding.tvPhrasesLeft.text = "0"
-        } else {
-            binding.tvPhrasesLeft.text = (model.currentStage!!.phraseList.size + 1 - model.phraseIndex).toString()
-        }
+      //  binding.tvNumberOfTries.text = model.currentGuesses.toString()
 
-        binding.tvSuccessDifficulty.text = model.currentStage.difficulty
 
-        binding.tvTotalGuesses.text = model.totalGuesses.toString()
-
-        binding.tvToComplete.text = model.currentStage.guessesToComplete.toString()
-
-        if (model.currentStage.guessRecord == 0) {
-            binding.tvUserHighscore.text = "N/A"
-        } else {
-            binding.tvUserHighscore.text = model.currentStage.guessRecord.toString()
-        }
-        binding.tvGoldMax.text = model.currentStage.guessesForGold.toString()
-        binding.tvSilverMax.text = model.currentStage.guessesForSilver.toString()
 
 
         model.audioReady.observe(requireActivity(), Observer {
@@ -92,6 +89,35 @@ class SuccessFragment : Fragment() {
             }
             requireActivity().supportFragmentManager.popBackStack()
         }
+    }
+
+    fun giveBonus(slizes : Int) {
+        Log.d(TAG, "Bonus with $slizes slizes!")
+        var firstHalfText = ""
+        var infoText = ""
+        binding.tvSecondHalf.text = "PERFEKT!"
+        binding.tvSecondHalf.setTextColor(Color.parseColor("#4BEBFF"))
+        when (slizes) {
+                3 -> {
+                    infoText = "GETTING IT CORRECT ON FIRST TRY WITH THREE SLIZES COUNTS AS ZERO!"
+                    model.guessAmount += 1
+                    guesses -= 1
+                }
+                4 -> {
+                    infoText = "GETTING IT CORRECT ON FIRST TRY WITH FOUR SLIZES GIVES AN EXTRA GUESS!"
+                    model.guessAmount += 2
+                    guesses -= 2
+                }
+            else -> {
+                model.guessAmount -= 0
+            }
+        }
+        binding.tvNumberOfTries.text = guesses.toString()
+        binding.tvGuessesRemaining.text = (model.guessAmount).toString()
+        binding.tvInfo.isVisible = true
+        binding.tvInfo.text = infoText
+        binding.tvFirstHalf.text = firstHalfText
+        binding.tvNumberOfTries.text = guesses.toString()
     }
 
     override fun onDestroyView() {

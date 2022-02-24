@@ -60,7 +60,7 @@
             android:id="@+id/textView6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="TOTAL GUESSES"
+            android:text="GUESSES REMAINING"
             android:textColor="@color/white"
             android:textSize="16sp"
             android:textStyle="bold"/>
@@ -119,8 +119,9 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="18dp"
         android:background="@drawable/rounded_button"
-        android:paddingHorizontal="16dp"
+        android:paddingHorizontal="26dp"
         android:text="BACK TO MAIN"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

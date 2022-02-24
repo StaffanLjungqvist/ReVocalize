@@ -16,6 +16,8 @@ class AudioAdapter(var context : Context) {
 
 
     val successPlayer = MediaPlayer.create(context, R.raw.success)
+    val perfectPlayer = MediaPlayer.create(context, R.raw.perfect)
+
     var audioFile = MutableLiveData<Uri>()
     var fileTransformedFromUriToFile = MutableLiveData<Boolean>()
     var mediaPlayer : MediaPlayer? = null
@@ -71,6 +73,10 @@ fun loadAudio(filePath : String) {
 
     fun playSuccess() {
         successPlayer.start()
+    }
+
+    fun playPerfect() {
+        perfectPlayer.start()
     }
 
     /*

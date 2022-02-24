@@ -11,15 +11,16 @@ val StageList = listOf(
     Stage(
         "UPLIFTING QUOTES",
         "EASY",
-        5,
-        7,
-        10,
+        3,
+        6,
+        8,
 
         phraseList = listOf<Phrase>(
             Phrase("Believe you can and you are halfway there.", 3),
             Phrase("The greatest glory in living lies not in never falling, but in rising every time we fall", 4),
             Phrase("If you cannot do great things, do small things in a great way.", 4),
-            Phrase("Tell me and I forget. Teach me and I remember. Involve me and I learn.", 4)
+            Phrase("Tell me and I forget. Teach me and I remember. Involve me and I learn.", 4),
+            Phrase("If life were predictable it would cease to be life, and be without flavor.", 4)
         )
     ),
     Stage(

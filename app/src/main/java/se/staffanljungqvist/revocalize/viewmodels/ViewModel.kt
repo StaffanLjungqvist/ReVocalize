@@ -19,34 +19,42 @@ class ViewModel : ViewModel() {
     var currentPhrase = Phrase(TextPhrases.textlist[phraseIndex], 1, listOf<Slize>())
     var isCorrect = false
     var currentGuesses = 0
-    var totalGuesses = 0
+    var guessAmount = 100
     var rank = "BRONZE"
     var levelComplete = false
-
-
     var gameOver = false
 
     val audioReady: MutableLiveData<Boolean> by lazy {
         MutableLiveData<Boolean>(false)
     }
 
-
-
     fun reset() {
+
+
+
+    }
+
+    fun loadStage(stage : Stage) {
+        Log.d(TAG, "Loading stage ${stage.name}")
+        currentStage = stage
+        guessAmount = currentStage.GuessAmount
         phraseIndex = 0
         slizes = null
-        currentPhrase = Phrase(TextPhrases.textlist[phraseIndex], 1, listOf<Slize>())
         isCorrect = false
         currentGuesses = 0
-        totalGuesses = 0
         levelComplete = false
         gameOver = false
+
+
+
     }
 
     fun loadPhrase() {
         currentGuesses = 0
         if (currentStage != null) {
+
             if (phraseIndex < currentStage!!.phraseList.size) {
+                Log.d(TAG, "Laddar in fras ${currentStage!!.phraseList[phraseIndex]}")
                 currentPhrase = currentStage!!.phraseList[phraseIndex]
                 phraseIndex++
             } else {
@@ -61,9 +69,7 @@ class ViewModel : ViewModel() {
         //lista av sliceobjekt initialiseras
         val sliceList = mutableListOf<Slize>()
         var slizeDivisions = currentPhrase.slizediv
-        Log.d(TAG, "the current phrases divisions is : ${currentPhrase.slizediv}")
-
-        val randomColors = Colors.colors.shuffled().take(slizeDivisions)
+                val randomColors = Colors.colors.shuffled().take(slizeDivisions)
         val sliceLength = (duration / slizeDivisions)
         for (number in 1..slizeDivisions) {
             sliceList.add(
@@ -100,30 +106,29 @@ class ViewModel : ViewModel() {
     fun checkIfCorrect(): Boolean {
         currentGuesses++
 
-        if (currentGuesses > currentStage.guessesToComplete) {
+        if (guessAmount == 0) {
             gameOver = true
         }
 
         var sortedList = slizes!!.sortedBy { it.number }
 
         if (sortedList.equals(slizes)) {
-            currentGuesses -= 1
-            totalGuesses += currentGuesses
+            guessAmount -= currentGuesses
             isCorrect = true
-            Log.d(TAG, "Totalt antal gissninger är ${totalGuesses}")
+            Log.d(TAG, "Totalt antal gissninger är ${guessAmount}")
             return true
         }
         return false
     }
 
     fun calculateScore() {
-        if (totalGuesses < currentStage.guessRecord || currentStage.guessRecord == 0) {
-            currentStage.guessRecord = totalGuesses
+        if (guessAmount > currentStage.guessRecord || currentStage.guessRecord == 0) {
+            currentStage.guessRecord = guessAmount
         }
 
-        if (totalGuesses <= currentStage!!.guessesForGold) {
+        if (guessAmount >= currentStage!!.guessesForGold) {
             rank = "GOLD"
-        } else if (totalGuesses <= currentStage!!.guessesForSilver) {
+        } else if (guessAmount >= currentStage!!.guessesForSilver) {
             rank = "SILVER"
         } else {
             rank = "BRONZE"

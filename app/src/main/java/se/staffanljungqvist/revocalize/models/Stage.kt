@@ -5,7 +5,7 @@ data class Stage(
     val difficulty : String,
     val guessesForGold : Int,
     val guessesForSilver : Int,
-    val guessesToComplete : Int,
+    val GuessAmount : Int,
     var isComplete : Boolean = false,
     var beatenWithRank : String = "N/A",
     var guessRecord : Int = 0,
