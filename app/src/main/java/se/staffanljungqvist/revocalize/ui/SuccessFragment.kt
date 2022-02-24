@@ -54,6 +54,7 @@ class SuccessFragment : Fragment() {
 
         if (model.phraseIndex == 1) {
             binding.llCorrect.isVisible = false
+            binding.llTookYouTries.isVisible = false
         }
 
         if (model.levelComplete) {

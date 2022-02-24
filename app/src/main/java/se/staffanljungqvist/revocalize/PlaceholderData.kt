@@ -13,7 +13,7 @@ val StageList = listOf(
         "EASY",
         5,
         7,
-        2,
+        10,
 
         phraseList = listOf<Phrase>(
             Phrase("Believe you can and you are halfway there.", 3),
