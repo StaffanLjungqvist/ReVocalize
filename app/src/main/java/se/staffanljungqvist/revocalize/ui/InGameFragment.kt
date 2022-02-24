@@ -89,6 +89,8 @@ class InGameFragment : Fragment() {
         })
 
         myRecycleAdapter.hasChecked.observe(requireActivity(), androidx.lifecycle.Observer {
+
+
             if (model.isCorrect) {
                 audioAdapter.playSuccess()
                 model.isCorrect = false
@@ -105,9 +107,12 @@ class InGameFragment : Fragment() {
 
 
                 loadPhrase()
+            } else if (model.gameOver){
+                requireActivity().supportFragmentManager.beginTransaction().add(R.id.fragmentContainerView, GameOverFragment()).addToBackStack(null).commit()
             }
             binding.btnCheck.isVisible = true
         })
+
 
         binding.btnCheck.setOnClickListener {
             it.isVisible = false

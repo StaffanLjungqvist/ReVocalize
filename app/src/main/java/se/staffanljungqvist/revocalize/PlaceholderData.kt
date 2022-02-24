@@ -1,28 +1,79 @@
 package se.staffanljungqvist.revocalize.builders
 
-import se.staffanljungqvist.revocalize.models.Level
+import se.staffanljungqvist.revocalize.models.Stage
 import se.staffanljungqvist.revocalize.models.Phrase
+import se.staffanljungqvist.revocalize.models.Rank
 
 
-object episodes {
+object Stages {
 
-val episodeList = listOf(
-    Level(
-        1,
+val StageList = listOf(
+    Stage(
+        "UPLIFTING QUOTES",
+        "EASY",
+        5,
+        7,
+        2,
+
         phraseList = listOf<Phrase>(
             Phrase("Believe you can and you are halfway there.", 3),
             Phrase("The greatest glory in living lies not in never falling, but in rising every time we fall", 4),
-            Phrase("If you cannot do great things, do small things in a great way.", 5),
-            Phrase("Tell me and I forget. Teach me and I remember. Involve me and I learn.", 6)
+            Phrase("If you cannot do great things, do small things in a great way.", 4),
+            Phrase("Tell me and I forget. Teach me and I remember. Involve me and I learn.", 4)
         )
     ),
-    Level(
-        2,
+    Stage(
+        "UPLIFTING QUOTES 2",
+        "MEDIUM",
+        6,
+        8,
+        12,
         phraseList = listOf<Phrase>(
             Phrase("The way to get started is to quit talking and begin doing.", 4),
-            Phrase("Life is what happens when you're busy making other plans", 5),
-            Phrase("Don't judge each day by the harvest you reap but by the seeds that you plant.", 6),
+            Phrase("Life is what happens when you're busy making other plans", 4),
+            Phrase("Don't judge each day by the harvest you reap but by the seeds that you plant.", 5),
+            Phrase("Success is not final; failure is not fatal: It is the courage to continue that counts.", 5),
+        )
+    ),
+    Stage(
+        "UPLIFTING QUOTES 3",
+        "HARD",
+        7,
+        10,
+        16,
+        phraseList = listOf<Phrase>(
+            Phrase("The way to get started is to quit talking and begin doing.", 5),
+            Phrase("Life is what happens when you're busy making other plans", 6),
+            Phrase("Don't judge each day by the harvest you reap but by the seeds that you plant.", 5),
             Phrase("Success is not final; failure is not fatal: It is the courage to continue that counts.", 7),
+        )
+    ),
+
+    Stage(
+        "MOVIE QUOTES",
+        "EASY",
+        5,
+        7,
+        12,
+        phraseList = listOf<Phrase>(
+            Phrase("Here's looking at you, kid.", 3),
+            Phrase("I'm going to make him an offer he can't refuse.", 4),
+            Phrase("May the Force be with you.", 4),
+            Phrase("Toto, I've got a feeling we're not in Kansas anymore.", 4),
+        )
+    ),
+
+    Stage(
+        "MOVIE QUOTES 2",
+        "MEDIUM",
+        6,
+        10,
+        12,
+        phraseList = listOf<Phrase>(
+            Phrase("I love the smell of napalm in the morning.", 5),
+            Phrase("Love means never having to say you're sorry.", 4),
+            Phrase("Louis, I think this is the beginning of a beautiful friendship.", 6),
+            Phrase("Mama always said life was like a box of chocolates. You never know what you're gonna get.", 7),
         )
     )
 )

@@ -53,23 +53,37 @@ class SuccessFragment : Fragment() {
 
 
         if (model.phraseIndex == 1) {
-            binding.tvItsCorrect.isVisible = false
-            binding.llTookYouTries.isVisible = false
+            binding.llCorrect.isVisible = false
         }
 
+        if (model.levelComplete) {
+            binding.tvPhrasesLeft.text = "0"
+        } else {
+            binding.tvPhrasesLeft.text = (model.currentStage!!.phraseList.size + 1 - model.phraseIndex).toString()
+        }
 
-        binding.tvLevel.text = model.currentLevel!!.id.toString()
-        binding.tvPhrasesLeft.text = (model.currentLevel!!.phraseList.size + 1 - model.phraseIndex).toString()
+        binding.tvSuccessDifficulty.text = model.currentStage.difficulty
+
         binding.tvTotalGuesses.text = model.totalGuesses.toString()
+
+        binding.tvToComplete.text = model.currentStage.guessesToComplete.toString()
+
+        if (model.currentStage.guessRecord == 0) {
+            binding.tvUserHighscore.text = "N/A"
+        } else {
+            binding.tvUserHighscore.text = model.currentStage.guessRecord.toString()
+        }
+        binding.tvGoldMax.text = model.currentStage.guessesForGold.toString()
+        binding.tvSilverMax.text = model.currentStage.guessesForSilver.toString()
 
 
         model.audioReady.observe(requireActivity(), Observer {
             if (it) {
-                view.findViewById<Button>(R.id.btnCloseFragment).isVisible = true
+                view.findViewById<Button>(R.id.btnCloseContinue).isVisible = true
             }
         })
 
-        view.findViewById<Button>(R.id.btnCloseFragment).setOnClickListener {
+        view.findViewById<Button>(R.id.btnCloseContinue).setOnClickListener {
 
             if (model.levelComplete) {
                 requireActivity().supportFragmentManager.popBackStack()

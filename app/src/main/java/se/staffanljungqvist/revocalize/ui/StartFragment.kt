@@ -7,8 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import se.staffanljungqvist.revocalize.R
-import se.staffanljungqvist.revocalize.builders.episodes
+import se.staffanljungqvist.revocalize.adapters.StageRecAdapter
 import se.staffanljungqvist.revocalize.databinding.FragmentStartBinding
 import se.staffanljungqvist.revocalize.viewmodels.ViewModel
 
@@ -16,6 +18,8 @@ import se.staffanljungqvist.revocalize.viewmodels.ViewModel
 class StartFragment : Fragment() {
 
     val model : ViewModel by activityViewModels()
+
+    private lateinit var recyclerView : RecyclerView
 
     private var _binding: FragmentStartBinding? = null
     private val binding get() = _binding!!
@@ -37,15 +41,11 @@ class StartFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.tvStart.setOnClickListener {
-            model.currentLevel = episodes.episodeList[1]
-            requireActivity().supportFragmentManager.beginTransaction().replace(R.id.fragmentContainerView, InGameFragment()).commit()
-        }
-
-        binding.tvStart2.setOnClickListener {
-            model.currentLevel = episodes.episodeList[0]
-            requireActivity().supportFragmentManager.beginTransaction().replace(R.id.fragmentContainerView, InGameFragment()).commit()
-        }
+        recyclerView = binding.rvStageRecyclerView
+        var stageAdapter = StageRecAdapter()
+        stageAdapter.fragment = this
+        recyclerView.adapter = stageAdapter
+        recyclerView.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL, false )
 
     }
 

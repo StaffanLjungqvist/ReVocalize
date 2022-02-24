@@ -7,42 +7,40 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import se.staffanljungqvist.revocalize.R
-import se.staffanljungqvist.revocalize.databinding.FragmentLevelCompleteBinding
-import se.staffanljungqvist.revocalize.databinding.FragmentStartBinding
+import se.staffanljungqvist.revocalize.databinding.FragmentGameOverBinding
+import se.staffanljungqvist.revocalize.databinding.FragmentInGameBinding
 import se.staffanljungqvist.revocalize.viewmodels.ViewModel
 
 
-class LevelCompleteFragment : Fragment() {
+class GameOverFragment : Fragment() {
 
     val model : ViewModel by activityViewModels()
 
-    private var _binding: FragmentLevelCompleteBinding? = null
+    private var _binding: FragmentGameOverBinding? = null
     private val binding get() = _binding!!
+
 
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentLevelCompleteBinding.inflate(inflater, container, false)
-        model.calculateScore()
+        // Inflate the layout for this fragment
+        _binding = FragmentGameOverBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.tvCompleteGuesses.text = model.totalGuesses.toString()
-
-        binding.tvCompleteRank.text = model.rank
-
-        binding.btnReturnMain.setOnClickListener {
+        binding.btnBackToMain.setOnClickListener {
             model.reset()
             requireActivity().supportFragmentManager.beginTransaction().replace(R.id.fragmentContainerView, StartFragment()).commit()
             requireActivity().supportFragmentManager.popBackStack()
         }
 
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
