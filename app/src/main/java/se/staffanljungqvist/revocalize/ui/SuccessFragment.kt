@@ -1,7 +1,10 @@
 package se.staffanljungqvist.revocalize.ui
 
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -20,14 +23,9 @@ class SuccessFragment : Fragment() {
 
     private var _binding: FragmentSuccessBinding? = null
     private val binding get() = _binding!!
-    private var guesses = 0
 
     val model : ViewModel by activityViewModels()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,48 +40,21 @@ class SuccessFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
-        var bundle = arguments
-
-        if (bundle != null) {
-
-            guesses = bundle.getString("phraseguessamount")!!.toInt()
-
-            var slizes = bundle.getString("slizes")!!.toInt()
-
-            if (guesses == 1) {
-                giveBonus(slizes)
-
-            } else {
-                binding.tvNumberOfTries.text = guesses.toString()
-                binding.tvGuessesRemaining.text = (model.guessAmount).toString()
-            }
+        Log.d(TAG, "bonusen är ${model.bonus}")
 
 
-        } else {
-            Log.d(TAG, "gick inte att skicka string")
-        }
+        binding.tvGuessesRemaining.text = model.points.toString()
+        binding.tvCurrentPhrase.text = (model.phraseIndex - 1).toString()
+        binding.tvTotalPhrases.text = model.currentStage.phraseList.size.toString()
 
-
-
-
-        if (model.phraseIndex == 1) {
-            binding.llCorrect.isVisible = false
-        }
-
-      //  binding.tvNumberOfTries.text = model.currentGuesses.toString()
-
-
-
+        if (model.bonus > 0) showBonus(model.bonus)
 
         model.audioReady.observe(requireActivity(), Observer {
-            if (it) {
-                view.findViewById<Button>(R.id.btnCloseContinue).isVisible = true
-            }
+            if (it) view.findViewById<Button>(R.id.btnCloseContinue).isVisible = true
         })
 
         view.findViewById<Button>(R.id.btnCloseContinue).setOnClickListener {
-
-            if (model.levelComplete) {
+            if (model.stageComplete) {
                 requireActivity().supportFragmentManager.popBackStack()
                 requireActivity().supportFragmentManager.beginTransaction().replace(R.id.fragmentContainerView, LevelCompleteFragment()).commit()
             }
@@ -91,33 +62,19 @@ class SuccessFragment : Fragment() {
         }
     }
 
-    fun giveBonus(slizes : Int) {
-        Log.d(TAG, "Bonus with $slizes slizes!")
-        var firstHalfText = ""
-        var infoText = ""
-        binding.tvSecondHalf.text = "PERFEKT!"
-        binding.tvSecondHalf.setTextColor(Color.parseColor("#4BEBFF"))
-        when (slizes) {
-                3 -> {
-                    infoText = "GETTING IT CORRECT ON FIRST TRY WITH THREE SLIZES COUNTS AS ZERO!"
-                    model.guessAmount += 1
-                    guesses -= 1
-                }
-                4 -> {
-                    infoText = "GETTING IT CORRECT ON FIRST TRY WITH FOUR SLIZES GIVES AN EXTRA GUESS!"
-                    model.guessAmount += 2
-                    guesses -= 2
-                }
-            else -> {
-                model.guessAmount -= 0
-            }
+    fun showBonus(bonus : Int) {
+        binding.llBonus.isVisible = true
+        binding.tvBonus.text = model.toFragment.toString()
+        binding.llGuessesCircle.background.setColorFilter(Color.parseColor("#4BEBFF"), PorterDuff.Mode.SRC_ATOP)
+
+        when (bonus) {
+                1 ->  binding.tvInfo.text = "GETTING IT CORRECT ON FIRST TRY WITH THREE SLIZES COUNTS AS ZERO!"
+                2 -> binding.tvInfo.text = "GETTING IT CORRECT ON FIRST TRY WITH FOUR SLIZES GIVES AN EXTRA GUESS!"
+                3 -> binding.tvInfo.text = "GETTING IT CORRECT ON FIRST TRY WITH FIVE SLIZES GIVES TWO EXTRA GUESSES!"
+                4 -> binding.tvInfo.text = "GETTING IT CORRECT ON FIRST TRY WITH SIX SLIZES GIVES THREE EXTRA GUESSES!"
+                5 -> binding.tvInfo.text = "GETTING IT CORRECT ON FIRST TRY WITH SEVEN SLIZES GIVES FOUR EXTRA GUESSES!"
+                6 -> binding.tvInfo.text = "GETTING IT CORRECT ON FIRST TRY WITH EIGHT SLIZES GIVES FIVE EXTRA GUESSES!"
         }
-        binding.tvNumberOfTries.text = guesses.toString()
-        binding.tvGuessesRemaining.text = (model.guessAmount).toString()
-        binding.tvInfo.isVisible = true
-        binding.tvInfo.text = infoText
-        binding.tvFirstHalf.text = firstHalfText
-        binding.tvNumberOfTries.text = guesses.toString()
     }
 
     override fun onDestroyView() {

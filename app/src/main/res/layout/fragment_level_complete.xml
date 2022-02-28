@@ -22,7 +22,7 @@
             android:layout_marginTop="32dp"
             android:text="STAGE "
             android:textColor="@color/white"
-            android:textSize="53sp"
+            android:textSize="43sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/tvCompleteGuesses"
             app:layout_constraintEnd_toEndOf="parent"
@@ -35,7 +35,7 @@
             android:layout_marginTop="32dp"
             android:text="COMPLETE!"
             android:textColor="@color/pink"
-            android:textSize="53sp"
+            android:textSize="42sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/tvCompleteGuesses"
             app:layout_constraintEnd_toEndOf="parent"
@@ -54,16 +54,17 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout4">
+        app:layout_constraintTop_toBottomOf="@+id/tvNewBest">
 
         <TextView
             android:id="@+id/textView6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="GUESSES REMAINING"
+            android:layout_marginBottom="-10dp"
+            android:text="POINTS"
             android:textColor="@color/white"
             android:textSize="16sp"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tvCompleteGuesses"
@@ -72,7 +73,7 @@
             android:layout_gravity="center_horizontal"
             android:text="0"
             android:textColor="@color/white"
-            android:textSize="40sp"
+            android:textSize="32sp"
             android:textStyle="bold" />
 
     </LinearLayout>
@@ -82,8 +83,8 @@
         android:id="@+id/linearLayout6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:layout_marginBottom="32dp"
+        android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/btnReturnMain"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -98,7 +99,9 @@
             android:text="RANK"
             android:textColor="@color/white"
             android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:layout_marginBottom="-10dp"
+            />
 
         <TextView
             android:id="@+id/tvCompleteRank"
@@ -106,8 +109,9 @@
             android:layout_height="wrap_content"
             android:text="SILVER"
             android:textColor="@color/white"
-            android:textSize="40sp"
-            android:textStyle="bold" />
+            android:textSize="30sp"
+            android:textStyle="bold"
+            />
 
 
     </LinearLayout>
@@ -117,14 +121,29 @@
         android:id="@+id/btnReturnMain"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="18dp"
+        android:layout_marginBottom="24dp"
         android:background="@drawable/rounded_button"
         android:paddingHorizontal="26dp"
         android:text="BACK TO MAIN"
+        android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tvNewBest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="NEW BEST!"
+        android:textColor="@color/green"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout4"
+        tools:visibility="visible" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

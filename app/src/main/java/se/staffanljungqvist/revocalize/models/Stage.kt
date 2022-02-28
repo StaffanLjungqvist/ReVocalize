@@ -1,14 +1,16 @@
 package se.staffanljungqvist.revocalize.models
 
+
+//Todo Tillsätt Comparator Interface
 data class Stage(
     val name : String,
     val difficulty : String,
-    val guessesForGold : Int,
-    val guessesForSilver : Int,
-    val GuessAmount : Int,
+    val pointsForGold : Int,
+    val pointsForSilver : Int,
+    val startingPoints : Int,
     var isComplete : Boolean = false,
     var beatenWithRank : String = "N/A",
-    var guessRecord : Int = 0,
+    var pointRecord : Int = 0,
     val phraseList : List<Phrase> = listOf(
     )
 )

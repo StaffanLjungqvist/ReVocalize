@@ -34,7 +34,6 @@ class GameOverFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.btnBackToMain.setOnClickListener {
-            model.reset()
             requireActivity().supportFragmentManager.beginTransaction().replace(R.id.fragmentContainerView, StartFragment()).commit()
             requireActivity().supportFragmentManager.popBackStack()
         }

@@ -62,7 +62,10 @@ class TTSAdapter(val context : Context) : TextToSpeech.OnInitListener {
 
          //Tar ut alla röster tillgängliga i mobilen med engelsk språk, och sätter slumpmässigt till tts.
 
-         val voicesAllEnglish = tts.voices.filter { it.locale.language == "en" }
+        Log.d(TAG, "Alla röster tillgängliga på mobilen = ${tts.voices}")
+
+         val voicesAllEnglish = tts.voices.filter { it.name.toLowerCase().contains("en") }
+
 
         val voicesFiltered = voicesAllEnglish.filterNot { it.name.toLowerCase().contains("en-in") || it.name.toLowerCase().contains("en-ng")}
 
@@ -72,7 +75,7 @@ class TTSAdapter(val context : Context) : TextToSpeech.OnInitListener {
 
          tts.setVoice(voice)
         Log.d(TAG, "Språk är satt till ${voice}")
-        tts.setSpeechRate("0.7".toFloat())
+        tts.setSpeechRate("0.9".toFloat())
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 

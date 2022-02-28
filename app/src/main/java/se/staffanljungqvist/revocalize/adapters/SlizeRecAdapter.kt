@@ -71,8 +71,6 @@ class SlizeRecAdapter() : RecyclerView.Adapter<SlizeRecAdapter.MyViewHolder>() {
 
             override fun run() {
 
-                Log.d(TAG, "blinknummer : ${blinknumber}")
-
                 if (blinknumber < (slizes.size )) {
                     notifyItemChanged(blinknumber)
                     blinknumber += 1
@@ -81,7 +79,6 @@ class SlizeRecAdapter() : RecyclerView.Adapter<SlizeRecAdapter.MyViewHolder>() {
                 } else {
                     hasChecked.value = true
                     blinknumber = -1
-                    Log.d(TAG, "blinknummer : $blinknumber")
 
                 }
             }

@@ -15,11 +15,14 @@ val TAG = "revodebug"
 class AudioAdapter(var context : Context) {
 
 
-    val successPlayer = MediaPlayer.create(context, R.raw.success)
-    val perfectPlayer = MediaPlayer.create(context, R.raw.perfect)
+    val successPlayer = MediaPlayer.create(context, R.raw.perfect2)
+    val perfectPlayer = MediaPlayer.create(context, R.raw.success)
+    val failPlayer = MediaPlayer.create(context, R.raw.fail)
+    val gameOverPlayer = MediaPlayer.create(context, R.raw.fail)
+    val stageCompletePlayer = MediaPlayer.create(context, R.raw.perfect3)
 
     var audioFile = MutableLiveData<Uri>()
-    var fileTransformedFromUriToFile = MutableLiveData<Boolean>()
+    var audioReady = MutableLiveData<Boolean>()
     var mediaPlayer : MediaPlayer? = null
 
     //En mediaplayer instans skapas för att läsa av längden på ljudklippet, skickar tillbaka resultatet och förstörs sen.
@@ -39,7 +42,7 @@ class AudioAdapter(var context : Context) {
 fun loadAudio(filePath : String) {
     audioFile.value = Uri.parse(filePath)
     Log.d(TAG, "AA Uri omgord till File : ${audioFile.value}")
-    fileTransformedFromUriToFile.value = true
+    audioReady.value = true
     mediaPlayer = MediaPlayer.create(context, audioFile.value)
 }
 
@@ -66,7 +69,7 @@ fun loadAudio(filePath : String) {
         }
     }
 
-    fun playAudio() {
+    fun playFullPhrase() {
         mediaPlayer!!.seekTo(0)
         mediaPlayer!!.start()
     }
@@ -77,6 +80,18 @@ fun loadAudio(filePath : String) {
 
     fun playPerfect() {
         perfectPlayer.start()
+    }
+
+    fun playFail(){
+        failPlayer.start()
+    }
+
+    fun playStageComplete(){
+        stageCompletePlayer.start()
+    }
+
+    fun playGameOver(){
+        gameOverPlayer.start()
     }
 
     /*

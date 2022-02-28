@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
+import org.w3c.dom.Text
 import se.staffanljungqvist.revocalize.R
 import se.staffanljungqvist.revocalize.builders.Stages
 import se.staffanljungqvist.revocalize.ui.InGameFragment
@@ -21,9 +22,9 @@ class StageRecAdapter : RecyclerView.Adapter<StageRecAdapter.StageViewHolder>() 
     inner class StageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val cardView = view.findViewById<CardView>(R.id.cvStageCard)
         val tvStageName = view.findViewById<TextView>(R.id.tvStageName)
-        val tvStageDifficulty = view.findViewById<TextView>(R.id.tvStageDifficulty)
         val tvStageBeatenRank = view.findViewById<TextView>(R.id.tvStageRank)
         val tvStageComplete = view.findViewById<TextView>(R.id.tvStageComplete)
+        val tvStageNumber = view.findViewById<TextView>(R.id.tvStageNumber)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StageViewHolder {
@@ -34,7 +35,10 @@ class StageRecAdapter : RecyclerView.Adapter<StageRecAdapter.StageViewHolder>() 
 
     override fun onBindViewHolder(holder: StageViewHolder, position: Int) {
 
-        val stage = Stages.StageList[position]
+        val stage = fragment.model.stageList[position]
+
+        holder.tvStageNumber.text = (position + 1).toString()
+        holder.tvStageName.text = stage.name
 
         val cardColor =
         when (stage.difficulty) {
@@ -56,7 +60,6 @@ class StageRecAdapter : RecyclerView.Adapter<StageRecAdapter.StageViewHolder>() 
                 }
             }
 
-
         if (stage.isComplete) {
             holder.tvStageBeatenRank.isVisible = true
             holder.tvStageBeatenRank.text = stage.beatenWithRank
@@ -65,21 +68,17 @@ class StageRecAdapter : RecyclerView.Adapter<StageRecAdapter.StageViewHolder>() 
         }
 
         holder.cardView.setCardBackgroundColor(Color.parseColor(cardColor))
-        holder.tvStageName.text = stage.name
-        holder.tvStageDifficulty.text = stage.difficulty
 
         holder.cardView.setOnClickListener {
+            fragment.model.loadStage(stage)
             fragment.requireActivity().supportFragmentManager.beginTransaction()
                 .replace(R.id.fragmentContainerView, InGameFragment()).commit()
-            fragment.model.loadStage(stage)
-
         }
-
 
     }
 
     override fun getItemCount(): Int {
-        return Stages.StageList.size
+        return fragment.model.stageList.size
     }
 
 }
