@@ -11,9 +11,9 @@ val StageList = listOf(
     Stage(
         "\"UPLIFTING QUOTES\"",
         "EASY",
-        10,
-        7,
-        5,
+        4,
+        3,
+        2,
 
         phraseList = listOf<Phrase>(
             Phrase("Believe you can and you are halfway there.", 3),

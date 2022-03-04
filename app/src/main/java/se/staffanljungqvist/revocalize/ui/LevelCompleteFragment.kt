@@ -26,14 +26,12 @@ class LevelCompleteFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentLevelCompleteBinding.inflate(inflater, container, false)
-        model.calculateScore()
+        model.calculateScore(requireContext())
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        model.saveUserData(requireContext())
 
         if (model.newRecord) binding.tvNewBest.isVisible = true
 

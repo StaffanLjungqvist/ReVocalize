@@ -152,13 +152,14 @@ class ViewModel : ViewModel() {
     }
 
 
-    fun calculateScore() {
+    fun calculateScore(context : Context) {
 
         //Kollar om nuvarande poängen är bättre än poängrekordet. Ändrar därefter.
         if (points > currentStage.pointRecord || currentStage.pointRecord == 0) {
             Log.d(TAG, "Nytt rekord")
             newRecord = true
-            currentStage.pointRecord = points
+            saveUserData(context)
+
         }
 
         /*Bestämmer vilken rank som sätts beroende på nuvarandande ranks specifieringar
@@ -205,24 +206,27 @@ class ViewModel : ViewModel() {
         val sharedPref = context.getSharedPreferences("userScore", Context.MODE_PRIVATE)
         var edit = sharedPref.edit()
         edit.putInt(currentStage.name, points)
+        edit.commit()
+        Log.d(TAG, "Sparade poängen $points till nivån ${currentStage.name}")
     }
 
     fun loadUserData(context : Context) {
         val sharedPref = context.getSharedPreferences("userScore", Context.MODE_PRIVATE)
-
         for (stage in Stages.StageList) {
-            val points = sharedPref.getInt(stage.name, 0)
 
+
+
+            val points = sharedPref.getInt(stage.name, 0)
+            stage.pointRecord = points
             if (points > 0) {
                 stage.beatenWithRank = "BRONZE"
                 stage.isComplete = true
             }
-
-            if (points > stage.pointsForGold) {
+            if (points >= stage.pointsForGold) {
                 stage.beatenWithRank = "GOLD"
             }
 
-            else if (points > stage.pointsForSilver) {
+            else if (points >= stage.pointsForSilver) {
                 stage.beatenWithRank = "SILVER"
             }
 
