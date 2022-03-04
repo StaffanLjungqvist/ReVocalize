@@ -16,6 +16,8 @@ val StageList = listOf(
         2,
 
         phraseList = listOf<Phrase>(
+            Phrase(  "Don’t want to close my eyes I don’t want to fall asleep ‘Cause I’d miss you baby And I don’t want to miss a thing", 3),
+
             Phrase("Believe you can and you are halfway there.", 3),
             Phrase("Try to be a rainbow in someone else’s cloud.", 3),
           //  Phrase("Each day comes bearing its gifts. Untie the ribbon.", 3),

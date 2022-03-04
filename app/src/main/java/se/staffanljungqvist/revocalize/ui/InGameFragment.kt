@@ -89,6 +89,8 @@ class InGameFragment : Fragment() {
 
         audioAdapter.audioReady.observe(requireActivity(), androidx.lifecycle.Observer {
             Log.d(TAG, "ljudfil färdig")
+            model.audioReady.value = true
+            model.audioReady.value = false
             makeSlices()
             binding.btnPlay.isVisible = true
             binding.tvSentence.text = model.currentPhrase.text
@@ -132,7 +134,7 @@ class InGameFragment : Fragment() {
     }
 
     fun makeSlices() {
-        model.audioReady.value = true
+
         val duration = audioAdapter.getDuration()
         model.makeSlices(duration)
         slizeRecAdapter.slizes = model.slizes!!
@@ -153,7 +155,6 @@ class InGameFragment : Fragment() {
 
         if (model.bonus != 0) audioAdapter.playPerfect()
         audioAdapter.playSuccess()
-        model.audioReady.value = false
         load()
     }
 

@@ -43,6 +43,25 @@ class ViewModel : ViewModel() {
         MutableLiveData<Boolean>(false)
     }
 
+    fun loadUserData(context : Context) {
+        val sharedPref = context.getSharedPreferences("userScore", Context.MODE_PRIVATE)
+        for (stage in Stages.StageList) {
+            val points = sharedPref.getInt(stage.name, 0)
+            stage.pointRecord = points
+            if (points > 0) {
+                stage.beatenWithRank = "BRONZE"
+                stage.isComplete = true
+            }
+            if (points >= stage.pointsForGold) {
+                stage.beatenWithRank = "GOLD"
+            }
+            else if (points >= stage.pointsForSilver) {
+                stage.beatenWithRank = "SILVER"
+            }
+        }
+        userDataLoaded.value = true
+    }
+
     fun loadStage(stage: Stage) {
         Log.d(TAG, "Loading stage ${stage.name}")
         currentStage = stage
@@ -65,10 +84,8 @@ class ViewModel : ViewModel() {
             } else {
                 stageComplete = true
             }
-
             phraseLoaded.value = true
             phraseLoaded.value = false
-
         } else {
             Log.d(TAG, "Kunde inte ladda fras")
         }
@@ -90,11 +107,8 @@ class ViewModel : ViewModel() {
                 )
             )
         }
-        Log.d(
-            se.staffanljungqvist.revocalize.adapters.TAG,
-            "Skapade ${sliceList.size} slices med längd $sliceLength vardera"
-        )
         slizes = superShuffle(sliceList)
+        Log.d(TAG, "Skapade ${sliceList.size} slices med längd $sliceLength vardera")
     }
 
 
@@ -118,50 +132,35 @@ class ViewModel : ViewModel() {
         return list
     }
 
-
+    //Kollar om listan är i rätt ordning
+    //Kollar om det va sista frasen. Sätter isåfall stageComplete
+    //Om gissningen är fel ökas antal gissningar, och ett poäng dras bort.
+    //Kollar om poängen är slut. Om så är fallet sätts gameOver
     fun makeGuess(): Boolean {
         var correct = false
-        bonus = 0
-        //Kollar om listan är i rätt ordning
         var sortedList = slizes!!.sortedBy { it.number }
-
+        bonus = 0
         if (sortedList.equals(slizes)) {
             giveBonus()
             correct = true
             isCorrect = true
-
-            //Kollar om det va sista frasen. Sätter isåfall stageComplete
-            if (phraseIndex == currentStage!!.phraseList.size) {
-                stageComplete = true
-            }
-
-            //Om gissningen är fel ökas antal gissningar, och ett poäng dras bort.
+            if (phraseIndex == currentStage!!.phraseList.size) stageComplete = true
         } else {
             guessesUsed++
             points--
         }
-
-        //Kollar om poängen är slut. Om så är fallet sätts gameOver
-        if (points < 1) {
-            Log.d(TAG, "Sätter game over till true")
-            gameOver = true
-        }
-
-        Log.d(TAG, "Antal gissningar kvar : $points")
+        if (points < 1) gameOver = true
         return correct
     }
 
 
     fun calculateScore(context : Context) {
-
         //Kollar om nuvarande poängen är bättre än poängrekordet. Ändrar därefter.
         if (points > currentStage.pointRecord || currentStage.pointRecord == 0) {
             Log.d(TAG, "Nytt rekord")
             newRecord = true
             saveUserData(context)
-
         }
-
         /*Bestämmer vilken rank som sätts beroende på nuvarandande ranks specifieringar
         Om ranken är högra än tidigare så sparas den över
         */
@@ -184,19 +183,7 @@ class ViewModel : ViewModel() {
     }
 
     fun giveBonus() {
-
-        Log.d(TAG, "Guesses used är $guessesUsed")
-        if (guessesUsed == 0) {
-
-            when (slizes!!.size) {
-                3 -> bonus = 1
-                4 -> bonus = 1
-                5 -> bonus = 1
-                6 -> bonus = 1
-                7 -> bonus = 5
-                8 -> bonus = 6
-            }
-        }
+        if (guessesUsed == 0) bonus = 1
         points += bonus
         toFragment = bonus
         Log.d(TAG, "Sätter bonus till $bonus")
@@ -208,29 +195,5 @@ class ViewModel : ViewModel() {
         edit.putInt(currentStage.name, points)
         edit.commit()
         Log.d(TAG, "Sparade poängen $points till nivån ${currentStage.name}")
-    }
-
-    fun loadUserData(context : Context) {
-        val sharedPref = context.getSharedPreferences("userScore", Context.MODE_PRIVATE)
-        for (stage in Stages.StageList) {
-
-
-
-            val points = sharedPref.getInt(stage.name, 0)
-            stage.pointRecord = points
-            if (points > 0) {
-                stage.beatenWithRank = "BRONZE"
-                stage.isComplete = true
-            }
-            if (points >= stage.pointsForGold) {
-                stage.beatenWithRank = "GOLD"
-            }
-
-            else if (points >= stage.pointsForSilver) {
-                stage.beatenWithRank = "SILVER"
-            }
-
-        }
-        userDataLoaded.value = true
     }
 }

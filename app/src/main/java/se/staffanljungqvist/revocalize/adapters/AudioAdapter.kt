@@ -42,8 +42,14 @@ class AudioAdapter(var context : Context) {
 fun loadAudio(filePath : String) {
     audioFile.value = Uri.parse(filePath)
     Log.d(TAG, "AA Uri omgord till File : ${audioFile.value}")
-    audioReady.value = true
+
+
     mediaPlayer = MediaPlayer.create(context, audioFile.value)
+
+    mediaPlayer!!.setOnPreparedListener( MediaPlayer.OnPreparedListener {
+        audioReady.value = true
+        audioReady.value = false
+    })
 }
 
 

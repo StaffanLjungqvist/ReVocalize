@@ -43,7 +43,7 @@ class MainActivity : AppCompatActivity() {
         }
         if(supportFragmentManager.fragments.first() is InGameFragment)
         {
-
+            supportFragmentManager.popBackStack()
             supportFragmentManager.beginTransaction().replace(R.id.fragmentContainerView, StartFragment()).commit()
         }
 
