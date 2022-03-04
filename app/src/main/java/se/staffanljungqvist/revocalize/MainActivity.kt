@@ -6,6 +6,8 @@ import android.util.Log
 import android.view.WindowManager
 import androidx.activity.viewModels
 import se.staffanljungqvist.revocalize.databinding.ActivityMainBinding
+import se.staffanljungqvist.revocalize.ui.InGameFragment
+import se.staffanljungqvist.revocalize.ui.StartFragment
 import se.staffanljungqvist.revocalize.viewmodels.ViewModel
 
 val TAG = "revodebug"
@@ -27,6 +29,23 @@ class MainActivity : AppCompatActivity() {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         val model : ViewModel by viewModels()
+
+    }
+
+
+
+    override fun onBackPressed() {
+        //super.onBackPressed()
+
+        if(supportFragmentManager.fragments.first() is StartFragment)
+        {
+            super.onBackPressed()
+        }
+        if(supportFragmentManager.fragments.first() is InGameFragment)
+        {
+
+            supportFragmentManager.beginTransaction().replace(R.id.fragmentContainerView, StartFragment()).commit()
+        }
 
     }
 }

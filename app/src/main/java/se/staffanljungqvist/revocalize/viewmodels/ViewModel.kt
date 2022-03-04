@@ -1,5 +1,6 @@
 package se.staffanljungqvist.revocalize.viewmodels
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -35,6 +36,10 @@ class ViewModel : ViewModel() {
     }
 
     val audioReady: MutableLiveData<Boolean> by lazy {
+        MutableLiveData<Boolean>(false)
+    }
+
+    val userDataLoaded: MutableLiveData<Boolean> by lazy {
         MutableLiveData<Boolean>(false)
     }
 
@@ -194,5 +199,34 @@ class ViewModel : ViewModel() {
         points += bonus
         toFragment = bonus
         Log.d(TAG, "Sätter bonus till $bonus")
+    }
+
+    fun saveUserData(context : Context) {
+        val sharedPref = context.getSharedPreferences("userScore", Context.MODE_PRIVATE)
+        var edit = sharedPref.edit()
+        edit.putInt(currentStage.name, points)
+    }
+
+    fun loadUserData(context : Context) {
+        val sharedPref = context.getSharedPreferences("userScore", Context.MODE_PRIVATE)
+
+        for (stage in Stages.StageList) {
+            val points = sharedPref.getInt(stage.name, 0)
+
+            if (points > 0) {
+                stage.beatenWithRank = "BRONZE"
+                stage.isComplete = true
+            }
+
+            if (points > stage.pointsForGold) {
+                stage.beatenWithRank = "GOLD"
+            }
+
+            else if (points > stage.pointsForSilver) {
+                stage.beatenWithRank = "SILVER"
+            }
+
+        }
+        userDataLoaded.value = true
     }
 }

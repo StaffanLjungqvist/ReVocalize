@@ -33,6 +33,8 @@ class LevelCompleteFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        model.saveUserData(requireContext())
+
         if (model.newRecord) binding.tvNewBest.isVisible = true
 
         binding.tvCompleteGuesses.text = model.points.toString()
