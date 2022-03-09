@@ -174,9 +174,19 @@ class InGameFragment : Fragment() {
         binding.btnCheck.isVisible = true
     }
 
+    override fun onPause() {
+        super.onPause()
+        audioAdapter.stopAll()
+
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        slizeRecAdapter.blinkHandler.removeCallbacksAndMessages(null);
+        audioAdapter.loopHandler.removeCallbacksAndMessages(null)
+        audioAdapter.pauseHandler.removeCallbacksAndMessages(null)
+
     }
 
 

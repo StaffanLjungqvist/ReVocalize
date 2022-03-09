@@ -22,6 +22,7 @@ class SlizeRecAdapter() : RecyclerView.Adapter<SlizeRecAdapter.MyViewHolder>() {
     var hasChecked = MutableLiveData<Boolean>()
     var slizes = listOf<Slize>()
     lateinit var fragment : InGameFragment
+    val blinkHandler = Handler(Looper.getMainLooper())
 
     inner class MyViewHolder(view : View) : RecyclerView.ViewHolder(view) {
         val cardView = view.findViewById<CardView>(R.id.cardView)
@@ -65,9 +66,9 @@ class SlizeRecAdapter() : RecyclerView.Adapter<SlizeRecAdapter.MyViewHolder>() {
 
 
     fun runLight(slizes : List<Slize>) {
-        val mainHandler = Handler(Looper.getMainLooper())
+
         blinknumber = 0
-        mainHandler.post(object : Runnable {
+        blinkHandler.post(object : Runnable {
 
             override fun run() {
 
@@ -75,7 +76,7 @@ class SlizeRecAdapter() : RecyclerView.Adapter<SlizeRecAdapter.MyViewHolder>() {
                     notifyItemChanged(blinknumber)
                     blinknumber += 1
 
-                    mainHandler.postDelayed(this, slizes[0].length)
+                    blinkHandler.postDelayed(this, slizes[0].length)
                 } else {
                     hasChecked.value = true
                     blinknumber = -1

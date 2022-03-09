@@ -6,6 +6,8 @@ import android.util.Log
 import android.view.WindowManager
 import androidx.activity.viewModels
 import se.staffanljungqvist.revocalize.databinding.ActivityMainBinding
+import se.staffanljungqvist.revocalize.ui.ExitFragment
+import se.staffanljungqvist.revocalize.ui.GameOverFragment
 import se.staffanljungqvist.revocalize.ui.InGameFragment
 import se.staffanljungqvist.revocalize.ui.StartFragment
 import se.staffanljungqvist.revocalize.viewmodels.ViewModel
@@ -43,8 +45,9 @@ class MainActivity : AppCompatActivity() {
         }
         if(supportFragmentManager.fragments.first() is InGameFragment)
         {
-            supportFragmentManager.popBackStack()
-            supportFragmentManager.beginTransaction().replace(R.id.fragmentContainerView, StartFragment()).commit()
+            supportFragmentManager.beginTransaction()
+                .add(R.id.fragmentContainerView, ExitFragment()).addToBackStack(null)
+                .commit()
         }
 
     }

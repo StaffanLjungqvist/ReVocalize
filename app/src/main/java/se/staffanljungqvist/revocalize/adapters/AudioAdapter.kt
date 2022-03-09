@@ -25,6 +25,9 @@ class AudioAdapter(var context : Context) {
     var audioReady = MutableLiveData<Boolean>()
     var mediaPlayer : MediaPlayer? = null
 
+    val loopHandler = Handler(Looper.getMainLooper())
+    val pauseHandler = Handler(Looper.getMainLooper())
+
     //En mediaplayer instans skapas för att läsa av längden på ljudklippet, skickar tillbaka resultatet och förstörs sen.
     fun getDuration() : Int {
         if (audioFile != null) {
@@ -55,29 +58,31 @@ fun loadAudio(filePath : String) {
 
 
     //Spelar upp en del av en ljudfil beroende på startpunkt och längd vilket den får av ett sliceobjekt.
-    fun playSlize(slize : Slize? = null) {
-        if (mediaPlayer != null) {
-            "trying to play clip number ${slize?.number}, with the startposition ${slize?.start} and the length of ${slize?.length}"
-            //Om slice som ska spelas upp är en del av en slicelista-uppspelning, så läggs 90 millisekunder till för att fylla upp luckor mellan slices.
-            if (slize != null) {
+    fun playSlize(slize : Slize) {
+
                 Log.d(
                     TAG,
                     "playing clip number ${slize.number}, with the startposition ${slize.start} and the length of ${slize.length}"
                 )
-                mediaPlayer!!.seekTo(slize.start)
-                mediaPlayer!!.start()
-                Handler().postDelayed({
-                    mediaPlayer!!.pause()
-                }, slize.length)
+                mediaPlayer?.seekTo(slize.start)
+                mediaPlayer?.start()
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            // Your Code
+            mediaPlayer?.pause()
+        }, slize.length)
 
                 //Om en ljudfil ska spelas upp i sin helhet så körs bara ljudklippet rakt av.
             }
-        }
+
+
+    fun playEffect() {
+
     }
 
     fun playFullPhrase() {
-        mediaPlayer!!.seekTo(0)
-        mediaPlayer!!.start()
+        mediaPlayer?.seekTo(0)
+        mediaPlayer?.start()
     }
 
     fun playSuccess() {
@@ -100,23 +105,43 @@ fun loadAudio(filePath : String) {
         gameOverPlayer.start()
     }
 
+      fun stopAll() {
+           mediaPlayer?.pause()
+           perfectPlayer.release()
+           successPlayer.release()
+           failPlayer.release()
+           stageCompletePlayer.release()
+           gameOverPlayer.release()
+        loopHandler.removeCallbacksAndMessages(null)
+        pauseHandler.removeCallbacksAndMessages(null)
+    }
+
+
+
+
     /*
 Tar in en lista med slices i den ordning dom ligger i recycleview, och spelar upp en efter en
  */
     fun playSlices(slizes : List<Slize>){
 
-        val mainHandler = Handler(Looper.getMainLooper())
         var sliceNumber = 0
 
-        mainHandler.post(object : Runnable {
+        loopHandler.post(object : Runnable {
+
             override fun run() {
 
-                playSlize(slizes[sliceNumber])
+                mediaPlayer?.seekTo(slizes[sliceNumber].start)
+                mediaPlayer?.start()
+
+                pauseHandler.postDelayed({
+                    // Your Code
+                    mediaPlayer?.pause()
+                }, slizes[sliceNumber].length)
 
                 if (sliceNumber < (slizes.size - 1)) {
                     sliceNumber += 1
 
-                    mainHandler.postDelayed(this, slizes[0].length)
+                    loopHandler.postDelayed(this, slizes[0].length)
                 }
             }
         })
