@@ -8,13 +8,12 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import se.staffanljungqvist.revocalize.R
 import se.staffanljungqvist.revocalize.databinding.FragmentGameOverBinding
-import se.staffanljungqvist.revocalize.databinding.FragmentInGameBinding
-import se.staffanljungqvist.revocalize.viewmodels.ViewModel
+import se.staffanljungqvist.revocalize.viewmodels.IngameViewModel
 
 
 class GameOverFragment : Fragment() {
 
-    val model : ViewModel by activityViewModels()
+    val modelIngame : IngameViewModel by activityViewModels()
 
     private var _binding: FragmentGameOverBinding? = null
     private val binding get() = _binding!!

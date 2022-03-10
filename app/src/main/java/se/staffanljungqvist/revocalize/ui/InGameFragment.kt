@@ -19,8 +19,9 @@ import se.staffanljungqvist.revocalize.R
 import se.staffanljungqvist.revocalize.adapters.AudioAdapter
 import se.staffanljungqvist.revocalize.adapters.SlizeRecAdapter
 import se.staffanljungqvist.revocalize.adapters.TTSAdapter
+import se.staffanljungqvist.revocalize.builders.Stages
 import se.staffanljungqvist.revocalize.databinding.FragmentInGameBinding
-import se.staffanljungqvist.revocalize.viewmodels.ViewModel
+import se.staffanljungqvist.revocalize.viewmodels.IngameViewModel
 import java.util.*
 
 
@@ -28,7 +29,7 @@ val TAG = "revodebug"
 
 class InGameFragment : Fragment() {
 
-    val model: ViewModel by activityViewModels()
+    val model: IngameViewModel by activityViewModels()
 
     private var _binding: FragmentInGameBinding? = null
     private val binding get() = _binding!!
@@ -43,6 +44,9 @@ class InGameFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         slizeRecAdapter.fragment = this
+        val stage = arguments?.getInt("stage")
+        model.loadStage(Stages.StageList[stage!!])
+        model.stageIndex = stage
     }
 
     override fun onCreateView(

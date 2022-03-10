@@ -2,15 +2,14 @@ package se.staffanljungqvist.revocalize
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.WindowManager
 import androidx.activity.viewModels
 import se.staffanljungqvist.revocalize.databinding.ActivityMainBinding
 import se.staffanljungqvist.revocalize.ui.ExitFragment
-import se.staffanljungqvist.revocalize.ui.GameOverFragment
 import se.staffanljungqvist.revocalize.ui.InGameFragment
 import se.staffanljungqvist.revocalize.ui.StartFragment
-import se.staffanljungqvist.revocalize.viewmodels.ViewModel
+import se.staffanljungqvist.revocalize.viewmodels.IngameViewModel
+import se.staffanljungqvist.revocalize.viewmodels.StartViewModel
 
 val TAG = "revodebug"
 
@@ -30,7 +29,7 @@ class MainActivity : AppCompatActivity() {
         getSupportActionBar()?.hide();
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        val model : ViewModel by viewModels()
+        val model : StartViewModel by viewModels()
 
     }
 

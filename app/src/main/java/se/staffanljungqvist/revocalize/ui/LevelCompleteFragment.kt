@@ -10,12 +10,12 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import se.staffanljungqvist.revocalize.R
 import se.staffanljungqvist.revocalize.databinding.FragmentLevelCompleteBinding
-import se.staffanljungqvist.revocalize.viewmodels.ViewModel
+import se.staffanljungqvist.revocalize.viewmodels.IngameViewModel
 
 
 class LevelCompleteFragment : Fragment() {
 
-    val model : ViewModel by activityViewModels()
+    val modelIngame : IngameViewModel by activityViewModels()
 
     private var _binding: FragmentLevelCompleteBinding? = null
     private val binding get() = _binding!!
@@ -26,20 +26,20 @@ class LevelCompleteFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentLevelCompleteBinding.inflate(inflater, container, false)
-        model.calculateScore(requireContext())
+        modelIngame.calculateScore(requireContext())
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (model.newRecord) binding.tvNewBest.isVisible = true
+        if (modelIngame.newRecord) binding.tvNewBest.isVisible = true
 
-        binding.tvCompleteGuesses.text = model.points.toString()
-        binding.tvCompleteRank.text = model.rank
+        binding.tvCompleteGuesses.text = modelIngame.points.toString()
+        binding.tvCompleteRank.text = modelIngame.rank
 
         val rankColor =
-            when (model.rank) {
+            when (modelIngame.rank) {
                 "BRONZE" -> "#FF6C00"
                 "SILVER" -> "#00E3FF"
                 "GOLD" -> "#FFFF58"

@@ -1,18 +1,19 @@
 package se.staffanljungqvist.revocalize.adapters
 
 import android.graphics.Color
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.view.isVisible
+import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
-import org.w3c.dom.Text
 import se.staffanljungqvist.revocalize.R
 import se.staffanljungqvist.revocalize.builders.Stages
+import se.staffanljungqvist.revocalize.models.Stage
 import se.staffanljungqvist.revocalize.ui.InGameFragment
-import se.staffanljungqvist.revocalize.ui.IntroFragment
 import se.staffanljungqvist.revocalize.ui.StartFragment
 
 class StageRecAdapter : RecyclerView.Adapter<StageRecAdapter.StageViewHolder>() {
@@ -70,10 +71,22 @@ class StageRecAdapter : RecyclerView.Adapter<StageRecAdapter.StageViewHolder>() 
         holder.cardView.setCardBackgroundColor(Color.parseColor(cardColor))
 
         holder.cardView.setOnClickListener {
-            fragment.model.loadStage(stage)
-            fragment.requireActivity().supportFragmentManager.beginTransaction()
-                .replace(R.id.fragmentContainerView, InGameFragment()).commit()
+            passData(position)
+
         }
+
+    }
+
+         fun passData(stage : Int) {
+        val bundle = Bundle()
+        bundle.putInt("stage", stage)
+
+        val ingameFragment = InGameFragment()
+        ingameFragment.arguments = bundle
+
+
+             fragment.requireActivity().supportFragmentManager.beginTransaction()
+                 .replace(R.id.fragmentContainerView, ingameFragment).commit()
 
     }
 

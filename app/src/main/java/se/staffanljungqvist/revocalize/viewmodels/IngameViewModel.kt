@@ -15,11 +15,12 @@ import se.staffanljungqvist.revocalize.models.Stage
 
 val TAG = "revodebug"
 
-class ViewModel : ViewModel() {
+class IngameViewModel : ViewModel() {
 
     //TODO Sortera stagelist efter svårighetsgrad
-    var stageList = Stages.StageList
+
     var currentStage: Stage = Stage("No Stage", "No Stage", 0, 0, 100)
+    var stageIndex = 0
     var phraseIndex = 0
     var slizes: List<Slize>? = null
     var currentPhrase = Phrase(TextPhrases.textlist[phraseIndex], 1, listOf<Slize>())
@@ -48,32 +49,17 @@ class ViewModel : ViewModel() {
         MutableLiveData<Boolean>(false)
     }
 
-    val userDataLoaded: MutableLiveData<Boolean> by lazy {
-        MutableLiveData<Boolean>(false)
-    }
+
 
     val donePlaying: MutableLiveData<Boolean> by lazy {
         MutableLiveData<Boolean>(false)
     }
 
-    fun loadUserData(context : Context) {
-        val sharedPref = context.getSharedPreferences("userScore", Context.MODE_PRIVATE)
-        for (stage in Stages.StageList) {
-            val points = sharedPref.getInt(stage.name, 0)
-            stage.pointRecord = points
-            if (points > 0) {
-                stage.beatenWithRank = "BRONZE"
-                stage.isComplete = true
-            }
-            if (points >= stage.pointsForGold) {
-                stage.beatenWithRank = "GOLD"
-            }
-            else if (points >= stage.pointsForSilver) {
-                stage.beatenWithRank = "SILVER"
-            }
-        }
-        userDataLoaded.value = true
+    init {
+        Log.d(TAG, "skapar en ingameViewModel")
     }
+
+
 
     fun loadStage(stage: Stage) {
         Log.d(TAG, "Loading stage ${stage.name}")
@@ -240,6 +226,11 @@ class ViewModel : ViewModel() {
                 }
             }
         })
+    }
+
+    override fun onCleared() {
+        Log.d(TAG, "destroying viewmodel")
+        super.onCleared()
     }
 
 }

@@ -11,12 +11,12 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import se.staffanljungqvist.revocalize.R
 import se.staffanljungqvist.revocalize.databinding.FragmentIntroBinding
-import se.staffanljungqvist.revocalize.viewmodels.ViewModel
+import se.staffanljungqvist.revocalize.viewmodels.IngameViewModel
 
 
 class IntroFragment : Fragment() {
 
-    val model : ViewModel by activityViewModels()
+    val modelIngame : IngameViewModel by activityViewModels()
 
     private var _binding: FragmentIntroBinding? = null
     private val binding get() = _binding!!
@@ -34,9 +34,9 @@ class IntroFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        var stage = model.currentStage
+        var stage = modelIngame.currentStage
 
-        binding.tvStageNumber.text = (model.stageList.indexOf(model.currentStage) + 1).toString()
+        binding.tvStageNumber.text = (modelIngame.stageIndex + 1).toString()
 
         binding.tvStageName.text = stage.name
         binding.tvPhraseAmount.text = stage.phraseList.size.toString()
@@ -45,7 +45,7 @@ class IntroFragment : Fragment() {
         binding.tvPointsForSilver.text = stage.pointsForSilver.toString()
         binding.tvUserBest.text = stage.pointRecord.toString()
 
-        model.audioReady.observe(requireActivity(), Observer {
+        modelIngame.audioReady.observe(requireActivity(), Observer {
             if (it) {
                 view.findViewById<Button>(R.id.btnStart).isVisible = true
             }
