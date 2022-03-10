@@ -83,26 +83,50 @@ class InGameFragment : Fragment() {
         })
 
         ttsAdapter.ttsAudiofileWritten.observe(requireActivity(), androidx.lifecycle.Observer {
-            audioAdapter.loadAudio(ttsAdapter.path)
-            model.audioReady.value = false
+            if (it) {
+                audioAdapter.loadAudio(ttsAdapter.path)
+            }
         })
 
         audioAdapter.audioReady.observe(requireActivity(), androidx.lifecycle.Observer {
-            Log.d(TAG, "ljudfil färdig")
-            model.audioReady.value = true
-            model.audioReady.value = false
-            makeSlices()
-            binding.btnPlay.isVisible = true
-            binding.tvSentence.text = model.currentPhrase.text
-            binding.tvCurrentPhrase.text = model.phraseIndex.toString()
-            binding.tvTotalPhrases.text = model.currentStage.phraseList.size.toString()
-            binding.btnCheck.visibility = View.INVISIBLE
-            binding.tvGuessesRemaining.text = model.points.toString()
+            if (it) {
+                Log.d(TAG, "ljudfil färdig")
+                model.audioReady.value = true
+                model.audioReady.value = false
+                makeSlices()
+                binding.btnPlay.isVisible = true
+                binding.tvSentence.text = model.currentPhrase.text
+                binding.tvCurrentPhrase.text = model.phraseIndex.toString()
+                binding.tvTotalPhrases.text = model.currentStage.phraseList.size.toString()
+                binding.btnCheck.visibility = View.INVISIBLE
+                binding.tvGuessesRemaining.text = model.points.toString()
+            }
+        })
+
+        model.slizeIndex.observe(requireActivity(), androidx.lifecycle.Observer {
+            slizeRecAdapter.blinknumber = it
+            Log.d(TAG, "laddar om dataset")
+            slizeRecAdapter.notifyDataSetChanged()
+         //
+            if (it != -1 && it != -2 && !model.isCorrect) {
+                audioAdapter.playSlize(model.slizes!![it], (it == model.slizes!!.size - 1))
+           //     slizeRecAdapter.notifyDataSetChanged()
+            }
+                if (it == -2 && audioAdapter.mediaPlayer != null) {
+                    Log.d(TAG, "Pausar")
+                audioAdapter.mediaPlayer?.pause()
+            }
+
+
+
+
         })
 
 
         //Lyssnar om användaren har gjort en gissning samt alla ljud har spelats upp.
-        slizeRecAdapter.hasChecked.observe(requireActivity(), androidx.lifecycle.Observer {
+        model.donePlaying.observe(requireActivity(), androidx.lifecycle.Observer {
+            slizeRecAdapter.blinknumber = -1
+            slizeRecAdapter.notifyDataSetChanged()
             binding.tvGuessesRemaining.text = model.points.toString()
             if (model.gameOver) {
                 audioAdapter.playGameOver()
@@ -119,15 +143,20 @@ class InGameFragment : Fragment() {
 
         })
         binding.btnPlay.setOnClickListener {
+
+    //        slizeRecAdapter.runLight(model.slizes!!)
+            model.playSlices(model.slizes!!)
             it.isVisible = false
-            slizeRecAdapter.runLight(model.slizes!!)
-            audioAdapter.playSlices(model.slizes!!)
         }
         binding.btnCheck.setOnClickListener {
+
             binding.btnCheck.visibility = View.INVISIBLE
-            slizeRecAdapter.runLight(model.slizes!!)
-            if (model.makeGuess()) audioAdapter.playFullPhrase()
-            else audioAdapter.playSlices(model.slizes!!)
+     //       slizeRecAdapter.runLight(model.slizes!!)
+            if (model.makeGuess()) {
+                model.playSlices(model.slizes!!)
+                audioAdapter.playFullPhrase()
+            }
+            else model.playSlices(model.slizes!!)
         }
 
 

@@ -79,7 +79,6 @@ class TTSAdapter(val context : Context) : TextToSpeech.OnInitListener {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 
-
             val listener = ttsUtteranceListener()
             listener.ttsadapt = this
             tts.setOnUtteranceProgressListener(listener)
@@ -95,6 +94,7 @@ class TTSAdapter(val context : Context) : TextToSpeech.OnInitListener {
             tts!!.synthesizeToFile("testing", hm, mAudioFilename)
             Log.d(TAG,"tts fulskrev  till" + mAudioFilename)
             ttsAudiofileWritten.value = true
+            ttsAudiofileWritten.value = false
         }
 
 
@@ -103,11 +103,12 @@ class TTSAdapter(val context : Context) : TextToSpeech.OnInitListener {
 
     fun synthDone()
     {
-        Log.d(TAG, "handler är färdig")
         val mainHandler = Handler(Looper.getMainLooper())
         mainHandler.post(object : Runnable {
             override fun run() {
+                Log.d(TAG, "handler är färdig")
                 ttsAudiofileWritten.value = true
+                ttsAudiofileWritten.value = false
             }
         })
     }

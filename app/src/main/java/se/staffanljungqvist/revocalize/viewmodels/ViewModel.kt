@@ -1,6 +1,8 @@
 package se.staffanljungqvist.revocalize.viewmodels
 
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -31,6 +33,13 @@ class ViewModel : ViewModel() {
     var newRecord = false
     var toFragment = 0
 
+    val loopHandler = Handler(Looper.getMainLooper())
+    val pauseHandler = Handler(Looper.getMainLooper())
+
+    val slizeIndex: MutableLiveData<Int> by lazy {
+        MutableLiveData<Int>(-1)
+    }
+
     val phraseLoaded: MutableLiveData<Boolean> by lazy {
         MutableLiveData<Boolean>(false)
     }
@@ -40,6 +49,10 @@ class ViewModel : ViewModel() {
     }
 
     val userDataLoaded: MutableLiveData<Boolean> by lazy {
+        MutableLiveData<Boolean>(false)
+    }
+
+    val donePlaying: MutableLiveData<Boolean> by lazy {
         MutableLiveData<Boolean>(false)
     }
 
@@ -103,7 +116,7 @@ class ViewModel : ViewModel() {
                     number,
                     (number - 1) * sliceLength,
                     sliceLength.toLong(),
-                    randomColors[(number - 1)]
+                    randomColors[(number - 1)],
                 )
             )
         }
@@ -196,4 +209,37 @@ class ViewModel : ViewModel() {
         edit.commit()
         Log.d(TAG, "Sparade poängen $points till nivån ${currentStage.name}")
     }
+
+
+    fun playSlices(slizes : List<Slize>){
+
+        var sliceNumber = -1
+        Log.d("revodebugmodel", "Detta är den första slizen. borde vara noll ${sliceNumber}")
+        slizeIndex.value = sliceNumber
+
+        loopHandler.post(object : Runnable {
+            override fun run() {
+
+                if (sliceNumber < (slizes.size - 1)) {
+                    sliceNumber += 1
+                    Log.d("revodebugmodel", "ändrade slize till ${sliceNumber}")
+                    slizeIndex.value = sliceNumber
+                    loopHandler.postDelayed(this, slizes[sliceNumber].length)
+                } else {
+                    slizeIndex.value = -2
+                    slizeIndex.value = -1
+                    Log.d("revodebugmodel", "ändrade slize till ${slizeIndex.value}")
+                    donePlaying.value = true
+               //     var finalSlize = sliceNumber + 1
+               //     slizeIndex.value = finalSlize
+
+                  //  pauseHandler.postDelayed({
+
+               //         donePlaying.value = true
+                 //   }, slizes[sliceNumber].length)
+                }
+            }
+        })
+    }
+
 }
