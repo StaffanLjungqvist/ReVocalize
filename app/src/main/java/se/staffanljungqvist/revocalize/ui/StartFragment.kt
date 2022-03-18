@@ -24,11 +24,6 @@ class StartFragment : Fragment() {
     private var _binding: FragmentStartBinding? = null
     private val binding get() = _binding!!
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -42,17 +37,16 @@ class StartFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
-
-        recyclerView = binding.rvStageRecyclerView
-        var stageAdapter = StageRecAdapter()
-        stageAdapter.fragment = this
-        recyclerView.adapter = stageAdapter
-        recyclerView.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL, false )
-
-        model.loadUserData(requireContext())
+        model.loadStages(requireContext())
+      //  model.loadUserData(requireContext())
 
         model.userDataLoaded.observe(requireActivity(), Observer {
-            stageAdapter.notifyDataSetChanged()
+            recyclerView = binding.rvStageRecyclerView
+            var stageAdapter = StageRecAdapter()
+            stageAdapter.fragment = this
+            recyclerView.adapter = stageAdapter
+            recyclerView.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL, false )
+
         })
     }
 

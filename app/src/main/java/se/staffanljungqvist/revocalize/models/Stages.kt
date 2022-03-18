@@ -1,10 +1,17 @@
 package se.staffanljungqvist.revocalize.models
 
 
+
 //Todo Tillsätt Comparator Interface
-data class Stage(
+
+data class Stages (
+    val stageList : ArrayList<StageModelClass>
+        )
+
+
+data class StageModelClass(
+    val id : Int,
     val name : String,
-    val difficulty : String,
     val pointsForGold : Int,
     val pointsForSilver : Int,
     val startingPoints : Int,
@@ -15,7 +22,3 @@ data class Stage(
     )
 )
 
-data class Rank(
-    val name : String,
-    val color : String
-)

@@ -64,15 +64,6 @@ class SuccessFragment : Fragment() {
         binding.llBonus.isVisible = true
         binding.tvBonus.text = modelIngame.toFragment.toString()
         binding.llGuessesCircle.background.setColorFilter(Color.parseColor("#4BEBFF"), PorterDuff.Mode.SRC_ATOP)
-
-        when (bonus) {
-                1 ->  binding.tvInfo.text = "GETTING IT CORRECT ON FIRST TRY WITH THREE SLIZES COUNTS AS ZERO!"
-                2 -> binding.tvInfo.text = "GETTING IT CORRECT ON FIRST TRY WITH FOUR SLIZES GIVES AN EXTRA GUESS!"
-                3 -> binding.tvInfo.text = "GETTING IT CORRECT ON FIRST TRY WITH FIVE SLIZES GIVES TWO EXTRA GUESSES!"
-                4 -> binding.tvInfo.text = "GETTING IT CORRECT ON FIRST TRY WITH SIX SLIZES GIVES THREE EXTRA GUESSES!"
-                5 -> binding.tvInfo.text = "GETTING IT CORRECT ON FIRST TRY WITH SEVEN SLIZES GIVES FOUR EXTRA GUESSES!"
-                6 -> binding.tvInfo.text = "GETTING IT CORRECT ON FIRST TRY WITH EIGHT SLIZES GIVES FIVE EXTRA GUESSES!"
-        }
     }
 
     override fun onDestroyView() {

@@ -1,0 +1,52 @@
+{
+  "stageList": [
+    {
+      "id": 1,
+      "name": "\"Uplifting quotes\"",
+      "pointsForGold": 14,
+      "pointsForSilver": 10,
+      "startingPoints": 10,
+      "isComplete": false,
+      "beatenWithRank": "N/A",
+      "pointRecord": 0,
+      "phraseList": [
+        {
+          "text": "\"Never let the fear of striking out keep you from playing the game.\"",
+          "slizediv": 2
+        },
+        {
+          "text": "\"The only impossible journey is the one you never begin.\"",
+          "slizediv": 3
+        },
+        {
+          "text": "\"Believe you can and you are halfway there.\"",
+          "slizediv": 4
+        },
+        {
+          "text": "\"Whenyou reach the end of your rope, tie a knot in it and hang on.\"",
+          "slizediv": 5
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Stage 2",
+      "pointsForGold": 10,
+      "pointsForSilver": 7,
+      "startingPoints": 5,
+      "isComplete": false,
+      "beatenWithRank": "N/A",
+      "pointRecord": 0,
+      "phraseList": [
+        {
+          "text": "A problem is a chance for you to do your best.",
+          "slizediv": 3
+        },
+        {
+          "text": "Believe you can and you are halfway there.",
+          "slizediv": 3
+        }
+      ]
+    }
+  ]
+}

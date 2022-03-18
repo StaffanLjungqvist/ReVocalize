@@ -1,6 +1,7 @@
 package se.staffanljungqvist.revocalize.ui
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -37,23 +38,20 @@ class IntroFragment : Fragment() {
         var stage = modelIngame.currentStage
 
         binding.tvStageNumber.text = (modelIngame.stageIndex + 1).toString()
-
         binding.tvStageName.text = stage.name
         binding.tvPhraseAmount.text = stage.phraseList.size.toString()
         binding.tvStartingPoints.text = stage.startingPoints.toString()
         binding.tvPointsForGold.text = stage.pointsForGold.toString()
         binding.tvPointsForSilver.text = stage.pointsForSilver.toString()
-        binding.tvUserBest.text = stage.pointRecord.toString()
+        Log.d(TAG, "Skriver ute användarrekordet ${stage.pointRecord}")
+        binding.tvUserBest.text = modelIngame.userRecord.toString()
 
         modelIngame.audioReady.observe(requireActivity(), Observer {
-            if (it) {
-                view.findViewById<Button>(R.id.btnStart).isVisible = true
-            }
+            if (it) view.findViewById<Button>(R.id.btnStart).isVisible = true
         })
 
         binding.btnStart.setOnClickListener {
             requireActivity().supportFragmentManager.popBackStack()
-
         }
     }
 

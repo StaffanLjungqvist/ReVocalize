@@ -56,66 +56,70 @@
                 android:textAlignment="center"
                 android:textColor="#000000"
                 android:textSize="14sp"
-                app:layout_constraintBottom_toTopOf="@+id/linearLayout11"
+                app:layout_constraintBottom_toTopOf="@+id/tvStageComplete"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView" />
 
+            <TextView
+                android:id="@+id/tvStageRank"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="BRONZE"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:visibility="gone"
+                app:layout_constraintBottom_toTopOf="@+id/tvStageComplete"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvStageName"
+                tools:visibility="visible" />
+
             <LinearLayout
                 android:id="@+id/linearLayout11"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="12dp"
+                android:layout_height="50dp"
+                android:layout_margin="12dp"
                 android:background="@drawable/rounded_size"
                 android:gravity="center"
                 android:orientation="vertical"
-                app:layout_constraintBottom_toTopOf="@+id/textView3"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent">
 
                 <TextView
-                    android:id="@+id/tvStageComplete"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="6dp"
-                    android:text="NOT COMPLETE"
-                    android:textAlignment="center"
-                    android:textColor="@color/white"
-                    android:textSize="12sp"
-                    android:textStyle="bold"
-                    android:visibility="visible" />
-
-                <TextView
-                    android:id="@+id/tvStageRank"
+                    android:id="@+id/textView3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="-5dp"
-                    android:layout_marginBottom="6dp"
-                    android:text="BRONZE"
+                    android:includeFontPadding="false"
+                    android:lineSpacingExtra="0dp"
+                    android:paddingVertical="0dp"
+                    android:text="PLAY"
                     android:textColor="@color/white"
-                    android:textSize="20sp"
+                    android:textSize="32sp"
                     android:textStyle="bold"
-                    android:visibility="gone"
-                    tools:visibility="visible" />
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
 
             </LinearLayout>
 
+
             <TextView
-                android:id="@+id/textView3"
-                android:layout_width="wrap_content"
+                android:id="@+id/tvStageComplete"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="PLAY"
-                android:textColor="#000000"
-                android:includeFontPadding="false"
-                android:paddingVertical="0dp"
-                android:lineSpacingExtra="0dp"
+                android:layout_margin="6dp"
+                android:text="NOT COMPLETE"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="12sp"
                 android:textStyle="bold"
-                android:textSize="32sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
-
-
+                android:visibility="visible"
+                app:layout_constraintBottom_toTopOf="@+id/linearLayout11"
+                tools:layout_editor_absoluteX="22dp" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

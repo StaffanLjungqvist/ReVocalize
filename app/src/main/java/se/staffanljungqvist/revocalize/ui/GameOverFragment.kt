@@ -13,8 +13,6 @@ import se.staffanljungqvist.revocalize.viewmodels.IngameViewModel
 
 class GameOverFragment : Fragment() {
 
-    val modelIngame : IngameViewModel by activityViewModels()
-
     private var _binding: FragmentGameOverBinding? = null
     private val binding get() = _binding!!
 
@@ -35,10 +33,9 @@ class GameOverFragment : Fragment() {
         binding.btnBackToMain.setOnClickListener {
             requireActivity().supportFragmentManager.beginTransaction().replace(R.id.fragmentContainerView, StartFragment()).commit()
             requireActivity().supportFragmentManager.popBackStack()
+            activity?.viewModelStore?.clear();
         }
-
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()

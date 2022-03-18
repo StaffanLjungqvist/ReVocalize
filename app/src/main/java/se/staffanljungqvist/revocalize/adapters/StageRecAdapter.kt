@@ -8,11 +8,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.view.isVisible
-import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
 import se.staffanljungqvist.revocalize.R
-import se.staffanljungqvist.revocalize.builders.Stages
-import se.staffanljungqvist.revocalize.models.Stage
 import se.staffanljungqvist.revocalize.ui.InGameFragment
 import se.staffanljungqvist.revocalize.ui.StartFragment
 
@@ -42,19 +39,19 @@ class StageRecAdapter : RecyclerView.Adapter<StageRecAdapter.StageViewHolder>() 
         holder.tvStageName.text = stage.name
 
         val cardColor =
-        when (stage.difficulty) {
-            "EASY" -> "#4BEBFF"
-            "MEDIUM" -> "#38FF75"
-            "HARD" -> "#FF4BF8"
-            else -> {
-                 "#4BEBFF"
+            when (stage.beatenWithRank) {
+                "BRONZE" -> "#4BEBFF"
+                "SILVER" -> "#38FF75"
+                "GOLD" -> "#FF4BF8"
+                else -> {
+                    "#FFFFFF"
+                }
             }
-        }
 
         val rankColor =
             when (stage.beatenWithRank) {
                 "BRONZE" -> "#FF6C00"
-                "SILVER" -> "#00E3FF"
+                "SILVER" -> "#008394"
                 "GOLD" -> "#FFFF58"
                 else -> {
                     "#4BEBFF"
@@ -71,27 +68,21 @@ class StageRecAdapter : RecyclerView.Adapter<StageRecAdapter.StageViewHolder>() 
         holder.cardView.setCardBackgroundColor(Color.parseColor(cardColor))
 
         holder.cardView.setOnClickListener {
-            passData(position)
-
+            passData(position, stage.pointRecord)
         }
-
     }
 
-         fun passData(stage : Int) {
+    fun passData(stage: Int, score : Int) {
         val bundle = Bundle()
         bundle.putInt("stage", stage)
-
+        bundle.putInt("score", score)
         val ingameFragment = InGameFragment()
         ingameFragment.arguments = bundle
-
-
-             fragment.requireActivity().supportFragmentManager.beginTransaction()
-                 .replace(R.id.fragmentContainerView, ingameFragment).commit()
-
+        fragment.requireActivity().supportFragmentManager.beginTransaction()
+            .replace(R.id.fragmentContainerView, ingameFragment).commit()
     }
 
     override fun getItemCount(): Int {
         return fragment.model.stageList.size
     }
-
 }

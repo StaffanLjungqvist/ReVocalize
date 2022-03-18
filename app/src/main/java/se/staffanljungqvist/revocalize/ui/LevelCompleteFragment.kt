@@ -53,6 +53,7 @@ class LevelCompleteFragment : Fragment() {
         binding.btnReturnMain.setOnClickListener {
             requireActivity().supportFragmentManager.beginTransaction().replace(R.id.fragmentContainerView, StartFragment()).commit()
             requireActivity().supportFragmentManager.popBackStack()
+            activity?.viewModelStore?.clear();
         }
 
     }

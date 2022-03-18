@@ -1,23 +1,44 @@
 package se.staffanljungqvist.revocalize.viewmodels
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import se.staffanljungqvist.revocalize.builders.Stages
+import java.io.IOException
+import java.nio.charset.Charset
+import com.google.gson.Gson
+import org.json.JSONException
+import se.staffanljungqvist.revocalize.models.StageModelClass
+import se.staffanljungqvist.revocalize.models.Stages
+
 
 class StartViewModel : ViewModel() {
 
-    var stageList = Stages.StageList
+    var stageList = listOf<StageModelClass>()
 
     val userDataLoaded: MutableLiveData<Boolean> by lazy {
         MutableLiveData<Boolean>(false)
     }
 
+    fun loadStages(context : Context) {
+
+        try {
+            val jsonString = getJSONFromAssets(context)!!
+            val stages = Gson().fromJson(jsonString, Stages::class.java)
+            stageList = stages.stageList
+            loadUserData(context)
+        }  catch (e: JSONException) {
+        e.printStackTrace()
+    }
+
+}
+
     fun loadUserData(context : Context) {
         val sharedPref = context.getSharedPreferences("userScore", Context.MODE_PRIVATE)
-        for (stage in Stages.StageList) {
+        for (stage in stageList) {
             val points = sharedPref.getInt(stage.name, 0)
             stage.pointRecord = points
+            Log.d(TAG, "Rekordet för stage ${stage.name} är ${stage.pointRecord}")
             if (points > 0) {
                 stage.beatenWithRank = "BRONZE"
                 stage.isComplete = true
@@ -31,4 +52,25 @@ class StartViewModel : ViewModel() {
         }
         userDataLoaded.value = true
     }
+
+
+    private fun getJSONFromAssets(context : Context) : String? {
+        var json : String? = null
+        val charset : Charset = Charsets.UTF_8
+        try {
+            val myjsonFile = context.assets.open("Stages.json")
+            val size = myjsonFile.available()
+            val buffer = ByteArray(size)
+            myjsonFile.read(buffer)
+            myjsonFile.close()
+            json = String(buffer, charset)
+        } catch (ex: IOException){
+            ex.printStackTrace()
+            return null
+        }
+        return json
+    }
+
+
+
 }

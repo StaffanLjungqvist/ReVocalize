@@ -1,5 +1,6 @@
 package se.staffanljungqvist.revocalize
 
+import android.content.res.AssetManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.WindowManager
@@ -15,8 +16,6 @@ val TAG = "revodebug"
 
 class MainActivity : AppCompatActivity() {
 
-
-
     private lateinit var binding : ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,15 +27,11 @@ class MainActivity : AppCompatActivity() {
         //Göm navigation bar och action bar
         getSupportActionBar()?.hide();
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
-        val model : StartViewModel by viewModels()
-
     }
 
 
 
     override fun onBackPressed() {
-        //super.onBackPressed()
 
         if(supportFragmentManager.fragments.first() is StartFragment)
         {
@@ -48,6 +43,5 @@ class MainActivity : AppCompatActivity() {
                 .add(R.id.fragmentContainerView, ExitFragment()).addToBackStack(null)
                 .commit()
         }
-
     }
 }
