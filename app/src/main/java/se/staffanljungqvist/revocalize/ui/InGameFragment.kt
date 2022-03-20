@@ -140,7 +140,7 @@ class InGameFragment : Fragment() {
     fun initialize() {
         makeSlices()
         binding.btnPlay.isVisible = true
-        binding.tvSentence.text = model.currentPhrase.text
+        binding.tvSentence.text = model.currentPhrase.text.parentenses()
         binding.tvCurrentPhrase.text = model.phraseIndex.toString()
         binding.tvTotalPhrases.text = model.currentStage.phraseList.size.toString()
         binding.btnCheck.visibility = View.INVISIBLE
@@ -247,6 +247,10 @@ class InGameFragment : Fragment() {
 
     fun startDragging(viewHolder: RecyclerView.ViewHolder) {
         itemTouchHelper.startDrag(viewHolder)
+    }
+
+    fun String.parentenses() : String{
+        return "\"" + this + "\""
     }
 
 }

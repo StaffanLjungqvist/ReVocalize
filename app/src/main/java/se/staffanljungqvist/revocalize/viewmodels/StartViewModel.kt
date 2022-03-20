@@ -36,17 +36,16 @@ class StartViewModel : ViewModel() {
     fun loadUserData(context : Context) {
         val sharedPref = context.getSharedPreferences("userScore", Context.MODE_PRIVATE)
         for (stage in stageList) {
-            val points = sharedPref.getInt(stage.name, 0)
-            stage.pointRecord = points
-            Log.d(TAG, "Rekordet för stage ${stage.name} är ${stage.pointRecord}")
-            if (points > 0) {
+            val record = sharedPref.getInt(stage.name, 0)
+            stage.pointRecord = record
+            if (record > 0) {
                 stage.beatenWithRank = "BRONZE"
                 stage.isComplete = true
             }
-            if (points >= stage.pointsForGold) {
+            if (record >= stage.pointsForGold) {
                 stage.beatenWithRank = "GOLD"
             }
-            else if (points >= stage.pointsForSilver) {
+            else if (record >= stage.pointsForSilver) {
                 stage.beatenWithRank = "SILVER"
             }
         }

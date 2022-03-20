@@ -39,10 +39,28 @@ class SlizeRecAdapter() : RecyclerView.Adapter<SlizeRecAdapter.MyViewHolder>() {
 
         val slice = slizes[position]
 
+        holder.cardView.apply {
+            animate()
+                .alpha(1f)
+                .setDuration(200.toLong())
+                .setListener(null)
+        }
+
+
         holder.cardView.setCardBackgroundColor(Color.parseColor(slice.color))
+
+        val slizeLength = fragment.model.slizes?.get(0)?.length
 
         if (position == blinknumber) {
             holder.highLight.isVisible = true
+            holder.highLight.apply {
+                if (slizeLength != null) {
+                    animate()
+                        .alpha(0f)
+                        .setDuration(1500.toLong())
+                        .setListener(null)
+                }
+            }
             Log.d(TAG, "slizepositionen $position är vit")
         } else {
             holder.highLight.isVisible = false

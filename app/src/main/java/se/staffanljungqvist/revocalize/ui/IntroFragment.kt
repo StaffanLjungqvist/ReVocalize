@@ -44,7 +44,7 @@ class IntroFragment : Fragment() {
         binding.tvPointsForGold.text = stage.pointsForGold.toString()
         binding.tvPointsForSilver.text = stage.pointsForSilver.toString()
         Log.d(TAG, "Skriver ute användarrekordet ${stage.pointRecord}")
-        binding.tvUserBest.text = modelIngame.userRecord.toString()
+        binding.tvUserBest.text = modelIngame.score.toString()
 
         modelIngame.audioReady.observe(requireActivity(), Observer {
             if (it) view.findViewById<Button>(R.id.btnStart).isVisible = true

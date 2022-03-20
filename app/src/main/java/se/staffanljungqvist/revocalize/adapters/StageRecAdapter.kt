@@ -2,6 +2,7 @@ package se.staffanljungqvist.revocalize.adapters
 
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,6 +24,7 @@ class StageRecAdapter : RecyclerView.Adapter<StageRecAdapter.StageViewHolder>() 
         val tvStageBeatenRank = view.findViewById<TextView>(R.id.tvStageRank)
         val tvStageComplete = view.findViewById<TextView>(R.id.tvStageComplete)
         val tvStageNumber = view.findViewById<TextView>(R.id.tvStageNumber)
+        val cardViewLocked = view.findViewById<CardView>(R.id.cardViewLocked)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StageViewHolder {
@@ -33,42 +35,53 @@ class StageRecAdapter : RecyclerView.Adapter<StageRecAdapter.StageViewHolder>() 
 
     override fun onBindViewHolder(holder: StageViewHolder, position: Int) {
 
+        var isLocked = false
         val stage = fragment.model.stageList[position]
 
-        holder.tvStageNumber.text = (position + 1).toString()
-        holder.tvStageName.text = stage.name
-
-        val cardColor =
-            when (stage.beatenWithRank) {
-                "BRONZE" -> "#4BEBFF"
-                "SILVER" -> "#38FF75"
-                "GOLD" -> "#FF4BF8"
-                else -> {
-                    "#FFFFFF"
-                }
+        if (position != 0) {
+            if (!fragment.model.stageList[position - 1].isComplete) {
+                isLocked = true
             }
-
-        val rankColor =
-            when (stage.beatenWithRank) {
-                "BRONZE" -> "#FF6C00"
-                "SILVER" -> "#008394"
-                "GOLD" -> "#FFFF58"
-                else -> {
-                    "#4BEBFF"
-                }
-            }
-
-        if (stage.isComplete) {
-            holder.tvStageBeatenRank.isVisible = true
-            holder.tvStageBeatenRank.text = stage.beatenWithRank
-            holder.tvStageBeatenRank.setTextColor(Color.parseColor(rankColor))
-            holder.tvStageComplete.text = "COMPLETED!"
         }
+            holder.tvStageNumber.text = (position + 1).toString()
+            holder.tvStageName.text = stage.name
 
-        holder.cardView.setCardBackgroundColor(Color.parseColor(cardColor))
+            val cardColor =
+                when (stage.beatenWithRank) {
+                    "BRONZE" -> "#FF6C00"
+                    "SILVER" -> "#008394"
+                    "GOLD" -> "#FFFF58"
+                    else -> {
+                        "#FFFFFF"
+                    }
+                }
 
-        holder.cardView.setOnClickListener {
-            passData(position, stage.pointRecord)
+            val rankColor =
+                when (stage.beatenWithRank) {
+                    "BRONZE" -> "#FF6C00"
+                    "SILVER" -> "#008394"
+                    "GOLD" -> "#FFFF58"
+                    else -> {
+                        "#4BEBFF"
+                    }
+                }
+
+            if (stage.isComplete) {
+                holder.tvStageBeatenRank.isVisible = true
+                holder.tvStageBeatenRank.text = stage.beatenWithRank
+                holder.tvStageBeatenRank.setTextColor(Color.parseColor(rankColor))
+                holder.tvStageComplete.text = "COMPLETED!"
+                holder.cardView.setCardBackgroundColor(Color.parseColor(cardColor))
+            }
+
+
+
+            holder.cardView.setOnClickListener {
+                passData(position, stage.pointRecord)
+            }
+
+        if (isLocked) {
+            holder.cardViewLocked.isVisible = true
         }
     }
 
@@ -85,4 +98,5 @@ class StageRecAdapter : RecyclerView.Adapter<StageRecAdapter.StageViewHolder>() 
     override fun getItemCount(): Int {
         return fragment.model.stageList.size
     }
+
 }

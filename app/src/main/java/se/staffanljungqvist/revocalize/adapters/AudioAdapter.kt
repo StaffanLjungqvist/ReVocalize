@@ -52,6 +52,7 @@ class AudioAdapter(var context: Context) {
         mediaPlayer = MediaPlayer.create(context, audioFile.value)
 
         mediaPlayer!!.setOnPreparedListener(MediaPlayer.OnPreparedListener {
+
             Log.d(TAG, "nu är mediaplayer skapad")
             audioReady.value = true
             audioReady.value = false

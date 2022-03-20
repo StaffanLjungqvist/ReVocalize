@@ -34,7 +34,7 @@ class IngameViewModel : ViewModel() {
     var stageComplete = false
     var gameOver = false
     var bonus = 0
-    var userRecord = 0
+    var score = 0
     var newRecord = false
     var toFragment = 0
     val loopHandler = Handler(Looper.getMainLooper())
@@ -60,37 +60,35 @@ class IngameViewModel : ViewModel() {
     }
 
 
-
-    fun loadStage(context : Context, stageId: Int, record : Int) {
+    fun loadStage(context: Context, stageId: Int, record: Int) {
         Log.d(TAG, "Loading stage number ${stageId}")
         try {
             val jsonString = getJSONFromAssets(context)!!
-            Log.d(TAG, "Fick en json string : ${jsonString}")
             val stages = Gson().fromJson(jsonString, Stages::class.java)
             Log.d(TAG, "returnerar en lista med storleken ${stages.stageList.size}")
-            currentStage = stages.stageList[stageIndex]
+            currentStage = stages.stageList[stageId]
             Log.d(TAG, "Satte currentStage till ${stages.stageList[stageId].name}")
 
-        }  catch (e: JSONException) {
+        } catch (e: JSONException) {
             e.printStackTrace()
         }
         points = currentStage.startingPoints
-        userRecord = record
+        score = record
     }
 
     fun loadPhrase() {
         guessesUsed = 0
         isCorrect = false
 
-            if (phraseIndex < currentStage!!.phraseList.size) {
-                Log.d(TAG, "Laddar in fras ${currentStage!!.phraseList[phraseIndex]}")
-                currentPhrase = currentStage!!.phraseList[phraseIndex]
-                phraseIndex++
-            } else {
-                stageComplete = true
-            }
-            phraseLoaded.value = true
-            phraseLoaded.value = false
+        if (phraseIndex < currentStage!!.phraseList.size) {
+            Log.d(TAG, "Laddar in fras ${currentStage!!.phraseList[phraseIndex]}")
+            currentPhrase = currentStage!!.phraseList[phraseIndex]
+            phraseIndex++
+        } else {
+            stageComplete = true
+        }
+        phraseLoaded.value = true
+        phraseLoaded.value = false
 
     }
 
@@ -153,10 +151,10 @@ class IngameViewModel : ViewModel() {
     }
 
 
-    fun calculateScore(context : Context) {
+    fun calculateScore(context: Context) {
         //Kollar om nuvarande poängen är bättre än poängrekordet. Ändrar därefter.
-        if (userRecord > currentStage.pointRecord || currentStage.pointRecord == 0) {
-            Log.d(TAG, "Nytt rekord")
+        if (points > currentStage.pointRecord || currentStage.pointRecord == 0) {
+            Log.d(TAG, "Nytt rekord; ${points}")
             newRecord = true
             saveUserData(context)
         }
@@ -188,57 +186,62 @@ class IngameViewModel : ViewModel() {
         Log.d(TAG, "Sätter bonus till $bonus")
     }
 
-    fun saveUserData(context : Context) {
-        val sharedPref = context.getSharedPreferences("userScore", Context.MODE_PRIVATE)
-        var edit = sharedPref.edit()
-        edit.putInt(currentStage.name, userRecord)
-        edit.commit()
-        Log.d(TAG, "Sparade poängen $points till nivån ${currentStage.name}")
-    }
-
-
-    fun playSlices(slizes : List<Slize>){
-        donePlaying.value = false
-        var sliceNumber = -1
-        Log.d("revodebugmodel", "Detta är den första slizen. borde vara noll ${sliceNumber}")
-        slizeIndex.value = sliceNumber
-
-        loopHandler.post(object : Runnable {
-            override fun run() {
-                if (sliceNumber < (slizes.size - 1)) {
-                    sliceNumber += 1
-                    Log.d("revodebugmodel", "ändrade slize till ${sliceNumber}")
-                    slizeIndex.value = sliceNumber
-                    loopHandler.postDelayed(this, slizes[sliceNumber].length)
-                } else {
-                    slizeIndex.value = -2
-                    slizeIndex.value = -1
-                    Log.d("revodebugmodel", "ändrade slize till ${slizeIndex.value}")
-                    donePlaying.value = true
-                }
-            }
-        })
-    }
-
-    private fun getJSONFromAssets(context : Context) : String? {
-        var json : String? = null
-        val charset : Charset = Charsets.UTF_8
-        try {
-            val myjsonFile = context.assets.open("Stages.json")
-            val size = myjsonFile.available()
-            val buffer = ByteArray(size)
-            myjsonFile.read(buffer)
-            myjsonFile.close()
-            json = String(buffer, charset)
-        } catch (ex: IOException){
-            ex.printStackTrace()
-            return null
+    fun saveUserData(context: Context) {
+        if (newRecord) {
+            Log.d(TAG, "Saving the new record : ${points}")
+            val sharedPref = context.getSharedPreferences("userScore", Context.MODE_PRIVATE)
+            var edit = sharedPref.edit()
+            edit.putInt(currentStage.name, points)
+            edit.commit()
+            Log.d(TAG, "Sparade poängen $points till nivån ${currentStage.name}")
         }
-        return json
     }
 
-    override fun onCleared() {
-        Log.d(TAG, "destroying viewmodel")
-        super.onCleared()
+
+
+
+        fun playSlices(slizes: List<Slize>) {
+            donePlaying.value = false
+            var sliceNumber = -1
+            Log.d("revodebugmodel", "Detta är den första slizen. borde vara noll ${sliceNumber}")
+            slizeIndex.value = sliceNumber
+
+            loopHandler.post(object : Runnable {
+                override fun run() {
+                    if (sliceNumber < (slizes.size - 1)) {
+                        sliceNumber += 1
+                        Log.d("revodebugmodel", "ändrade slize till ${sliceNumber}")
+                        slizeIndex.value = sliceNumber
+                        loopHandler.postDelayed(this, slizes[sliceNumber].length)
+                    } else {
+                        slizeIndex.value = -2
+                        slizeIndex.value = -1
+                        Log.d("revodebugmodel", "ändrade slize till ${slizeIndex.value}")
+                        donePlaying.value = true
+                    }
+                }
+            })
+        }
+
+        private fun getJSONFromAssets(context: Context): String? {
+            var json: String? = null
+            val charset: Charset = Charsets.UTF_8
+            try {
+                val myjsonFile = context.assets.open("Stages.json")
+                val size = myjsonFile.available()
+                val buffer = ByteArray(size)
+                myjsonFile.read(buffer)
+                myjsonFile.close()
+                json = String(buffer, charset)
+            } catch (ex: IOException) {
+                ex.printStackTrace()
+                return null
+            }
+            return json
+        }
+
+        override fun onCleared() {
+            Log.d(TAG, "destroying viewmodel")
+            super.onCleared()
+        }
     }
-}
