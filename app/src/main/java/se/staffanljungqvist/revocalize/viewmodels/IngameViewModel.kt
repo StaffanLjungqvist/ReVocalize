@@ -1,26 +1,32 @@
 package se.staffanljungqvist.revocalize.viewmodels
 
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.gson.Gson
+import org.json.JSONException
 import se.staffanljungqvist.revocalize.builders.Colors
-import se.staffanljungqvist.revocalize.builders.Stages
-import se.staffanljungqvist.revocalize.builders.TextPhrases
 import se.staffanljungqvist.revocalize.models.Phrase
 import se.staffanljungqvist.revocalize.models.Slize
-import se.staffanljungqvist.revocalize.models.Stage
+import se.staffanljungqvist.revocalize.models.StageModelClass
+import se.staffanljungqvist.revocalize.models.Stages
+import java.io.IOException
+import java.nio.charset.Charset
 
 val TAG = "revodebug"
 
-class ViewModel : ViewModel() {
+class IngameViewModel : ViewModel() {
 
     //TODO Sortera stagelist efter svårighetsgrad
-    var stageList = Stages.StageList
-    var currentStage: Stage = Stage("No Stage", "No Stage", 0, 0, 100)
+
+    var currentStage: StageModelClass = StageModelClass(0, "No Stage", 0, 0, 100)
+    var stageIndex = 0
     var phraseIndex = 0
     var slizes: List<Slize>? = null
-    var currentPhrase = Phrase(TextPhrases.textlist[phraseIndex], 1, listOf<Slize>())
+    var currentPhrase = Phrase("Text Not Available", 1, listOf<Slize>())
     var isCorrect = false
     var guessesUsed = 0
     var points = 100
@@ -28,8 +34,14 @@ class ViewModel : ViewModel() {
     var stageComplete = false
     var gameOver = false
     var bonus = 0
+    var score = 0
     var newRecord = false
     var toFragment = 0
+    val loopHandler = Handler(Looper.getMainLooper())
+
+    val slizeIndex: MutableLiveData<Int> by lazy {
+        MutableLiveData<Int>(-1)
+    }
 
     val phraseLoaded: MutableLiveData<Boolean> by lazy {
         MutableLiveData<Boolean>(false)
@@ -39,56 +51,45 @@ class ViewModel : ViewModel() {
         MutableLiveData<Boolean>(false)
     }
 
-    val userDataLoaded: MutableLiveData<Boolean> by lazy {
+    val donePlaying: MutableLiveData<Boolean> by lazy {
         MutableLiveData<Boolean>(false)
     }
 
-    fun loadUserData(context : Context) {
-        val sharedPref = context.getSharedPreferences("userScore", Context.MODE_PRIVATE)
-        for (stage in Stages.StageList) {
-            val points = sharedPref.getInt(stage.name, 0)
-            stage.pointRecord = points
-            if (points > 0) {
-                stage.beatenWithRank = "BRONZE"
-                stage.isComplete = true
-            }
-            if (points >= stage.pointsForGold) {
-                stage.beatenWithRank = "GOLD"
-            }
-            else if (points >= stage.pointsForSilver) {
-                stage.beatenWithRank = "SILVER"
-            }
-        }
-        userDataLoaded.value = true
+    init {
+        Log.d(TAG, "skapar en ingameViewModel")
     }
 
-    fun loadStage(stage: Stage) {
-        Log.d(TAG, "Loading stage ${stage.name}")
-        currentStage = stage
+
+    fun loadStage(context: Context, stageId: Int, record: Int) {
+        Log.d(TAG, "Loading stage number ${stageId}")
+        try {
+            val jsonString = getJSONFromAssets(context)!!
+            val stages = Gson().fromJson(jsonString, Stages::class.java)
+            Log.d(TAG, "returnerar en lista med storleken ${stages.stageList.size}")
+            currentStage = stages.stageList[stageId]
+            Log.d(TAG, "Satte currentStage till ${stages.stageList[stageId].name}")
+
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
         points = currentStage.startingPoints
-        phraseIndex = 0
-        slizes = null
-        stageComplete = false
-        gameOver = false
-        newRecord = false
+        score = record
     }
 
     fun loadPhrase() {
         guessesUsed = 0
         isCorrect = false
-        if (currentStage != null) {
-            if (phraseIndex < currentStage!!.phraseList.size) {
-                Log.d(TAG, "Laddar in fras ${currentStage!!.phraseList[phraseIndex]}")
-                currentPhrase = currentStage!!.phraseList[phraseIndex]
-                phraseIndex++
-            } else {
-                stageComplete = true
-            }
-            phraseLoaded.value = true
-            phraseLoaded.value = false
+
+        if (phraseIndex < currentStage!!.phraseList.size) {
+            Log.d(TAG, "Laddar in fras ${currentStage!!.phraseList[phraseIndex]}")
+            currentPhrase = currentStage!!.phraseList[phraseIndex]
+            phraseIndex++
         } else {
-            Log.d(TAG, "Kunde inte ladda fras")
+            stageComplete = true
         }
+        phraseLoaded.value = true
+        phraseLoaded.value = false
+
     }
 
     fun makeSlices(duration: Int) {
@@ -103,7 +104,7 @@ class ViewModel : ViewModel() {
                     number,
                     (number - 1) * sliceLength,
                     sliceLength.toLong(),
-                    randomColors[(number - 1)]
+                    randomColors[(number - 1)],
                 )
             )
         }
@@ -125,10 +126,6 @@ class ViewModel : ViewModel() {
                 }
             }
         }
-        Log.d(
-            se.staffanljungqvist.revocalize.adapters.TAG,
-            "Blandade ${list.size} slizes till följande ordning ordning : ${list}"
-        )
         return list
     }
 
@@ -154,10 +151,10 @@ class ViewModel : ViewModel() {
     }
 
 
-    fun calculateScore(context : Context) {
+    fun calculateScore(context: Context) {
         //Kollar om nuvarande poängen är bättre än poängrekordet. Ändrar därefter.
         if (points > currentStage.pointRecord || currentStage.pointRecord == 0) {
-            Log.d(TAG, "Nytt rekord")
+            Log.d(TAG, "Nytt rekord; ${points}")
             newRecord = true
             saveUserData(context)
         }
@@ -189,11 +186,62 @@ class ViewModel : ViewModel() {
         Log.d(TAG, "Sätter bonus till $bonus")
     }
 
-    fun saveUserData(context : Context) {
-        val sharedPref = context.getSharedPreferences("userScore", Context.MODE_PRIVATE)
-        var edit = sharedPref.edit()
-        edit.putInt(currentStage.name, points)
-        edit.commit()
-        Log.d(TAG, "Sparade poängen $points till nivån ${currentStage.name}")
+    fun saveUserData(context: Context) {
+        if (newRecord) {
+            Log.d(TAG, "Saving the new record : ${points}")
+            val sharedPref = context.getSharedPreferences("userScore", Context.MODE_PRIVATE)
+            var edit = sharedPref.edit()
+            edit.putInt(currentStage.name, points)
+            edit.commit()
+            Log.d(TAG, "Sparade poängen $points till nivån ${currentStage.name}")
+        }
     }
-}
+
+
+
+
+        fun playSlices(slizes: List<Slize>) {
+            donePlaying.value = false
+            var sliceNumber = -1
+            Log.d("revodebugmodel", "Detta är den första slizen. borde vara noll ${sliceNumber}")
+            slizeIndex.value = sliceNumber
+
+            loopHandler.post(object : Runnable {
+                override fun run() {
+                    if (sliceNumber < (slizes.size - 1)) {
+                        sliceNumber += 1
+                        Log.d("revodebugmodel", "ändrade slize till ${sliceNumber}")
+                        slizeIndex.value = sliceNumber
+                        loopHandler.postDelayed(this, slizes[sliceNumber].length)
+                    } else {
+                        slizeIndex.value = -2
+                        slizeIndex.value = -1
+                        Log.d("revodebugmodel", "ändrade slize till ${slizeIndex.value}")
+                        donePlaying.value = true
+                    }
+                }
+            })
+        }
+
+        private fun getJSONFromAssets(context: Context): String? {
+            var json: String? = null
+            val charset: Charset = Charsets.UTF_8
+            try {
+                val myjsonFile = context.assets.open("Stages.json")
+                val size = myjsonFile.available()
+                val buffer = ByteArray(size)
+                myjsonFile.read(buffer)
+                myjsonFile.close()
+                json = String(buffer, charset)
+            } catch (ex: IOException) {
+                ex.printStackTrace()
+                return null
+            }
+            return json
+        }
+
+        override fun onCleared() {
+            Log.d(TAG, "destroying viewmodel")
+            super.onCleared()
+        }
+    }

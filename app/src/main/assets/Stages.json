@@ -1,0 +1,332 @@
+{
+  "stageList": [
+    {
+      "id": 0,
+      "name": "\"Uplifting quotes\"",
+      "pointsForGold": 13,
+      "pointsForSilver": 10,
+      "startingPoints": 10,
+      "isComplete": false,
+      "beatenWithRank": "N/A",
+      "pointRecord": 0,
+      "phraseList": [
+        {
+          "text": "The only impossible journey is the one you never begin.",
+          "slizediv": 2
+        },
+        {
+          "text": "When you reach the end of your rope, tie a knot in it and hang on. ",
+          "slizediv": 3
+        },
+        {
+          "text": "A problem is a chance for you to do your best.",
+          "slizediv": 3
+        },
+        {
+          "text": "The future belongs to those who believe in the beauty of their dreams. ",
+          "slizediv": 3
+        },
+        {
+          "text": "Believeyou can and you are halfway there",
+          "slizediv": 3
+        }
+      ]
+    },
+    {
+      "id": 0,
+      "name": "\"Song Lyrics\"",
+      "pointsForGold": 10,
+      "pointsForSilver": 7,
+      "startingPoints": 7,
+      "isComplete": false,
+      "beatenWithRank": "N/A",
+      "pointRecord": 0,
+      "phraseList": [
+        {
+          "text": "Today is gonna be the day that they're gonna throw it back to you.",
+          "slizediv": 4
+        },
+        {
+          "text": "Go shawty, it's your birthday, we gon' party like it's yo birthday.",
+          "slizediv": 4
+        },
+        {
+          "text": "Bass! How low can you go? Death row, what a brother knows.",
+          "slizediv": 4
+        },
+        {
+          "text": "You may think that I’m a dreamer. But I’m not the only one.",
+          "slizediv": 4
+        },
+        {
+          "text": "Hello Darkness My Old Friend. I’ve Come To Talk With You Again…",
+          "slizediv": 4
+        }
+      ]
+    },
+    {
+      "id": 0,
+      "name": "\"Movie Quotes\"",
+      "pointsForGold": 12,
+      "pointsForSilver": 6,
+      "startingPoints": 6,
+      "isComplete": false,
+      "beatenWithRank": "N/A",
+      "pointRecord": 0,
+      "phraseList": [
+        {
+          "text": "Get your stinking paws off me, you damned dirty ape.",
+          "slizediv": 4
+        },
+        {
+          "text": "Mrs.Robinson, you're trying to seduce me. Aren't you?",
+          "slizediv": 4
+        },
+        {
+          "text": "They may take our lives, but they'll never take our freedom!",
+          "slizediv": 4
+        },
+        {
+          "text": "The first rule of Fight Club is: You do not talk about Fight Club.",
+          "slizediv": 4
+        },
+        {
+          "text": "You've got to ask yourself one question: 'Do I feel lucky?' Well, do ya, punk?",
+          "slizediv": 4
+        },
+        {
+          "text": "Help me, Obi-Wan Kenobi. You're my only hope.",
+          "slizediv": 5
+        }
+      ]
+    },
+    {
+      "id": 0,
+      "name": "\"Book Quotes\"",
+      "pointsForGold": 22,
+      "pointsForSilver": 15,
+      "startingPoints": 15,
+      "isComplete": false,
+      "beatenWithRank": "N/A",
+      "pointRecord": 0,
+      "phraseList": [
+        {
+          "text": "Itis only with the heart that one can see rightly; what is essential is invisible to the eye",
+          "slizediv": 3
+        },
+        {
+          "text": "I took a deep breath and listened to the old brag of my heart: I am, I am, I am.",
+          "slizediv": 3
+        },
+        {
+          "text": "Whatever our souls are made of, his and mine are the same.",
+          "slizediv": 3
+        },
+        {
+          "text": "When you play the game of thrones you win or you die.",
+          "slizediv": 4
+        },
+        {
+          "text": "And now, cried Max, let the wild rumpus start!",
+          "slizediv": 4
+        },
+        {
+          "text": "It is nothing to die; it is dreadful not to live.",
+          "slizediv": 4
+        },
+        {
+          "text": "Very few castaways can claim to have survived so long at sea as Mr. Patel, and none in the company of an adult Bengal tiger.",
+          "slizediv": 5
+        }
+      ]
+    },
+    {
+      "id": 0,
+      "name": "\"Tongue Twisters\"",
+      "pointsForGold": 10,
+      "pointsForSilver": 5,
+      "startingPoints": 0,
+      "isComplete": false,
+      "beatenWithRank": "N/A",
+      "pointRecord": 0,
+      "phraseList": [
+        {
+          "text": "Susie works in a shoeshine shop. Where she shines she sits, and where she sits sheshines",
+          "slizediv": 4
+        },
+        {
+          "text": "A skunk sat on a stump and thunk the stump stunk, but the stump thunk the skunkstunk-",
+          "slizediv": 4
+        },
+        {
+          "text": "Where’s the peck of pickled peppers Peter Piper picked?",
+          "slizediv": 4
+        },
+        {
+          "text": "You know New York, you need New York, you know you need unique New York",
+          "slizediv": 4
+        },
+        {
+          "text": "How much wood would a woodchuck chuck if a woodchuck could chuck wood?",
+          "slizediv": 4
+        },
+        {
+          "text": "I scream, you scream, we all scream for ice cream ",
+          "slizediv": 4
+        },
+        {
+          "text": "I have got a date at a quarter to eight; I’ll see you at the gate, so don’t be late.",
+          "slizediv": 4
+        },
+        {
+          "text": "Ifa dog chews shoes, whose shoes does he choose?",
+          "slizediv": 4
+        }
+      ]
+    },
+    {
+      "id": 0,
+      "name": "N/A",
+      "pointsForGold": 26,
+      "pointsForSilver": 15,
+      "startingPoints": 15,
+      "isComplete": false,
+      "beatenWithRank": "N/A",
+      "pointRecord": 0,
+      "phraseList": [
+        {
+          "text": "I invented a new word! Plagiarism!",
+          "slizediv": 4
+        },
+        {
+          "text": "Russian dolls are so full of themselves.",
+          "slizediv": 4
+        },
+        {
+          "text": "Never trust atoms; they make up everything.",
+          "slizediv": 4
+        },
+        {
+          "text": "I didn’t think orthopedic shoes would help, but I stand corrected.",
+          "slizediv": 4
+        },
+        {
+          "text": "Blunt pencils are really pointless.",
+          "slizediv": 4
+        },
+        {
+          "text": "One of the cows didn’t produce milk today. It was an udder failure.",
+          "slizediv": 5
+        },
+        {
+          "text": "A dung beetle walks into a bar and asks, ‘Is this stool taken?",
+          "slizediv": 5
+        },
+        {
+          "text": "Pollen is what happens when flowers can’t keep it in their plants. ",
+          "slizediv": 5
+        },
+        {
+          "text": "Geology rocks, but geography’s where it’s at.",
+          "slizediv": 5
+        },
+        {
+          "text": "I went to buy some camo pants but couldn’t find any.",
+          "slizediv": 5
+        },
+        {
+          "text": "My friend’s bakery burned down last night. Now his business is toast.",
+          "slizediv": 6
+        }
+      ]
+    },
+    {
+      "id": 0,
+      "name": "Children Story Quotes",
+      "pointsForGold": 18,
+      "pointsForSilver": 12,
+      "startingPoints": 10,
+      "isComplete": false,
+      "beatenWithRank": "N/A",
+      "pointRecord": 0,
+      "phraseList": [
+        {
+          "text": "I love you right up to the moon—and back.",
+          "slizediv": 5
+        },
+        {
+          "text": "Let the wild rumpus start!",
+          "slizediv": 5
+        },
+        {
+          "text": "There’sno place like home",
+          "slizediv": 5
+        },
+        {
+          "text": "I shall find out thousands and thousands of things!",
+          "slizediv": 5
+        },
+        {
+          "text": "Why, sometimes I’ve believed as many as six impossible things before breakfast",
+          "slizediv": 4
+        },
+        {
+          "text": "One of the cows didn’t produce milk today. It was an udder failure.",
+          "slizediv": 5
+        },
+        {
+          "text": "Ilike people who make me like them. Saves me so much trouble forcing myself to like them.",
+          "slizediv": 5
+        },
+        {
+          "text": "He’sthe strongest man in the world.” “Man, yes,” said Pippi, “But I am the strongest girl in the world, remember that.",
+          "slizediv": 5
+        }
+      ]
+    },
+    {
+      "id": 0,
+      "name": "Two Sentence Horror Stories",
+      "pointsForGold": 26,
+      "pointsForSilver": 15,
+      "startingPoints": 15,
+      "isComplete": false,
+      "beatenWithRank": "N/A",
+      "pointRecord": 0,
+      "phraseList": [
+        {
+          "text": "She asked why I was breathing so heavily. I wasn't.",
+          "slizediv": 3
+        },
+        {
+          "text": "There was a picture of my phone of me sleeping. I live alone",
+          "slizediv": 3
+        },
+        {
+          "text": "Don't look behind you. It doesn't like to be seen.",
+          "slizediv": 3
+        },
+        {
+          "text": "Alone in my room, I sneezed softly. 'Bless you,' someone said.",
+          "slizediv": 3
+        },
+        {
+          "text": "I heard screams echo all around me. I'm deaf.",
+          "slizediv": 3
+        },
+        {
+          "text": "One of the cows didn’t produce milk today. It was an udder failure.",
+          "slizediv": 3
+        },
+        {
+          "text": "There'sa girl standing outside my window. The only problem is I live on the seventh floor.",
+          "slizediv": 3
+        },
+        {
+          "text": "Ican't move, breathe, speak or hear and it's so dark all the time. If i knew it would be this lonely, I would have been cremated instead.",
+          "slizediv": 6
+        }
+      ]
+    }
+  ]
+}

@@ -1,36 +1,28 @@
 package se.staffanljungqvist.revocalize.ui
 
-import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import se.staffanljungqvist.revocalize.R
 import se.staffanljungqvist.revocalize.adapters.StageRecAdapter
-import se.staffanljungqvist.revocalize.builders.Stages
 import se.staffanljungqvist.revocalize.databinding.FragmentStartBinding
-import se.staffanljungqvist.revocalize.viewmodels.ViewModel
+import se.staffanljungqvist.revocalize.viewmodels.IngameViewModel
+import se.staffanljungqvist.revocalize.viewmodels.StartViewModel
 
 
 class StartFragment : Fragment() {
 
-    val model : ViewModel by activityViewModels()
+    val model : StartViewModel by activityViewModels()
 
     private lateinit var recyclerView : RecyclerView
 
     private var _binding: FragmentStartBinding? = null
     private val binding get() = _binding!!
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,17 +37,16 @@ class StartFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
-
-        recyclerView = binding.rvStageRecyclerView
-        var stageAdapter = StageRecAdapter()
-        stageAdapter.fragment = this
-        recyclerView.adapter = stageAdapter
-        recyclerView.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL, false )
-
-        model.loadUserData(requireContext())
+        model.loadStages(requireContext())
+      //  model.loadUserData(requireContext())
 
         model.userDataLoaded.observe(requireActivity(), Observer {
-            stageAdapter.notifyDataSetChanged()
+            recyclerView = binding.rvStageRecyclerView
+            var stageAdapter = StageRecAdapter()
+            stageAdapter.fragment = this
+            recyclerView.adapter = stageAdapter
+            recyclerView.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL, false )
+
         })
     }
 
