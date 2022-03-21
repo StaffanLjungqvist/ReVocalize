@@ -28,9 +28,9 @@ class AudioAdapter(var context : Context) {
     //En mediaplayer instans skapas för att läsa av längden på ljudklippet, skickar tillbaka resultatet och förstörs sen.
     fun getDuration() : Int {
         if (audioFile != null) {
-            val mediaPlayer = MediaPlayer.create(context, audioFile.value)
-            val duration = mediaPlayer.duration
-            mediaPlayer.release()
+            val tempmediaPlayer = MediaPlayer.create(context, audioFile.value)
+            val duration = tempmediaPlayer.duration
+            tempmediaPlayer.release()
             Log.d(TAG, "Längden på ljudklippet : ${duration}")
             return duration
         } else {

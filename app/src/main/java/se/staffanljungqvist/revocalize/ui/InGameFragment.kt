@@ -78,16 +78,16 @@ class InGameFragment : Fragment() {
         Todo : Finns ett bättre sätt?
          */
 
-        ttsAdapter.ttsInitiated.observe(requireActivity(), androidx.lifecycle.Observer {
+        ttsAdapter.ttsInitiated.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             ttsAdapter.saveToAudioFile(model.currentPhrase.text)
         })
 
-        ttsAdapter.ttsAudiofileWritten.observe(requireActivity(), androidx.lifecycle.Observer {
+        ttsAdapter.ttsAudiofileWritten.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             audioAdapter.loadAudio(ttsAdapter.path)
             model.audioReady.value = false
         })
 
-        audioAdapter.audioReady.observe(requireActivity(), androidx.lifecycle.Observer {
+        audioAdapter.audioReady.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             Log.d(TAG, "ljudfil färdig")
             makeSlices()
             binding.btnPlay.isVisible = true
@@ -100,7 +100,7 @@ class InGameFragment : Fragment() {
 
 
         //Lyssnar om användaren har gjort en gissning samt alla ljud har spelats upp.
-        slizeRecAdapter.hasChecked.observe(requireActivity(), androidx.lifecycle.Observer {
+        slizeRecAdapter.hasChecked.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             binding.tvGuessesRemaining.text = model.points.toString()
             if (model.gameOver) {
                 audioAdapter.playGameOver()
@@ -136,6 +136,7 @@ class InGameFragment : Fragment() {
         val duration = audioAdapter.getDuration()
         model.makeSlices(duration)
         slizeRecAdapter.slizes = model.slizes!!
+        Log.d(TAG, "HEPP HEPP")
         myRecyclerView.layoutManager = GridLayoutManager(requireContext(), model.slizes!!.size)
         slizeRecAdapter.notifyDataSetChanged()
     }
