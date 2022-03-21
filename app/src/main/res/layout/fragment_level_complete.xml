@@ -22,7 +22,7 @@
             android:layout_marginTop="32dp"
             android:text="STAGE "
             android:textColor="@color/white"
-            android:textSize="43sp"
+            android:textSize="35sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/tvCompleteGuesses"
             app:layout_constraintEnd_toEndOf="parent"
@@ -35,7 +35,7 @@
             android:layout_marginTop="32dp"
             android:text="COMPLETE!"
             android:textColor="@color/pink"
-            android:textSize="42sp"
+            android:textSize="35sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/tvCompleteGuesses"
             app:layout_constraintEnd_toEndOf="parent"
@@ -73,7 +73,7 @@
             android:layout_gravity="center_horizontal"
             android:text="0"
             android:textColor="@color/white"
-            android:textSize="32sp"
+            android:textSize="40sp"
             android:textStyle="bold" />
 
     </LinearLayout>
@@ -83,7 +83,6 @@
         android:id="@+id/linearLayout6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/btnReturnMain"
         app:layout_constraintEnd_toEndOf="parent"
@@ -96,12 +95,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="-10dp"
             android:text="RANK"
             android:textColor="@color/white"
             android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="-10dp"
-            />
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tvCompleteRank"
@@ -109,9 +107,8 @@
             android:layout_height="wrap_content"
             android:text="SILVER"
             android:textColor="@color/white"
-            android:textSize="30sp"
-            android:textStyle="bold"
-            />
+            android:textSize="40sp"
+            android:textStyle="bold" />
 
 
     </LinearLayout>
@@ -120,16 +117,17 @@
     <Button
         android:id="@+id/btnReturnMain"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
+        android:layout_height="50dp"
         android:background="@drawable/rounded_button"
-        android:paddingHorizontal="26dp"
+        android:paddingHorizontal="50dp"
         android:text="BACK TO MAIN"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.8" />
 
     <TextView
         android:id="@+id/tvNewBest"
@@ -137,7 +135,7 @@
         android:layout_height="wrap_content"
         android:text="NEW BEST!"
         android:textColor="@color/green"
-        android:textSize="30sp"
+        android:textSize="25sp"
         android:textStyle="bold"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"

@@ -1,6 +1,7 @@
 package se.staffanljungqvist.revocalize.ui
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -11,12 +12,12 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import se.staffanljungqvist.revocalize.R
 import se.staffanljungqvist.revocalize.databinding.FragmentIntroBinding
-import se.staffanljungqvist.revocalize.viewmodels.ViewModel
+import se.staffanljungqvist.revocalize.viewmodels.IngameViewModel
 
 
 class IntroFragment : Fragment() {
 
-    val model : ViewModel by activityViewModels()
+    val modelIngame : IngameViewModel by activityViewModels()
 
     private var _binding: FragmentIntroBinding? = null
     private val binding get() = _binding!!
@@ -34,26 +35,23 @@ class IntroFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        var stage = model.currentStage
+        var stage = modelIngame.currentStage
 
-        binding.tvStageNumber.text = (model.stageList.indexOf(model.currentStage) + 1).toString()
-
+        binding.tvStageNumber.text = (modelIngame.stageIndex + 1).toString()
         binding.tvStageName.text = stage.name
         binding.tvPhraseAmount.text = stage.phraseList.size.toString()
         binding.tvStartingPoints.text = stage.startingPoints.toString()
         binding.tvPointsForGold.text = stage.pointsForGold.toString()
         binding.tvPointsForSilver.text = stage.pointsForSilver.toString()
-        binding.tvUserBest.text = stage.pointRecord.toString()
+        Log.d(TAG, "Skriver ute användarrekordet ${stage.pointRecord}")
+        binding.tvUserBest.text = modelIngame.score.toString()
 
-        model.audioReady.observe(requireActivity(), Observer {
-            if (it) {
-                view.findViewById<Button>(R.id.btnStart).isVisible = true
-            }
+        modelIngame.audioReady.observe(requireActivity(), Observer {
+            if (it) view.findViewById<Button>(R.id.btnStart).isVisible = true
         })
 
         binding.btnStart.setOnClickListener {
             requireActivity().supportFragmentManager.popBackStack()
-
         }
     }
 

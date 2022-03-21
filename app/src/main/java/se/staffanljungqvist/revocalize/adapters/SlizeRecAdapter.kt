@@ -9,27 +9,29 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.cardview.widget.CardView
-import androidx.lifecycle.MutableLiveData
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
-import se.staffanljungqvist.revocalize.ui.InGameFragment
 import se.staffanljungqvist.revocalize.R
 import se.staffanljungqvist.revocalize.models.Slize
+import se.staffanljungqvist.revocalize.ui.InGameFragment
 
 
 class SlizeRecAdapter() : RecyclerView.Adapter<SlizeRecAdapter.MyViewHolder>() {
 
     var blinknumber = -1
-    var hasChecked = MutableLiveData<Boolean>()
     var slizes = listOf<Slize>()
-    lateinit var fragment : InGameFragment
+    lateinit var fragment: InGameFragment
+    val blinkHandler = Handler(Looper.getMainLooper())
 
-    inner class MyViewHolder(view : View) : RecyclerView.ViewHolder(view) {
+    inner class MyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val cardView = view.findViewById<CardView>(R.id.cardView)
+        val highLight = view.findViewById<CardView>(R.id.cvWhite)
     }
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        return MyViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.slize_item, parent, false))
+        return MyViewHolder(
+            LayoutInflater.from(parent.context).inflate(R.layout.slize_item, parent, false)
+        )
     }
 
 
@@ -37,51 +39,49 @@ class SlizeRecAdapter() : RecyclerView.Adapter<SlizeRecAdapter.MyViewHolder>() {
 
         val slice = slizes[position]
 
+        holder.cardView.apply {
+            animate()
+                .alpha(1f)
+                .setDuration(200.toLong())
+                .setListener(null)
+        }
+
+
+        holder.cardView.setCardBackgroundColor(Color.parseColor(slice.color))
+
+        val slizeLength = fragment.model.slizes?.get(0)?.length
+
         if (position == blinknumber) {
-            holder.cardView.setCardBackgroundColor(Color.WHITE)
+            holder.highLight.isVisible = true
+            holder.highLight.apply {
+                if (slizeLength != null) {
+                    animate()
+                        .alpha(0f)
+                        .setDuration(1500.toLong())
+                        .setListener(null)
+                }
+            }
+            Log.d(TAG, "slizepositionen $position är vit")
         } else {
-            holder.cardView.setCardBackgroundColor(Color.parseColor(slice.color))
+            holder.highLight.isVisible = false
         }
 
 
         holder.itemView.setOnTouchListener { view, event ->
 
-            if (event.actionMasked == MotionEvent.ACTION_DOWN) {
-                (fragment as InGameFragment).startDragging(holder)
-                Log.d(TAG, "Tryckte ner knappen")
+            if (fragment.model.donePlaying.value!!) {
 
-            //    fragment.audioAdapter.playAudio(slice)
-
+                if (event.actionMasked == MotionEvent.ACTION_DOWN) {
+                    (fragment as InGameFragment).startDragging(holder)
+                    Log.d(TAG, "Tryckte ner knappen")
+                }
             }
-
             return@setOnTouchListener true
         }
 
-            }
+    }
 
     override fun getItemCount(): Int {
         return slizes.size
-    }
-
-
-    fun runLight(slizes : List<Slize>) {
-        val mainHandler = Handler(Looper.getMainLooper())
-        blinknumber = 0
-        mainHandler.post(object : Runnable {
-
-            override fun run() {
-
-                if (blinknumber < (slizes.size )) {
-                    notifyItemChanged(blinknumber)
-                    blinknumber += 1
-
-                    mainHandler.postDelayed(this, slizes[0].length)
-                } else {
-                    hasChecked.value = true
-                    blinknumber = -1
-
-                }
-            }
-        })
     }
 }

@@ -10,17 +10,18 @@
     <Button
         android:id="@+id/btnStart"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:background="@drawable/rounded_button"
-        android:paddingHorizontal="26dp"
+        android:paddingHorizontal="40dp"
         android:text="Start"
-        android:layout_marginBottom="24sp"
         android:textSize="18sp"
         android:textStyle="bold"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.8"
         tools:visibility="visible" />
 
     <TextView
@@ -44,12 +45,13 @@
         android:text="LOADING"
         android:textColor="@color/white"
         android:textStyle="bold"
-        android:layout_marginBottom="38sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/btnStart"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btnStart" />
 
     <LinearLayout
+        android:id="@+id/linearLayout3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -89,18 +91,17 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:gravity="center_horizontal"
-            >
+            android:orientation="horizontal">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Levels"
+                android:textColor="@color/white"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:textColor="@color/white"
 
                 />
 
@@ -109,9 +110,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="0"
+                android:textColor="@color/white"
                 android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="@color/white" />
+                android:textStyle="bold" />
         </LinearLayout>
 
         <LinearLayout
@@ -124,19 +125,20 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Startingpoints"
+                android:textColor="@color/white"
                 android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="@color/white" />
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tvStartingPoints"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="0"
+                android:textColor="@color/white"
                 android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="@color/white" />
+                android:textStyle="bold" />
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -147,18 +149,18 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Points for gold"
+                android:textColor="@color/white"
                 android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="@color/white" />
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tvPointsForGold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="0"
+                android:textColor="@color/white"
                 android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="@color/white" />
+                android:textStyle="bold" />
         </LinearLayout>
 
         <LinearLayout
@@ -171,18 +173,18 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Points for silver"
+                android:textColor="@color/white"
                 android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="@color/white" />
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tvPointsForSilver"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="0"
+                android:textColor="@color/white"
                 android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="@color/white" />
+                android:textStyle="bold" />
         </LinearLayout>
 
         <LinearLayout
@@ -195,21 +197,19 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Your best"
+                android:textColor="@color/white"
                 android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="@color/white" />
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tvUserBest"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="N/A"
+                android:textColor="@color/white"
                 android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="@color/white" />
+                android:textStyle="bold" />
         </LinearLayout>
-
-
 
 
     </LinearLayout>
