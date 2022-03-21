@@ -56,7 +56,7 @@ class StageRecAdapter : RecyclerView.Adapter<StageRecAdapter.StageViewHolder>() 
                     }
                 }
 
-            val rankColor =
+/*            val rankColor =
                 when (stage.beatenWithRank) {
                     "BRONZE" -> "#FF6C00"
                     "SILVER" -> "#008394"
@@ -64,12 +64,12 @@ class StageRecAdapter : RecyclerView.Adapter<StageRecAdapter.StageViewHolder>() 
                     else -> {
                         "#4BEBFF"
                     }
-                }
+                }*/
 
             if (stage.isComplete) {
                 holder.tvStageBeatenRank.isVisible = true
                 holder.tvStageBeatenRank.text = stage.beatenWithRank
-                holder.tvStageBeatenRank.setTextColor(Color.parseColor(rankColor))
+              //  holder.tvStageBeatenRank.setTextColor(Color.parseColor(rankColor))
                 holder.tvStageComplete.text = "COMPLETED!"
                 holder.cardView.setCardBackgroundColor(Color.parseColor(cardColor))
             }
