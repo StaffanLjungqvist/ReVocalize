@@ -1,5 +1,6 @@
 package se.staffanljungqvist.revocalize.ui
 
+import android.media.MediaPlayer
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -29,6 +30,10 @@ class GameOverFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
+        val gameOverPlayer = MediaPlayer.create(context, R.raw.fail)
+        gameOverPlayer.start()
 
         binding.btnBackToMain.setOnClickListener {
             requireActivity().supportFragmentManager.beginTransaction().replace(R.id.fragmentContainerView, StartFragment()).commit()

@@ -151,6 +151,10 @@
       "pointRecord": 0,
       "phraseList": [
         {
+          "text": "How much wood would a woodchuck chuck if a woodchuck could chuck wood?",
+          "slizediv": 6
+        },
+        {
           "text": "Susie works in a shoeshine shop. Where she shines she sits, and where she sits sheshines",
           "slizediv": 4
         },
@@ -166,10 +170,7 @@
           "text": "You know New York, you need New York, you know you need unique New York",
           "slizediv": 4
         },
-        {
-          "text": "How much wood would a woodchuck chuck if a woodchuck could chuck wood?",
-          "slizediv": 4
-        },
+
         {
           "text": "I scream, you scream, we all scream for ice cream ",
           "slizediv": 4

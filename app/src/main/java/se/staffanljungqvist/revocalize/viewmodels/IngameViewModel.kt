@@ -51,7 +51,7 @@ class IngameViewModel : ViewModel() {
         MutableLiveData<Boolean>(false)
     }
 
-    val donePlaying: MutableLiveData<Boolean> by lazy {
+    val doneIterating: MutableLiveData<Boolean> by lazy {
         MutableLiveData<Boolean>(false)
     }
 
@@ -200,8 +200,8 @@ class IngameViewModel : ViewModel() {
 
 
 
-        fun playSlices(slizes: List<Slize>) {
-            donePlaying.value = false
+        fun interateSlizes(slizes: List<Slize>) {
+            doneIterating.value = false
             var sliceNumber = -1
             Log.d("revodebugmodel", "Detta är den första slizen. borde vara noll ${sliceNumber}")
             slizeIndex.value = sliceNumber
@@ -217,7 +217,7 @@ class IngameViewModel : ViewModel() {
                         slizeIndex.value = -2
                         slizeIndex.value = -1
                         Log.d("revodebugmodel", "ändrade slize till ${slizeIndex.value}")
-                        donePlaying.value = true
+                        doneIterating.value = true
                     }
                 }
             })

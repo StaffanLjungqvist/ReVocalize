@@ -49,7 +49,7 @@ class StageRecAdapter : RecyclerView.Adapter<StageRecAdapter.StageViewHolder>() 
             val cardColor =
                 when (stage.beatenWithRank) {
                     "BRONZE" -> "#FF6C00"
-                    "SILVER" -> "#008394"
+                    "SILVER" -> "#4BEBFF"
                     "GOLD" -> "#FFFF58"
                     else -> {
                         "#FFFFFF"

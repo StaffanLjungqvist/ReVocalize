@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import se.staffanljungqvist.revocalize.R
 import se.staffanljungqvist.revocalize.models.Slize
 import se.staffanljungqvist.revocalize.ui.InGameFragment
+import se.staffanljungqvist.revocalize.ui.TAG
 
 
 class SlizeRecAdapter() : RecyclerView.Adapter<SlizeRecAdapter.MyViewHolder>() {
@@ -57,7 +58,7 @@ class SlizeRecAdapter() : RecyclerView.Adapter<SlizeRecAdapter.MyViewHolder>() {
                 if (slizeLength != null) {
                     animate()
                         .alpha(0f)
-                        .setDuration(1500.toLong())
+                        .setDuration(2000.toLong())
                         .setListener(null)
                 }
             }
@@ -69,7 +70,7 @@ class SlizeRecAdapter() : RecyclerView.Adapter<SlizeRecAdapter.MyViewHolder>() {
 
         holder.itemView.setOnTouchListener { view, event ->
 
-            if (fragment.model.donePlaying.value!!) {
+            if (fragment.model.doneIterating.value!!) {
 
                 if (event.actionMasked == MotionEvent.ACTION_DOWN) {
                     (fragment as InGameFragment).startDragging(holder)

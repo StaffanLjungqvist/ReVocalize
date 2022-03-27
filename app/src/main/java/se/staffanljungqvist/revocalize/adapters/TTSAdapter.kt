@@ -9,6 +9,7 @@ import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import se.staffanljungqvist.revocalize.ui.TAG
 import java.io.File
 import java.util.*
 
@@ -17,22 +18,22 @@ class TTSAdapter(val context: Context) : TextToSpeech.OnInitListener {
     private var mAudioFilename = ""
     private val mUtteranceID = "totts"
     private var tts = TextToSpeech(context, this)
-    var testFile = File(context.filesDir.toString() + "/myreq.wav")
+    var textPhrase ="Default textfrase"
+    var fileLocation = File(context.filesDir.toString() + "/myreq.wav")
     val path = context.filesDir.toString() + "/myreq.wav"
 
     var ttsInitiated = MutableLiveData<Boolean>()
     var ttsAudiofileWritten = MutableLiveData<Boolean>()
 
     override fun onInit(status: Int) {
-
         if (status == TextToSpeech.SUCCESS) {
             val result = tts!!.setLanguage(Locale.US)
             if (result == TextToSpeech.LANG_MISSING_DATA) {
                 Log.e(TAG, "The language specified is not supported")
             }
-            Log.d(TAG, "TTS initialiserades korrekt")
-            if (testFile.exists()) {
-                ttsInitiated.value = true
+            if (fileLocation.exists()) {
+                Log.d(TAG, "TTS initialiserades korrekt")
+                saveToAudioFile(textPhrase)
             } else {
                 createAudioFile()
             }
@@ -49,7 +50,7 @@ class TTSAdapter(val context: Context) : TextToSpeech.OnInitListener {
         mAudioFilename = sddir.absolutePath.toString() + "/" + mUtteranceID + ".wav"
 
         Log.d(TAG, "tts skapade fil : ${mAudioFilename}")
-        ttsInitiated.value = true
+        saveToAudioFile(textPhrase)
     }
 
 
@@ -71,7 +72,7 @@ class TTSAdapter(val context: Context) : TextToSpeech.OnInitListener {
             tts.setOnUtteranceProgressListener(listener)
 
             //Skapar filen.
-            tts!!.synthesizeToFile(text, null, testFile, mUtteranceID)
+            tts!!.synthesizeToFile(text, null, fileLocation, mUtteranceID)
 
         } else {
             val hm = HashMap<String, String>()

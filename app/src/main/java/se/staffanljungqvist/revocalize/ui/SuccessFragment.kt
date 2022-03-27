@@ -2,6 +2,7 @@ package se.staffanljungqvist.revocalize.ui
 
 import android.graphics.Color
 import android.graphics.PorterDuff
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -39,6 +40,15 @@ class SuccessFragment : Fragment() {
 
 
         Log.d(TAG, "bonusen är ${modelIngame.bonus}")
+
+        val successPlayer = MediaPlayer.create(context, R.raw.perfect2)
+        successPlayer.start()
+
+        if (modelIngame.bonus != 0) {
+            val perfectPlayer = MediaPlayer.create(context, R.raw.success)
+            perfectPlayer.start()
+        }
+
 
 
         binding.tvGuessesRemaining.text = modelIngame.points.toString()

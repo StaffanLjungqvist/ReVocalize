@@ -2,6 +2,8 @@ package se.staffanljungqvist.revocalize.ui
 
 import android.graphics.Color
 import android.graphics.PorterDuff
+import android.media.MediaPlayer
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -16,10 +18,10 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import se.staffanljungqvist.revocalize.R
-import se.staffanljungqvist.revocalize.adapters.AudioAdapter
 import se.staffanljungqvist.revocalize.adapters.SlizeRecAdapter
 import se.staffanljungqvist.revocalize.adapters.TTSAdapter
 import se.staffanljungqvist.revocalize.databinding.FragmentInGameBinding
+import se.staffanljungqvist.revocalize.models.Slize
 import se.staffanljungqvist.revocalize.viewmodels.IngameViewModel
 import java.util.*
 
@@ -35,8 +37,10 @@ class InGameFragment : Fragment() {
 
     private lateinit var myRecyclerView: RecyclerView
     private var slizeRecAdapter: SlizeRecAdapter = SlizeRecAdapter()
-    lateinit var audioAdapter: AudioAdapter
     private lateinit var ttsAdapter: TTSAdapter
+
+    var mediaPlayer: MediaPlayer? = null
+    var failPlayer : MediaPlayer? = null
 
     private var listenMode = true
 
@@ -61,13 +65,15 @@ class InGameFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        requireActivity().supportFragmentManager.beginTransaction()
-            .add(R.id.fragmentContainerView, IntroFragment()).addToBackStack(null).commit()
+/*        requireActivity().supportFragmentManager.beginTransaction()
+            .add(R.id.fragmentContainerView, IntroFragment()).addToBackStack(null).commit()*/
 
 
 
-        audioAdapter = AudioAdapter(requireContext())
+        model.loadPhrase()
+
         ttsAdapter = TTSAdapter(requireContext())
+        ttsAdapter.textPhrase = model.currentPhrase.text
 
         myRecyclerView = binding.rvSlizes
         myRecyclerView.adapter = slizeRecAdapter
@@ -76,43 +82,31 @@ class InGameFragment : Fragment() {
         itemTouchHelper.attachToRecyclerView(myRecyclerView)
 
 
-
-        ttsAdapter.ttsInitiated.observe(requireActivity(), androidx.lifecycle.Observer {
-            model.loadPhrase()
-            ttsAdapter.saveToAudioFile(model.currentPhrase.text)
-        })
-
         ttsAdapter.ttsAudiofileWritten.observe(requireActivity(), androidx.lifecycle.Observer {
-            if (it) audioAdapter.loadAudio(ttsAdapter.path)
-        })
-
-        audioAdapter.audioReady.observe(requireActivity(), androidx.lifecycle.Observer {
-            if (it) initialize()
+            if (it) loadAudio()
         })
 
         model.slizeIndex.observe(requireActivity(), androidx.lifecycle.Observer {
             slizeRecAdapter.blinknumber = it
             slizeRecAdapter.notifyDataSetChanged()
 
-            if (it != -1 && it != -2 && !model.isCorrect) audioAdapter.playSlize(model.slizes!![it])
-            if (it == -2 && audioAdapter.mediaPlayer != null) audioAdapter.mediaPlayer?.pause()
+            if (it != -1 && it != -2 && !model.isCorrect) playSlize(model.slizes!![it])
+            if (it == -2 && mediaPlayer != null) mediaPlayer?.pause()
         })
 
 
         //Lyssnar om användaren har gjort en gissning samt alla ljud har spelats upp.
-        model.donePlaying.observe(requireActivity(), androidx.lifecycle.Observer {
+        model.doneIterating.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             if (it) {
                 slizeRecAdapter.blinknumber = -1
                 slizeRecAdapter.notifyDataSetChanged()
                 binding.tvGuessesRemaining.text = model.points.toString()
 
                 if (model.gameOver) {
-                    audioAdapter.playGameOver()
                     requireActivity().supportFragmentManager.beginTransaction()
                         .add(R.id.fragmentContainerView, GameOverFragment()).addToBackStack(null)
                         .commit()
                 } else if (model.stageComplete) {
-                    audioAdapter.playStageComplete()
                     requireActivity().supportFragmentManager.beginTransaction()
                         .add(R.id.fragmentContainerView, LevelCompleteFragment())
                         .addToBackStack(null)
@@ -123,21 +117,21 @@ class InGameFragment : Fragment() {
         })
 
         binding.btnPlay.setOnClickListener {
-            model.playSlices(model.slizes!!)
+            model.interateSlizes(model.slizes!!)
             it.isVisible = false
         }
 
         binding.btnCheck.setOnClickListener {
             binding.btnCheck.visibility = View.INVISIBLE
             if (model.makeGuess()) {
-                model.playSlices(model.slizes!!)
-                audioAdapter.playFullPhrase()
+                model.interateSlizes(model.slizes!!)
+                playFullPhrase()
             }
-            else model.playSlices(model.slizes!!)
+            else model.interateSlizes(model.slizes!!)
         }
     }
 
-    fun initialize() {
+    fun initializeUI() {
         makeSlices()
         binding.btnPlay.isVisible = true
         binding.tvSentence.text = model.currentPhrase.text.parentenses()
@@ -150,8 +144,7 @@ class InGameFragment : Fragment() {
     }
 
     fun makeSlices() {
-        val duration = audioAdapter.getDuration()
-        model.makeSlices(duration)
+        model.makeSlices(mediaPlayer!!.duration)
         slizeRecAdapter.slizes = model.slizes!!
         myRecyclerView.layoutManager = GridLayoutManager(requireContext(), model.slizes!!.size)
         slizeRecAdapter.notifyDataSetChanged()
@@ -163,18 +156,41 @@ class InGameFragment : Fragment() {
         listenMode = true
     }
 
+    fun loadAudio() {
+        val audioFile = Uri.parse(requireContext().filesDir.toString() + "/myreq.wav")
+
+        Log.d(TAG, "AA Uri omgord till File : ${audioFile}")
+
+        mediaPlayer = MediaPlayer.create(context, audioFile)
+
+        mediaPlayer!!.setOnPreparedListener(MediaPlayer.OnPreparedListener {
+
+            Log.d(TAG, "nu är mediaplayer skapad")
+            initializeUI()
+        })
+    }
+
+    fun playSlize(slize: Slize) {
+        mediaPlayer?.seekTo(slize.start)
+        mediaPlayer?.start()
+    }
+
+    fun playFullPhrase() {
+        mediaPlayer?.seekTo(0)
+        mediaPlayer?.start()
+    }
+
     fun correctAnswer() {
         requireActivity().supportFragmentManager.beginTransaction()
             .add(R.id.fragmentContainerView, SuccessFragment()).addToBackStack(null)
             .commit()
-        if (model.bonus != 0) audioAdapter.playPerfect()
-        audioAdapter.playSuccess()
         loadNewPhrase()
     }
 
     fun wrongAnswer() {
         if (!listenMode) {
-            audioAdapter.playFail()
+            failPlayer = MediaPlayer.create(requireContext(), R.raw.fail)
+            failPlayer!!.start()
 
             binding.llGuessesCircle.background.setColorFilter(Color.parseColor("#FF0000"), PorterDuff.Mode.SRC_ATOP)
             binding.tvGuessesRemaining.setTextColor(Color.parseColor("#FFFFFF"))
@@ -189,18 +205,12 @@ class InGameFragment : Fragment() {
         binding.btnCheck.isVisible = true
     }
 
-    override fun onPause() {
-        super.onPause()
-        audioAdapter.stopAll()
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         Log.d(TAG, "inGameFragment Destroyed")
+        mediaPlayer?.stop()
         _binding = null
         slizeRecAdapter.blinkHandler.removeCallbacksAndMessages(null);
-        audioAdapter.loopHandler.removeCallbacksAndMessages(null)
-        audioAdapter.pauseHandler.removeCallbacksAndMessages(null)
     }
 
 

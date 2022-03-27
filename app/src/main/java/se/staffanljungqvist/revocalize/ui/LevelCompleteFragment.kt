@@ -1,6 +1,7 @@
 package se.staffanljungqvist.revocalize.ui
 
 import android.graphics.Color
+import android.media.MediaPlayer
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -32,6 +33,9 @@ class LevelCompleteFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val stageCompletePlayer = MediaPlayer.create(context, R.raw.perfect3)
+        stageCompletePlayer.start()
 
         if (modelIngame.newRecord) binding.tvNewBest.isVisible = true
 
