@@ -25,7 +25,7 @@ class IngameViewModel : ViewModel() {
     var currentStage: StageModelClass = StageModelClass(0, "No Stage", 0, 0, 100)
     var stageIndex = 0
     var phraseIndex = 0
-    var slizes: List<Slize>? = null
+    var slices: List<Slize>? = null
     var currentPhrase = Phrase("Text Not Available", 1, listOf<Slize>())
     var isCorrect = false
     var guessesUsed = 0
@@ -108,7 +108,7 @@ class IngameViewModel : ViewModel() {
                 )
             )
         }
-        slizes = superShuffle(sliceList)
+        slices = superShuffle(sliceList)
         Log.d(TAG, "Skapade ${sliceList.size} slices med längd $sliceLength vardera")
     }
 
@@ -135,9 +135,9 @@ class IngameViewModel : ViewModel() {
     //Kollar om poängen är slut. Om så är fallet sätts gameOver
     fun makeGuess(): Boolean {
         var correct = false
-        var sortedList = slizes!!.sortedBy { it.number }
+        var sortedList = slices!!.sortedBy { it.number }
         bonus = 0
-        if (sortedList.equals(slizes)) {
+        if (sortedList.equals(slices)) {
             giveBonus()
             correct = true
             isCorrect = true
@@ -200,12 +200,11 @@ class IngameViewModel : ViewModel() {
 
 
 
-        fun interateSlizes(slizes: List<Slize>) {
+        fun iterateSlices(slizes: List<Slize>) {
             doneIterating.value = false
             var sliceNumber = -1
             Log.d("revodebugmodel", "Detta är den första slizen. borde vara noll ${sliceNumber}")
             slizeIndex.value = sliceNumber
-
             loopHandler.post(object : Runnable {
                 override fun run() {
                     if (sliceNumber < (slizes.size - 1)) {

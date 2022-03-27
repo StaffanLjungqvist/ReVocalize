@@ -50,7 +50,7 @@ class SlizeRecAdapter() : RecyclerView.Adapter<SlizeRecAdapter.MyViewHolder>() {
 
         holder.cardView.setCardBackgroundColor(Color.parseColor(slice.color))
 
-        val slizeLength = fragment.model.slizes?.get(0)?.length
+        val slizeLength = fragment.model.slices?.get(0)?.length
 
         if (position == blinknumber) {
             holder.highLight.isVisible = true
