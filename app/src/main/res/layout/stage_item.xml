@@ -52,12 +52,16 @@
                 android:id="@+id/tvStageName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:autoText="true"
                 android:text="STAGENAME"
                 android:textAlignment="center"
                 android:textColor="#000000"
-                android:textSize="14sp"
-                app:layout_constraintBottom_toTopOf="@+id/tvStageComplete"
+                app:autoSizeMaxTextSize="18sp"
+                app:autoSizeMinTextSize="14sp"
+                app:autoSizeTextType="uniform"
+                app:layout_constraintBottom_toTopOf="@+id/tvStageRank"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView" />
 
@@ -66,12 +70,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="BRONZE"
-                android:textColor="@color/white"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:visibility="gone"
-                app:layout_constraintBottom_toTopOf="@+id/tvStageComplete"
+                app:layout_constraintBottom_toTopOf="@+id/linearLayout11"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvStageName"
                 tools:visibility="visible" />
@@ -105,23 +108,6 @@
 
 
             </LinearLayout>
-
-
-            <TextView
-                android:id="@+id/tvStageComplete"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="6dp"
-                android:text="NOT COMPLETE"
-                android:textAlignment="center"
-                android:textColor="@color/black"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                android:visibility="visible"
-                app:layout_constraintBottom_toTopOf="@+id/linearLayout11"
-                tools:layout_editor_absoluteX="22dp" />
-
-
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

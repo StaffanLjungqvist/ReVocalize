@@ -22,7 +22,6 @@ class StageRecAdapter : RecyclerView.Adapter<StageRecAdapter.StageViewHolder>() 
         val cardView = view.findViewById<CardView>(R.id.cvStageCard)
         val tvStageName = view.findViewById<TextView>(R.id.tvStageName)
         val tvStageBeatenRank = view.findViewById<TextView>(R.id.tvStageRank)
-        val tvStageComplete = view.findViewById<TextView>(R.id.tvStageComplete)
         val tvStageNumber = view.findViewById<TextView>(R.id.tvStageNumber)
         val cardViewLocked = view.findViewById<CardView>(R.id.cardViewLocked)
     }
@@ -67,11 +66,11 @@ class StageRecAdapter : RecyclerView.Adapter<StageRecAdapter.StageViewHolder>() 
                 }*/
 
             if (stage.isComplete) {
-                holder.tvStageBeatenRank.isVisible = true
                 holder.tvStageBeatenRank.text = stage.beatenWithRank
               //  holder.tvStageBeatenRank.setTextColor(Color.parseColor(rankColor))
-                holder.tvStageComplete.text = "COMPLETED!"
                 holder.cardView.setCardBackgroundColor(Color.parseColor(cardColor))
+            } else {
+                holder.tvStageBeatenRank.text = "NOT COMPLETE"
             }
 
 

@@ -24,7 +24,10 @@ class TTSAdapter(val context: Context) : TextToSpeech.OnInitListener {
     var ttsAudiofileWritten = MutableLiveData<Boolean>()
 
     override fun onInit(status: Int) {
+        initalizeTTSEngine(status)
+    }
 
+    fun initalizeTTSEngine(status : Int) {
         if (status == TextToSpeech.SUCCESS) {
             val result = tts!!.setLanguage(Locale.US)
             if (result == TextToSpeech.LANG_MISSING_DATA) {

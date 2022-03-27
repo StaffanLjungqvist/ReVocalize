@@ -77,20 +77,20 @@ class InGameFragment : Fragment() {
 
 
 
-        ttsAdapter.ttsInitiated.observe(requireActivity(), androidx.lifecycle.Observer {
+        ttsAdapter.ttsInitiated.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             model.loadPhrase()
             ttsAdapter.saveToAudioFile(model.currentPhrase.text)
         })
 
-        ttsAdapter.ttsAudiofileWritten.observe(requireActivity(), androidx.lifecycle.Observer {
+        ttsAdapter.ttsAudiofileWritten.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             if (it) audioAdapter.loadAudio(ttsAdapter.path)
         })
 
-        audioAdapter.audioReady.observe(requireActivity(), androidx.lifecycle.Observer {
+        audioAdapter.audioReady.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             if (it) initialize()
         })
 
-        model.slizeIndex.observe(requireActivity(), androidx.lifecycle.Observer {
+        model.slizeIndex.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             slizeRecAdapter.blinknumber = it
             slizeRecAdapter.notifyDataSetChanged()
 
@@ -100,7 +100,7 @@ class InGameFragment : Fragment() {
 
 
         //Lyssnar om användaren har gjort en gissning samt alla ljud har spelats upp.
-        model.donePlaying.observe(requireActivity(), androidx.lifecycle.Observer {
+        model.donePlaying.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             if (it) {
                 slizeRecAdapter.blinknumber = -1
                 slizeRecAdapter.notifyDataSetChanged()
@@ -192,6 +192,12 @@ class InGameFragment : Fragment() {
     override fun onPause() {
         super.onPause()
         audioAdapter.stopAll()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d(TAG, "fragment återupptas")
+   //     initialize()
     }
 
     override fun onDestroyView() {
