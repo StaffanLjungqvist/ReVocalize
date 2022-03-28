@@ -86,10 +86,12 @@
         android:text="0"
         android:textColor="@color/white"
         android:textSize="36sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.55" />
 
     <TextView
         android:id="@+id/textView13"
@@ -97,11 +99,11 @@
         android:layout_height="wrap_content"
         android:text="YOUR BEST"
         android:textColor="@color/white"
+        android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/tvUserBest"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvStageName" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/tvStartPoints"
@@ -109,8 +111,7 @@
         android:layout_height="wrap_content"
         android:text="0"
         android:textColor="@color/white"
-        android:textSize="36sp"
-        app:layout_constraintBottom_toBottomOf="@+id/tvUserBest"
+        android:textStyle="bold"
         app:layout_constraintEnd_toStartOf="@+id/tvUserBest"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/tvLevels"
@@ -122,8 +123,7 @@
         android:layout_height="wrap_content"
         android:text="0"
         android:textColor="@color/white"
-        android:textSize="36sp"
-        app:layout_constraintBottom_toBottomOf="@+id/tvUserBest"
+        android:textStyle="bold"
         app:layout_constraintEnd_toStartOf="@+id/tvStartPoints"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -135,8 +135,7 @@
         android:layout_height="wrap_content"
         android:text="0"
         android:textColor="@color/white"
-        android:textSize="36sp"
-        app:layout_constraintBottom_toBottomOf="@+id/tvUserBest"
+        android:textStyle="bold"
         app:layout_constraintEnd_toStartOf="@+id/tvPointsForGold"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/tvUserBest"
@@ -148,8 +147,7 @@
         android:layout_height="wrap_content"
         android:text="0"
         android:textColor="@color/white"
-        android:textSize="36sp"
-        app:layout_constraintBottom_toBottomOf="@+id/tvUserBest"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/tvPointsForSilver"
@@ -160,8 +158,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="STARTING POINTS"
-        android:textColor="@color/white"
+        android:textColor="@color/pink"
         android:textStyle="bold"
+        android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="@+id/textView13"
         app:layout_constraintEnd_toEndOf="@+id/tvStartPoints"
         app:layout_constraintStart_toStartOf="@+id/tvStartPoints"
@@ -172,6 +171,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="LEVELS"
+        android:textSize="12sp"
         android:textColor="@color/white"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/textView13"
@@ -184,7 +184,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="FOR SILVER"
-        android:textColor="@color/white"
+        android:textSize="12sp"
+        android:textColor="@color/silver"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/textView13"
         app:layout_constraintEnd_toEndOf="@+id/tvPointsForSilver"
@@ -196,15 +197,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="FOR GOLD"
-        android:textColor="@color/white"
+        android:textSize="12sp"
+        android:textColor="@color/gold"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/textView13"
         app:layout_constraintEnd_toEndOf="@+id/tvPointsForGold"
         app:layout_constraintStart_toStartOf="@+id/tvPointsForGold"
-        app:layout_constraintTop_toTopOf="@+id/textView13" />26sp"
+        app:layout_constraintTop_toTopOf="@+id/textView13" /><![CDATA[
+
+    26sp"
     android:textColor="@color/white"
     app:layout_constraintBottom_toBottomOf="@+id/tvUserBest"
     app:layout_constraintEnd_toStartOf="@+id/tvUserBest"
     app:layout_constraintTop_toBottomOf="@+id/textView13" />
 
+]]>
 </androidx.constraintlayout.widget.ConstraintLayout>

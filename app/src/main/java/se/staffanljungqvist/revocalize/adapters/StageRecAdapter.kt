@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.view.isVisible
@@ -24,6 +25,7 @@ class StageRecAdapter : RecyclerView.Adapter<StageRecAdapter.StageViewHolder>() 
         val tvStageBeatenRank = view.findViewById<TextView>(R.id.tvStageRank)
         val tvStageNumber = view.findViewById<TextView>(R.id.tvStageNumber)
         val cardViewLocked = view.findViewById<CardView>(R.id.cardViewLocked)
+        val llPlay = view.findViewById<LinearLayout>(R.id.llPlay)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StageViewHolder {
@@ -55,32 +57,21 @@ class StageRecAdapter : RecyclerView.Adapter<StageRecAdapter.StageViewHolder>() 
                     }
                 }
 
-/*            val rankColor =
-                when (stage.beatenWithRank) {
-                    "BRONZE" -> "#FF6C00"
-                    "SILVER" -> "#008394"
-                    "GOLD" -> "#FFFF58"
-                    else -> {
-                        "#4BEBFF"
-                    }
-                }*/
-
             if (stage.isComplete) {
                 holder.tvStageBeatenRank.text = stage.beatenWithRank
-              //  holder.tvStageBeatenRank.setTextColor(Color.parseColor(rankColor))
                 holder.cardView.setCardBackgroundColor(Color.parseColor(cardColor))
             } else {
                 holder.tvStageBeatenRank.text = "NOT COMPLETE"
             }
 
 
-
-            holder.cardView.setOnClickListener {
+            holder.llPlay.setOnClickListener {
                 passData(position, stage.pointRecord)
             }
 
         if (isLocked) {
             holder.cardViewLocked.isVisible = true
+            holder.llPlay.isVisible = false
         }
     }
 

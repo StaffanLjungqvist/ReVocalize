@@ -9,7 +9,7 @@
         <entry key="..\:/Users/Staffan/AndroidStudioProjects/ReVocalize/app/src/main/res/layout/fragment_exit.xml" value="0.2578125" />
         <entry key="..\:/Users/Staffan/AndroidStudioProjects/ReVocalize/app/src/main/res/layout/fragment_game_over.xml" value="0.2994791666666667" />
         <entry key="..\:/Users/Staffan/AndroidStudioProjects/ReVocalize/app/src/main/res/layout/fragment_in_game.xml" value="0.33" />
-        <entry key="..\:/Users/Staffan/AndroidStudioProjects/ReVocalize/app/src/main/res/layout/fragment_intro.xml" value="0.38385416666666666" />
+        <entry key="..\:/Users/Staffan/AndroidStudioProjects/ReVocalize/app/src/main/res/layout/fragment_intro.xml" value="0.75" />
         <entry key="..\:/Users/Staffan/AndroidStudioProjects/ReVocalize/app/src/main/res/layout/fragment_level_complete.xml" value="0.67" />
         <entry key="..\:/Users/Staffan/AndroidStudioProjects/ReVocalize/app/src/main/res/layout/fragment_start.xml" value="0.3140625" />
         <entry key="..\:/Users/Staffan/AndroidStudioProjects/ReVocalize/app/src/main/res/layout/fragment_success.xml" value="0.5" />
@@ -19,16 +19,12 @@
         <entry key="app/src/main/res/drawable/rounded_size.xml" value="0.145" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.46290130615234376" />
         <entry key="app/src/main/res/layout/fragment_in_game.xml" value="0.15501519756838905" />
-        <entry key="app/src/main/res/layout/fragment_intro.xml" value="0.33311162877965855" />
-        <entry key="app/src/main/res/layout/fragment_level_complete.xml" value="0.3443008422851563" />
-        <entry key="app/src/main/res/layout/fragment_success.xml" value="0.2935185185185185" />
         <entry key="app/src/main/res/layout/item_view.xml" value="0.1" />
         <entry key="app/src/main/res/layout/slize_item.xml" value="0.23640899658203127" />
-        <entry key="app/src/main/res/layout/stage_item.xml" value="0.2935185185185185" />
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_X" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_X" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

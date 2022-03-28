@@ -39,8 +39,8 @@ class IntroFragment : Fragment() {
 
         binding.tvStageNumber.text = (modelIngame.stageIndex + 1).toString()
         binding.tvStageName.text = stage.name
-        binding.tvPhraseAmount.text = stage.phraseList.size.toString()
-        binding.tvStartingPoints.text = stage.startingPoints.toString()
+        binding.tvLevels.text = stage.phraseList.size.toString()
+        binding.tvStartPoints.text = stage.startingPoints.toString()
         binding.tvPointsForGold.text = stage.pointsForGold.toString()
         binding.tvPointsForSilver.text = stage.pointsForSilver.toString()
         Log.d(TAG, "Skriver ute användarrekordet ${stage.pointRecord}")
