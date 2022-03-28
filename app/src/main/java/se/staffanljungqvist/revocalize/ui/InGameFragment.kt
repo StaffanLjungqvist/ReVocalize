@@ -2,6 +2,8 @@ package se.staffanljungqvist.revocalize.ui
 
 import android.graphics.Color
 import android.graphics.PorterDuff
+import android.media.MediaPlayer
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -16,11 +18,11 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import se.staffanljungqvist.revocalize.R
-import se.staffanljungqvist.revocalize.adapters.AudioAdapter
 import se.staffanljungqvist.revocalize.adapters.SlizeRecAdapter
 import se.staffanljungqvist.revocalize.adapters.TTSAdapter
 import se.staffanljungqvist.revocalize.databinding.FragmentInGameBinding
-import se.staffanljungqvist.revocalize.viewmodels.ViewModel
+import se.staffanljungqvist.revocalize.models.Slize
+import se.staffanljungqvist.revocalize.viewmodels.IngameViewModel
 import java.util.*
 
 
@@ -28,21 +30,27 @@ val TAG = "revodebug"
 
 class InGameFragment : Fragment() {
 
-    val model: ViewModel by activityViewModels()
+    val model: IngameViewModel by activityViewModels()
 
     private var _binding: FragmentInGameBinding? = null
     private val binding get() = _binding!!
 
     private lateinit var myRecyclerView: RecyclerView
     private var slizeRecAdapter: SlizeRecAdapter = SlizeRecAdapter()
-    lateinit var audioAdapter: AudioAdapter
     private lateinit var ttsAdapter: TTSAdapter
+
+    var mediaPlayer: MediaPlayer? = null
+    var failPlayer : MediaPlayer? = null
 
     private var listenMode = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         slizeRecAdapter.fragment = this
+        val stageIndex = arguments?.getInt("stage")
+        val stageRecord = arguments?.getInt("score")
+        model.loadStage(requireContext(), stageIndex!!, stageRecord!!)
+        model.stageIndex = stageIndex
     }
 
     override fun onCreateView(
@@ -51,7 +59,6 @@ class InGameFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         _binding = FragmentInGameBinding.inflate(inflater, container, false)
-
         return binding.root
     }
 
@@ -61,163 +68,166 @@ class InGameFragment : Fragment() {
         requireActivity().supportFragmentManager.beginTransaction()
             .add(R.id.fragmentContainerView, IntroFragment()).addToBackStack(null).commit()
 
+
+
         model.loadPhrase()
 
-        audioAdapter = AudioAdapter(requireContext())
         ttsAdapter = TTSAdapter(requireContext())
+        ttsAdapter.textPhrase = model.currentPhrase.text
 
         myRecyclerView = binding.rvSlizes
         myRecyclerView.adapter = slizeRecAdapter
         myRecyclerView.layoutManager = GridLayoutManager(requireContext(), 1)
-
         itemTouchHelper.attachToRecyclerView(myRecyclerView)
 
-
-        /*Observerar diverse  "är klar = true" booleans i diverse adaptrar för att vänta in färdiga processer
-        och göra saker i rätt ordning.
-        Todo : Finns ett bättre sätt?
-         */
-
-        ttsAdapter.ttsInitiated.observe(requireActivity(), androidx.lifecycle.Observer {
-            ttsAdapter.saveToAudioFile(model.currentPhrase.text)
-        })
-
         ttsAdapter.ttsAudiofileWritten.observe(requireActivity(), androidx.lifecycle.Observer {
-            audioAdapter.loadAudio(ttsAdapter.path)
-            model.audioReady.value = false
+            if (it) loadAudio()
         })
 
-        audioAdapter.audioReady.observe(requireActivity(), androidx.lifecycle.Observer {
-            Log.d(TAG, "ljudfil färdig")
-            model.audioReady.value = true
-            model.audioReady.value = false
-            makeSlices()
-            binding.btnPlay.isVisible = true
-            binding.tvSentence.text = model.currentPhrase.text
-            binding.tvCurrentPhrase.text = model.phraseIndex.toString()
-            binding.tvTotalPhrases.text = model.currentStage.phraseList.size.toString()
+        model.slizeIndex.observe(requireActivity(), androidx.lifecycle.Observer {
+            slizeRecAdapter.blinknumber = it
+            slizeRecAdapter.notifyDataSetChanged()
+            if (it != -1 && it != -2 && !model.isCorrect) playSlize(model.slices!![it])
+            if (it == -2 && mediaPlayer != null) mediaPlayer?.pause()
+        })
+
+
+        model.doneIterating.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            if (it) checkAnswer()
+        })
+
+        binding.btnPlay.setOnClickListener {
+            model.iterateSlices(model.slices!!)
+            it.isVisible = false
+        }
+
+        binding.btnCheck.setOnClickListener {
             binding.btnCheck.visibility = View.INVISIBLE
-            binding.tvGuessesRemaining.text = model.points.toString()
+            if (model.makeGuess()) {
+                model.iterateSlices(model.slices!!)
+                playFullPhrase()
+            }
+            model.iterateSlices(model.slices!!)
+        }
+    }
+
+    fun initializeUI() {
+        makeSlices()
+        binding.btnPlay.isVisible = true
+        binding.tvSentence.text = model.currentPhrase.text.parentenses()
+        binding.tvCurrentPhrase.text = model.phraseIndex.toString()
+        binding.tvTotalPhrases.text = model.currentStage.phraseList.size.toString()
+        binding.btnCheck.visibility = View.INVISIBLE
+        binding.tvGuessesRemaining.text = model.points.toString()
+        model.audioReady.value = true
+        model.audioReady.value = false
+    }
+
+    fun makeSlices() {
+        model.makeSlices(mediaPlayer!!.duration)
+        slizeRecAdapter.slizes = model.slices!!
+        myRecyclerView.layoutManager = GridLayoutManager(requireContext(), model.slices!!.size)
+        slizeRecAdapter.notifyDataSetChanged()
+    }
+
+    fun loadNewPhrase() {
+        model.loadPhrase()
+        ttsAdapter.saveToAudioFile(model.currentPhrase.text)
+        listenMode = true
+    }
+
+    fun loadAudio() {
+        val audioFile = Uri.parse(requireContext().filesDir.toString() + "/myreq.wav")
+        Log.d(TAG, "AA Uri omgord till File : ${audioFile}")
+        mediaPlayer = MediaPlayer.create(context, audioFile)
+        mediaPlayer!!.setOnPreparedListener(MediaPlayer.OnPreparedListener {
+            Log.d(TAG, "nu är mediaplayer skapad")
+            initializeUI()
         })
+    }
 
+    fun playSlize(slize: Slize) {
+        mediaPlayer?.seekTo(slize.start)
+        mediaPlayer?.start()
+    }
 
-        //Lyssnar om användaren har gjort en gissning samt alla ljud har spelats upp.
-        slizeRecAdapter.hasChecked.observe(requireActivity(), androidx.lifecycle.Observer {
+    fun playFullPhrase() {
+        mediaPlayer?.seekTo(0)
+        mediaPlayer?.start()
+    }
+
+    fun checkAnswer(){
+            slizeRecAdapter.blinknumber = -1
+            slizeRecAdapter.notifyDataSetChanged()
             binding.tvGuessesRemaining.text = model.points.toString()
+
             if (model.gameOver) {
-                audioAdapter.playGameOver()
                 requireActivity().supportFragmentManager.beginTransaction()
                     .add(R.id.fragmentContainerView, GameOverFragment()).addToBackStack(null)
                     .commit()
             } else if (model.stageComplete) {
-                audioAdapter.playStageComplete()
                 requireActivity().supportFragmentManager.beginTransaction()
-                    .add(R.id.fragmentContainerView, LevelCompleteFragment()).addToBackStack(null)
+                    .add(R.id.fragmentContainerView, LevelCompleteFragment())
+                    .addToBackStack(null)
                     .commit()
             } else if (model.isCorrect) correctAnswer()
             else wrongAnswer()
-
-        })
-        binding.btnPlay.setOnClickListener {
-            it.isVisible = false
-            slizeRecAdapter.runLight(model.slizes!!)
-            audioAdapter.playSlices(model.slizes!!)
-        }
-        binding.btnCheck.setOnClickListener {
-            binding.btnCheck.visibility = View.INVISIBLE
-            slizeRecAdapter.runLight(model.slizes!!)
-            if (model.makeGuess()) audioAdapter.playFullPhrase()
-            else audioAdapter.playSlices(model.slizes!!)
-        }
-
-
-    }
-
-    fun makeSlices() {
-
-        val duration = audioAdapter.getDuration()
-        model.makeSlices(duration)
-        slizeRecAdapter.slizes = model.slizes!!
-        myRecyclerView.layoutManager = GridLayoutManager(requireContext(), model.slizes!!.size)
-        slizeRecAdapter.notifyDataSetChanged()
-    }
-
-    fun load() {
-        model.loadPhrase()
-        ttsAdapter.saveToAudioFile(model.currentPhrase.text)
-        listenMode = true
     }
 
     fun correctAnswer() {
         requireActivity().supportFragmentManager.beginTransaction()
             .add(R.id.fragmentContainerView, SuccessFragment()).addToBackStack(null)
             .commit()
-
-        if (model.bonus != 0) audioAdapter.playPerfect()
-        audioAdapter.playSuccess()
-        load()
+        loadNewPhrase()
     }
 
     fun wrongAnswer() {
         if (!listenMode) {
+            failPlayer = MediaPlayer.create(requireContext(), R.raw.fail)
+            failPlayer!!.start()
+
             binding.llGuessesCircle.background.setColorFilter(Color.parseColor("#FF0000"), PorterDuff.Mode.SRC_ATOP)
             binding.tvGuessesRemaining.setTextColor(Color.parseColor("#FFFFFF"))
 
             Handler(Looper.getMainLooper()).postDelayed(Runnable {
                 binding.llGuessesCircle.background.setColorFilter(Color.parseColor("#FFFFFF"), PorterDuff.Mode.SRC_ATOP)
                 binding.tvGuessesRemaining.setTextColor(Color.parseColor("#000000"))
-
             }, 500)
-            audioAdapter.playFail()
         }
+
         listenMode = false
         binding.btnCheck.isVisible = true
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        Log.d(TAG, "inGameFragment Destroyed")
+        mediaPlayer?.stop()
         _binding = null
+        slizeRecAdapter.blinkHandler.removeCallbacksAndMessages(null);
     }
 
 
     //Kod för byta plats på recyclerView viewholders med drag and drop.
-
     private val itemTouchHelper by lazy {
-
         val simpleItemTouchCallback =
             object : ItemTouchHelper.SimpleCallback(
                 ItemTouchHelper.LEFT or
                         ItemTouchHelper.RIGHT or
                         ItemTouchHelper.START or
                         ItemTouchHelper.END, 0
-            ) {
-
-                override fun onMoved(
-                    recyclerView: RecyclerView,
-                    viewHolder: RecyclerView.ViewHolder,
-                    fromPos: Int,
-                    target: RecyclerView.ViewHolder,
-                    toPos: Int,
-                    x: Int,
-                    y: Int
-                ) {
-                    super.onMoved(recyclerView, viewHolder, fromPos, target, toPos, x, y)
-                }
-
-
+            ){
                 override fun onMove(
                     recyclerView: RecyclerView,
                     viewHolder: RecyclerView.ViewHolder,
                     target: RecyclerView.ViewHolder
                 ): Boolean {
-
-
                     val from = viewHolder.adapterPosition
                     val to = target.adapterPosition
                     // 2. Update the backing model. Custom implementation in
                     //    MainRecyclerViewAdapter. You need to implement
                     //    reordering of the backing model inside the method.
-                    Collections.swap(model.slizes, from, to)
+                    Collections.swap(model.slices, from, to)
 
                     recyclerView.adapter?.notifyItemMoved(from, to)
 
@@ -232,7 +242,6 @@ class InGameFragment : Fragment() {
                     //    ItemTouchHelper handles horizontal swipe as well, but
                     //    it is not relevant with reordering. Ignoring here.
                 }
-
                 override fun isLongPressDragEnabled(): Boolean {
                     return true
                 }
@@ -240,9 +249,12 @@ class InGameFragment : Fragment() {
         ItemTouchHelper(simpleItemTouchCallback)
     }
 
-
     fun startDragging(viewHolder: RecyclerView.ViewHolder) {
         itemTouchHelper.startDrag(viewHolder)
+    }
+
+    fun String.parentenses() : String{
+        return "\"" + this + "\""
     }
 
 }

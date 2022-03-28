@@ -1,28 +1,24 @@
 package se.staffanljungqvist.revocalize.builders
 
-import se.staffanljungqvist.revocalize.models.Stage
+import se.staffanljungqvist.revocalize.models.StageModelClass
 import se.staffanljungqvist.revocalize.models.Phrase
-import se.staffanljungqvist.revocalize.models.Rank
 
 
-object Stages {
 
-val StageList = listOf(
-    Stage(
+val StageList : List<StageModelClass> = listOf(
+    StageModelClass(
+        1,
         "\"UPLIFTING QUOTES\"",
-        "EASY",
         4,
         3,
         2,
-
         phraseList = listOf<Phrase>(
-            Phrase(  "Don’t want to close my eyes I don’t want to fall asleep ‘Cause I’d miss you baby And I don’t want to miss a thing", 3),
-
+          //  Phrase(  "Don’t want to close my eyes I don’t want to fall asleep ‘Cause I’d miss you baby And I don’t want to miss a thing", 3),
+            Phrase("A problem is a chance for you to do your best.", 3),
             Phrase("Believe you can and you are halfway there.", 3),
             Phrase("Try to be a rainbow in someone else’s cloud.", 3),
-          //  Phrase("Each day comes bearing its gifts. Untie the ribbon.", 3),
-          //  Phrase("A problem is a chance for you to do your best.", 3),
-        //    Phrase("The way to get started is to quit talking and begin doing.", 3),
+            Phrase("Each day comes bearing its gifts. Untie the ribbon.", 3),
+            Phrase("The way to get started is to quit talking and begin doing.", 3),
         )
     ),
 
@@ -31,9 +27,9 @@ val StageList = listOf(
     Great opportunities to help others seldom come, but small ones surround us every day.
     */
 
-    Stage(
+    StageModelClass(
+        2,
         "\"MOVIE QUOTES\"",
-        "EASY",
         10,
         7,
         5,
@@ -47,9 +43,9 @@ val StageList = listOf(
             )
     ),
 
-    Stage(
+    StageModelClass(
+        3,
         "\"SONG LYRICS\"",
-        "EASY",
         10,
         7,
         5,
@@ -62,9 +58,9 @@ val StageList = listOf(
         )
     ),
 
-    Stage(
+    StageModelClass(
+        4,
         "\"UPLIFTING QUOTES 2\"",
-        "MEDIUM",
         10,
         7,
         5,
@@ -78,9 +74,9 @@ val StageList = listOf(
         )
     ),
 
-    Stage(
+    StageModelClass(
+        5,
         "\"MOVIE QUOTES 2\"",
-        "MEDIUM",
         12,
         10,
         10,
@@ -92,9 +88,9 @@ val StageList = listOf(
         )
     ),
 
-    Stage(
+    StageModelClass(
+        6,
         "\"SONG LYRICS 2\"",
-        "MEDIUM",
         12,
         10,
         5,
@@ -108,9 +104,9 @@ val StageList = listOf(
     ),
 
 
-    Stage(
+    StageModelClass(
+        7,
         "\"UPLIFTING QUOTES 3\"",
-        "HARD",
         20,
         10,
         10,
@@ -122,9 +118,9 @@ val StageList = listOf(
             Phrase("Don't judge each day by the harvest you reap but by the seeds that you plant.", 5),
         )
     ),
-    Stage(
+    StageModelClass(
+        8,
         "\"SONG LYRICS 3\"",
-        "HARD",
         12,
         9,
         20,
@@ -138,9 +134,9 @@ val StageList = listOf(
 
             )
     ),
-    Stage(
+    StageModelClass(
+        9,
         "\"UPLIFTING QUOTES 4\"",
-        "HARD",
         20,
         10,
         10,
@@ -153,9 +149,9 @@ val StageList = listOf(
         )
     ),
 
-    Stage(
+    StageModelClass(
+        10,
         "\"SONG LYRICS 4\"",
-        "HARD",
         12,
         9,
         20,
@@ -168,9 +164,9 @@ val StageList = listOf(
 
             )
     ),
-    Stage(
+    StageModelClass(
+        11,
         "\"SONG LYRICS LONG\"",
-        "EASY",
         12,
         9,
         10,
@@ -191,15 +187,13 @@ val StageList = listOf(
             Phrase("‘Cause I’m just a teenage dirtbag baby Yeah, I’m just a teenage dirtbag baby Listen to Iron Maiden, baby, with me, ooh", 6),
             Phrase("Don’t want to close my eyes I don’t want to fall asleep ‘Cause I’d miss you baby And I don’t want to miss a thing", 7),
             Phrase("Sweet dreams are made of this Who am I to disagree? I travel the world And the seven seas, Everybody’s looking for something", 7),
-
             )
     ),
 )
-}
 
 
 
-object TextPhrases {
+/*object TextPhrases {
     val textlist = listOf(
         "Believe you can and you are halfway there.",
         "The greatest glory in living lies not in never falling, but in rising every time we fall",
@@ -220,7 +214,7 @@ object TextPhrases {
     //    "Life is what happens when you're busy making other plans",
 
     )
-}
+}*/
 
 object Colors {
     val colors = listOf(
@@ -232,17 +226,5 @@ object Colors {
         "#FF4B7C",
         "#9FFF94",
         "#87FFE6"
-
-
-/*        "#FFFF58",
-        "#8F0DFF",
-        "#E51919",
-        "#FF6C00",
-        "#FF4BF8",
-        "#4BEBFF",
-        "#38FF75",
-        "#88FF00",
-        "#FACA00",
-        "#009FF8",*/
     )
 }

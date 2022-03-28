@@ -1,5 +1,6 @@
 package se.staffanljungqvist.revocalize.ui
 
+import android.media.MediaPlayer
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -8,13 +9,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import se.staffanljungqvist.revocalize.R
 import se.staffanljungqvist.revocalize.databinding.FragmentGameOverBinding
-import se.staffanljungqvist.revocalize.databinding.FragmentInGameBinding
-import se.staffanljungqvist.revocalize.viewmodels.ViewModel
+import se.staffanljungqvist.revocalize.viewmodels.IngameViewModel
 
 
 class GameOverFragment : Fragment() {
-
-    val model : ViewModel by activityViewModels()
 
     private var _binding: FragmentGameOverBinding? = null
     private val binding get() = _binding!!
@@ -33,13 +31,16 @@ class GameOverFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
+        val gameOverPlayer = MediaPlayer.create(context, R.raw.fail)
+        gameOverPlayer.start()
+
         binding.btnBackToMain.setOnClickListener {
             requireActivity().supportFragmentManager.beginTransaction().replace(R.id.fragmentContainerView, StartFragment()).commit()
             requireActivity().supportFragmentManager.popBackStack()
+            activity?.viewModelStore?.clear();
         }
-
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()
