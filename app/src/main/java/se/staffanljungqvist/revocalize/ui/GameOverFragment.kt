@@ -6,10 +6,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.activityViewModels
 import se.staffanljungqvist.revocalize.R
 import se.staffanljungqvist.revocalize.databinding.FragmentGameOverBinding
-import se.staffanljungqvist.revocalize.viewmodels.IngameViewModel
 
 
 class GameOverFragment : Fragment() {
@@ -36,7 +34,7 @@ class GameOverFragment : Fragment() {
         gameOverPlayer.start()
 
         binding.btnBackToMain.setOnClickListener {
-            requireActivity().supportFragmentManager.beginTransaction().replace(R.id.fragmentContainerView, StartFragment()).commit()
+            requireActivity().supportFragmentManager.beginTransaction().replace(R.id.fragmentContainerView, StageSelectFragment()).commit()
             requireActivity().supportFragmentManager.popBackStack()
             activity?.viewModelStore?.clear();
         }

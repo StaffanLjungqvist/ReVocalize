@@ -24,7 +24,7 @@ class ExitFragment : Fragment() {
 
         view.findViewById<Button>(R.id.btnConfirm).setOnClickListener {
             requireActivity().supportFragmentManager.popBackStack()
-            requireActivity().supportFragmentManager.beginTransaction().replace(R.id.fragmentContainerView, StartFragment()).commit()
+            requireActivity().supportFragmentManager.beginTransaction().replace(R.id.fragmentContainerView, StageSelectFragment()).commit()
             activity?.viewModelStore?.clear();
         }
 

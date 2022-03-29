@@ -55,7 +55,7 @@ class LevelCompleteFragment : Fragment() {
         binding.tvCompleteRank.setTextColor(Color.parseColor(rankColor))
 
         binding.btnReturnMain.setOnClickListener {
-            requireActivity().supportFragmentManager.beginTransaction().replace(R.id.fragmentContainerView, StartFragment()).commit()
+            requireActivity().supportFragmentManager.beginTransaction().replace(R.id.fragmentContainerView, StageSelectFragment()).commit()
             requireActivity().supportFragmentManager.popBackStack()
             activity?.viewModelStore?.clear();
         }

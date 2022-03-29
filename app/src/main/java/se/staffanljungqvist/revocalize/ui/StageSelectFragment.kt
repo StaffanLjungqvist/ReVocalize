@@ -10,18 +10,18 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import se.staffanljungqvist.revocalize.adapters.StageRecAdapter
-import se.staffanljungqvist.revocalize.databinding.FragmentStartBinding
+import se.staffanljungqvist.revocalize.databinding.FragmentStageSelectBinding
 import se.staffanljungqvist.revocalize.viewmodels.IngameViewModel
 import se.staffanljungqvist.revocalize.viewmodels.StartViewModel
 
 
-class StartFragment : Fragment() {
+class StageSelectFragment : Fragment() {
 
     val model : StartViewModel by activityViewModels()
 
     private lateinit var recyclerView : RecyclerView
 
-    private var _binding: FragmentStartBinding? = null
+    private var _binding: FragmentStageSelectBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -29,7 +29,7 @@ class StartFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        _binding = FragmentStartBinding.inflate(inflater, container, false)
+        _binding = FragmentStageSelectBinding.inflate(inflater, container, false)
         return binding.root
     }
 

@@ -1,16 +1,12 @@
 package se.staffanljungqvist.revocalize
 
-import android.content.res.AssetManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.WindowManager
-import androidx.activity.viewModels
 import se.staffanljungqvist.revocalize.databinding.ActivityMainBinding
 import se.staffanljungqvist.revocalize.ui.ExitFragment
 import se.staffanljungqvist.revocalize.ui.InGameFragment
-import se.staffanljungqvist.revocalize.ui.StartFragment
-import se.staffanljungqvist.revocalize.viewmodels.IngameViewModel
-import se.staffanljungqvist.revocalize.viewmodels.StartViewModel
+import se.staffanljungqvist.revocalize.ui.StageSelectFragment
 
 val TAG = "revodebug"
 
@@ -33,7 +29,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
 
-        if(supportFragmentManager.fragments.first() is StartFragment)
+        if(supportFragmentManager.fragments.first() is StageSelectFragment)
         {
             super.onBackPressed()
         }

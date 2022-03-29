@@ -2,7 +2,6 @@ package se.staffanljungqvist.revocalize.adapters
 
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,11 +12,11 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import se.staffanljungqvist.revocalize.R
 import se.staffanljungqvist.revocalize.ui.InGameFragment
-import se.staffanljungqvist.revocalize.ui.StartFragment
+import se.staffanljungqvist.revocalize.ui.StageSelectFragment
 
 class StageRecAdapter : RecyclerView.Adapter<StageRecAdapter.StageViewHolder>() {
 
-    lateinit var fragment: StartFragment
+    lateinit var fragment: StageSelectFragment
 
     inner class StageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val cardView = view.findViewById<CardView>(R.id.cvStageCard)
