@@ -112,9 +112,9 @@
         android:text="0"
         android:textColor="@color/white"
         android:textStyle="bold"
-        app:layout_constraintEnd_toStartOf="@+id/tvUserBest"
+        app:layout_constraintEnd_toEndOf="@+id/textView18"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/tvLevels"
+        app:layout_constraintStart_toStartOf="@+id/textView18"
         app:layout_constraintTop_toTopOf="@+id/tvUserBest" />
 
     <TextView
@@ -124,9 +124,9 @@
         android:text="0"
         android:textColor="@color/white"
         android:textStyle="bold"
-        app:layout_constraintEnd_toStartOf="@+id/tvStartPoints"
+        app:layout_constraintEnd_toEndOf="@+id/textView19"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/textView19"
         app:layout_constraintTop_toTopOf="@+id/tvUserBest" />
 
     <TextView
@@ -136,9 +136,9 @@
         android:text="0"
         android:textColor="@color/white"
         android:textStyle="bold"
-        app:layout_constraintEnd_toStartOf="@+id/tvPointsForGold"
+        app:layout_constraintEnd_toEndOf="@+id/textView20"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/tvUserBest"
+        app:layout_constraintStart_toStartOf="@+id/textView20"
         app:layout_constraintTop_toTopOf="@+id/tvUserBest" />
 
     <TextView
@@ -148,9 +148,9 @@
         android:text="0"
         android:textColor="@color/white"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/textView21"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/tvPointsForSilver"
+        app:layout_constraintStart_toStartOf="@+id/textView21"
         app:layout_constraintTop_toTopOf="@+id/tvUserBest" />
 
     <TextView
@@ -159,24 +159,26 @@
         android:layout_height="wrap_content"
         android:text="STARTING POINTS"
         android:textColor="@color/pink"
-        android:textStyle="bold"
         android:textSize="12sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/textView13"
-        app:layout_constraintEnd_toEndOf="@+id/tvStartPoints"
-        app:layout_constraintStart_toStartOf="@+id/tvStartPoints"
+        app:layout_constraintEnd_toStartOf="@+id/textView13"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/textView19"
         app:layout_constraintTop_toTopOf="@+id/textView13" />
 
     <TextView
         android:id="@+id/textView19"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="LEVELS"
-        android:textSize="12sp"
+        android:text="PHRASES"
         android:textColor="@color/white"
+        android:textSize="12sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/textView13"
-        app:layout_constraintEnd_toEndOf="@+id/tvLevels"
-        app:layout_constraintStart_toStartOf="@+id/tvLevels"
+        app:layout_constraintEnd_toStartOf="@+id/textView18"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/textView13" />
 
     <TextView
@@ -184,12 +186,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="FOR SILVER"
-        android:textSize="12sp"
         android:textColor="@color/silver"
+        android:textSize="12sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/textView13"
-        app:layout_constraintEnd_toEndOf="@+id/tvPointsForSilver"
-        app:layout_constraintStart_toStartOf="@+id/tvPointsForSilver"
+        app:layout_constraintEnd_toStartOf="@+id/textView21"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/textView13"
         app:layout_constraintTop_toTopOf="@+id/textView13" />
 
     <TextView
@@ -197,12 +200,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="FOR GOLD"
-        android:textSize="12sp"
         android:textColor="@color/gold"
+        android:textSize="12sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/textView13"
-        app:layout_constraintEnd_toEndOf="@+id/tvPointsForGold"
-        app:layout_constraintStart_toStartOf="@+id/tvPointsForGold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/textView20"
         app:layout_constraintTop_toTopOf="@+id/textView13" /><![CDATA[
 
     26sp"
