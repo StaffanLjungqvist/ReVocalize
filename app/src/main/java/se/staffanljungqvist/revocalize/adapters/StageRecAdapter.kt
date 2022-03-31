@@ -68,10 +68,10 @@ class StageRecAdapter : RecyclerView.Adapter<StageRecAdapter.StageViewHolder>() 
                 passData(position, stage.pointRecord)
             }
 
-        if (isLocked) {
+/*        if (isLocked) {
             holder.cardViewLocked.isVisible = true
             holder.llPlay.isVisible = false
-        }
+        }*/
     }
 
     fun passData(stage: Int, score : Int) {

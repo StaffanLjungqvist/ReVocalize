@@ -56,10 +56,12 @@ class SlizeRecAdapter() : RecyclerView.Adapter<SlizeRecAdapter.MyViewHolder>() {
             holder.highLight.isVisible = true
             holder.highLight.apply {
                 if (slizeLength != null) {
-                    animate()
-                        .alpha(0f)
-                        .setDuration(2000.toLong())
-                        .setListener(null)
+                    holder.highLight.isVisible = true
+         //           animate()
+        //                .scaleX(1f)
+      //                  .alpha(0f)
+       //                 .setDuration(2000.toLong())
+        //                .setListener(null)
                 }
             }
             Log.d(TAG, "slizepositionen $position är vit")

@@ -121,6 +121,7 @@ class InGameFragment : Fragment() {
         binding.tvGuessesRemaining.text = model.points.toString()
         model.audioReady.value = true
         model.audioReady.value = false
+        listenMode = true
     }
 
     fun makeSlices() {
@@ -193,6 +194,7 @@ class InGameFragment : Fragment() {
                 binding.llGuessesCircle.background.setColorFilter(Color.parseColor("#FFFFFF"), PorterDuff.Mode.SRC_ATOP)
                 binding.tvGuessesRemaining.setTextColor(Color.parseColor("#000000"))
             }, 500)
+            listenMode = false
         }
 
         listenMode = false
