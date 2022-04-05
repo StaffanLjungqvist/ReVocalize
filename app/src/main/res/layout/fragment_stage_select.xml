@@ -7,16 +7,6 @@
     android:background="@color/black"
     tools:context=".ui.StageSelectFragment">
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:src="@drawable/revocalize_logo"
-        app:layout_constraintBottom_toTopOf="@+id/textView2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvStageRecyclerView"
         android:layout_width="0dp"
@@ -34,14 +24,15 @@
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="SELECT LEVEL"
+        android:layout_marginStart="32dp"
+        android:text="SELECT STAGE"
         android:textColor="@color/white"
-        android:textSize="20sp"
+        android:textSize="40sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.25" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

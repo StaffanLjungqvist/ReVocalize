@@ -17,6 +17,10 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.analytics.ktx.logEvent
+import com.google.firebase.ktx.Firebase
 import se.staffanljungqvist.revocalize.R
 import se.staffanljungqvist.revocalize.adapters.SlizeRecAdapter
 import se.staffanljungqvist.revocalize.adapters.TTSAdapter
@@ -31,6 +35,8 @@ val TAG = "revodebug"
 class InGameFragment : Fragment() {
 
     val model: IngameViewModel by activityViewModels()
+
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     private var _binding: FragmentInGameBinding? = null
     private val binding get() = _binding!!
@@ -51,6 +57,14 @@ class InGameFragment : Fragment() {
         val stageRecord = arguments?.getInt("score")
         model.loadStage(requireContext(), stageIndex!!, stageRecord!!)
         model.stageIndex = stageIndex
+
+        firebaseAnalytics = Firebase.analytics
+
+
+        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.LEVEL_START) {
+            param("stage index", stageIndex.toString())
+        }
+
     }
 
     override fun onCreateView(
@@ -80,11 +94,11 @@ class InGameFragment : Fragment() {
         myRecyclerView.layoutManager = GridLayoutManager(requireContext(), 1)
         itemTouchHelper.attachToRecyclerView(myRecyclerView)
 
-        ttsAdapter.ttsAudiofileWritten.observe(requireActivity(), androidx.lifecycle.Observer {
+        ttsAdapter.ttsAudiofileWritten.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             if (it) loadAudio()
         })
 
-        model.slizeIndex.observe(requireActivity(), androidx.lifecycle.Observer {
+        model.slizeIndex.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             slizeRecAdapter.blinknumber = it
             slizeRecAdapter.notifyDataSetChanged()
             if (it != -1 && it != -2 && !model.isCorrect) playSlize(model.slices!![it])
@@ -163,10 +177,22 @@ class InGameFragment : Fragment() {
             binding.tvGuessesRemaining.text = model.points.toString()
 
             if (model.gameOver) {
+
+                Firebase.analytics.logEvent("game over") {
+                    param("stage index", arguments?.getInt("stage").toString())
+                    param("phrase index", model.phraseIndex.toString())
+                }
+
                 requireActivity().supportFragmentManager.beginTransaction()
                     .add(R.id.fragmentContainerView, GameOverFragment()).addToBackStack(null)
                     .commit()
             } else if (model.stageComplete) {
+
+                Firebase.analytics.logEvent(FirebaseAnalytics.Event.LEVEL_END) {
+                    param("stage index", arguments?.getInt("stage").toString())
+                }
+
+
                 requireActivity().supportFragmentManager.beginTransaction()
                     .add(R.id.fragmentContainerView, LevelCompleteFragment())
                     .addToBackStack(null)

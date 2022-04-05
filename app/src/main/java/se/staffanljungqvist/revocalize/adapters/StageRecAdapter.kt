@@ -10,6 +10,10 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.analytics.ktx.logEvent
+import com.google.firebase.ktx.Firebase
 import se.staffanljungqvist.revocalize.R
 import se.staffanljungqvist.revocalize.ui.InGameFragment
 import se.staffanljungqvist.revocalize.ui.StageSelectFragment
@@ -68,6 +72,7 @@ class StageRecAdapter : RecyclerView.Adapter<StageRecAdapter.StageViewHolder>() 
                 passData(position, stage.pointRecord)
             }
 
+        //Läser nivåer som inte är avklarade
 /*        if (isLocked) {
             holder.cardViewLocked.isVisible = true
             holder.llPlay.isVisible = false
@@ -75,6 +80,7 @@ class StageRecAdapter : RecyclerView.Adapter<StageRecAdapter.StageViewHolder>() 
     }
 
     fun passData(stage: Int, score : Int) {
+
         val bundle = Bundle()
         bundle.putInt("stage", stage)
         bundle.putInt("score", score)
@@ -82,6 +88,9 @@ class StageRecAdapter : RecyclerView.Adapter<StageRecAdapter.StageViewHolder>() 
         ingameFragment.arguments = bundle
         fragment.requireActivity().supportFragmentManager.beginTransaction()
             .replace(R.id.fragmentContainerView, ingameFragment).commit()
+
+
+
     }
 
     override fun getItemCount(): Int {

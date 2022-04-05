@@ -116,7 +116,7 @@
         android:paddingHorizontal="34dp"
         android:layout_marginBottom="8dp"
         android:soundEffectsEnabled="false"
-        android:text="TRY SEQUENCE"
+        android:text="CHECK SEQUENCE"
         android:textSize="18sp"
         android:textStyle="bold"
         android:visibility="invisible"
