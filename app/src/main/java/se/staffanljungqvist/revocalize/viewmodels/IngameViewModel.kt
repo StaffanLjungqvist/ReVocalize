@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.gson.Gson
@@ -27,7 +26,7 @@ class IngameViewModel : ViewModel() {
     var stageIndex = 0
     var phraseIndex = 0
     var slices: List<Slize>? = null
-    var currentPhrase = Phrase("Text Not Available", 1, listOf())
+    lateinit var currentPhrase: Phrase
     var isCorrect = false
     private var guessesUsed = 0
     var points = 100
@@ -35,7 +34,6 @@ class IngameViewModel : ViewModel() {
     var stageComplete = false
     var gameOver = false
     var bonus = 0
-    var score = 0
     var userRecord = 0
     var newRecord = false
     var toFragment = 0
@@ -75,7 +73,7 @@ class IngameViewModel : ViewModel() {
             e.printStackTrace()
         }
         points = currentStage.startingPoints
-        score = record
+        userRecord = record
     }
 
     fun loadPhrase() {

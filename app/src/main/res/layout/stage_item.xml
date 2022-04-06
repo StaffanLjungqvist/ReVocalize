@@ -86,6 +86,7 @@
                 android:background="@drawable/rounded_size"
                 android:gravity="center"
                 android:orientation="vertical"
+                android:visibility="invisible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent">
@@ -119,7 +120,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:backgroundTint="@color/grey_dark"
-        android:visibility="invisible"
+        android:visibility="visible"
         app:cardCornerRadius="19dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/cvStageCard"

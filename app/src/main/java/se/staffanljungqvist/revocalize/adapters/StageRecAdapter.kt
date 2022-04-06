@@ -2,6 +2,7 @@ package se.staffanljungqvist.revocalize.adapters
 
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,10 +12,11 @@ import androidx.cardview.widget.CardView
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import se.staffanljungqvist.revocalize.R
+import se.staffanljungqvist.revocalize.models.StageModelClass
 import se.staffanljungqvist.revocalize.ui.InGameFragment
 import se.staffanljungqvist.revocalize.ui.StageSelectFragment
 
-class StageRecAdapter : RecyclerView.Adapter<StageRecAdapter.StageViewHolder>() {
+class StageRecAdapter(val stageList: List<StageModelClass>) : RecyclerView.Adapter<StageRecAdapter.StageViewHolder>() {
 
     lateinit var fragment: StageSelectFragment
 
@@ -35,14 +37,23 @@ class StageRecAdapter : RecyclerView.Adapter<StageRecAdapter.StageViewHolder>() 
 
     override fun onBindViewHolder(holder: StageViewHolder, position: Int) {
 
-        var isLocked = false
-        val stage = fragment.model.stageList[position]
+        Log.d("revoStageAdapter", "Läser in view $position")
 
-        if (position != 0) {
-            if (!fragment.model.stageList[position - 1].isComplete) {
-                isLocked = true
+        val stage = stageList[position]
+
+
+            holder.cardViewLocked.isVisible = !stage.isComplete
+            if (stage.id == 0) {
+                holder.cardViewLocked.isVisible = false
+                holder.llPlay.isVisible = true
             }
-        }
+            else if (stageList[position - 1].isComplete) {
+                holder.cardViewLocked.isVisible = false
+                holder.llPlay.isVisible = true
+            }
+
+
+
         holder.tvStageNumber.text = (position + 1).toString()
         holder.tvStageName.text = stage.name
 
@@ -67,12 +78,6 @@ class StageRecAdapter : RecyclerView.Adapter<StageRecAdapter.StageViewHolder>() 
         holder.llPlay.setOnClickListener {
             passData(position)
         }
-
-        //Läser nivåer som inte är avklarade
-        if (isLocked) {
-            holder.cardViewLocked.isVisible = true
-            holder.llPlay.isVisible = false
-        }
     }
 
     private fun passData(stage: Int) {
@@ -88,7 +93,7 @@ class StageRecAdapter : RecyclerView.Adapter<StageRecAdapter.StageViewHolder>() 
     }
 
     override fun getItemCount(): Int {
-        return fragment.model.stageList.size
+        return stageList.size
     }
 
 }

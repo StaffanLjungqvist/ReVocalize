@@ -2,15 +2,17 @@ package se.staffanljungqvist.revocalize.ui
 
 import android.graphics.Color
 import android.graphics.PorterDuff
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.TransitionDrawable
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -108,6 +110,12 @@ class InGameFragment : Fragment() {
 
         model.doneIterating.observe(viewLifecycleOwner) {
             if (it) checkAnswer()
+            slizeRecAdapter.blinknumber = -1
+            slizeRecAdapter.notifyDataSetChanged()
+        }
+
+        model.audioReady.observe(viewLifecycleOwner) {
+            if (it) binding.tvGuessesRemaining.text = model.points.toString()
         }
 
         binding.btnPlay.setOnClickListener {
@@ -132,9 +140,8 @@ class InGameFragment : Fragment() {
         binding.tvCurrentPhrase.text = model.phraseIndex.toString()
         binding.tvTotalPhrases.text = model.currentStage.phraseList.size.toString()
         binding.btnCheck.visibility = View.INVISIBLE
-        binding.tvGuessesRemaining.text = model.points.toString()
-        model.audioReady.value = true
-        model.audioReady.value = false
+
+
         listenMode = true
     }
 
@@ -158,6 +165,8 @@ class InGameFragment : Fragment() {
         mediaPlayer!!.setOnPreparedListener {
             Log.d(TAG, "nu är mediaplayer skapad")
             initializeUI()
+            model.audioReady.value = true
+            model.audioReady.value = false
         }
     }
 
@@ -172,64 +181,55 @@ class InGameFragment : Fragment() {
     }
 
     private fun checkAnswer() {
-        slizeRecAdapter.blinknumber = -1
-        slizeRecAdapter.notifyDataSetChanged()
+
         binding.tvGuessesRemaining.text = model.points.toString()
 
-        when {
-            model.gameOver -> {
-                Firebase.analytics.logEvent("game over") {
-                    param("stage index", arguments?.getInt("stage").toString())
-                    param("phrase index", model.phraseIndex.toString())
-                }
-                requireActivity().supportFragmentManager.beginTransaction()
-                    .add(R.id.fragmentContainerView, GameOverFragment()).addToBackStack(null)
-                    .commit()
-            }
-            model.stageComplete -> {
-
-                Firebase.analytics.logEvent(FirebaseAnalytics.Event.LEVEL_END) {
-                    param("stage index", arguments?.getInt("stage").toString())
-                }
-                requireActivity().supportFragmentManager.beginTransaction()
-                    .add(R.id.fragmentContainerView, LevelCompleteFragment())
-                    .addToBackStack(null)
-                    .commit()
-            }
-            model.isCorrect -> correctAnswer()
-            else -> wrongAnswer()
+        if (model.isCorrect) correctAnswer()
+        else if(!listenMode) wrongAnswer()
+        else {
+            listenMode = false
+            binding.btnCheck.isVisible = true
         }
     }
 
     private fun correctAnswer() {
+
+        val bundle = Bundle()
+        bundle.putString("trivia", model.currentPhrase.trivia)
+        val theFragment = SuccessFragment()
+        theFragment.arguments = bundle
+
         requireActivity().supportFragmentManager.beginTransaction()
-            .add(R.id.fragmentContainerView, SuccessFragment()).addToBackStack(null)
+            .add(R.id.fragmentContainerView, theFragment).addToBackStack(null)
             .commit()
+
         loadNewPhrase()
     }
 
     private fun wrongAnswer() {
-        if (!listenMode) {
             failPlayer = MediaPlayer.create(requireContext(), R.raw.fail)
             failPlayer!!.start()
 
-            binding.llGuessesCircle.background.setColorFilter(
-                Color.parseColor("#FF0000"),
-                PorterDuff.Mode.SRC_ATOP
-            )
-            binding.tvGuessesRemaining.setTextColor(Color.parseColor("#FFFFFF"))
+            binding.tvMinusPoint.apply {
+                alpha = 1f
+                visibility = View.VISIBLE
+                animate()
+                    .alpha(0f)
+                    .setDuration(2000.toLong())
+                    .setListener(null)
+            }
 
-            Handler(Looper.getMainLooper()).postDelayed({
-                binding.llGuessesCircle.background.setColorFilter(
-                    Color.parseColor("#FFFFFF"),
-                    PorterDuff.Mode.SRC_ATOP
-                )
-                binding.tvGuessesRemaining.setTextColor(Color.parseColor("#000000"))
-            }, 500)
-            listenMode = false
-        }
+            binding.llGuessesCircleRed.apply {
+                alpha = 1f
+                visibility = View.VISIBLE
+                animate()
+                    .alpha(0f)
+                    .setDuration(2000.toLong())
+                    .setListener(null)
+            }
 
-        listenMode = false
+        if (model.)
+
         binding.btnCheck.isVisible = true
     }
 

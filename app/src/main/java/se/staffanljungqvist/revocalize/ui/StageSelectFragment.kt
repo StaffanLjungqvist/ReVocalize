@@ -41,7 +41,7 @@ class StageSelectFragment : Fragment() {
 
         model.userDataLoaded.observe(viewLifecycleOwner) {
             recyclerView = binding.rvStageRecyclerView
-            val stageAdapter = StageRecAdapter()
+            val stageAdapter = StageRecAdapter(model.stageList)
             stageAdapter.fragment = this
             recyclerView.adapter = stageAdapter
             recyclerView.layoutManager =

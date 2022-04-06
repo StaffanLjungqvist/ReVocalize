@@ -118,6 +118,7 @@
         android:id="@+id/btnReturnMain"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
+        android:layout_marginBottom="32dp"
         android:background="@drawable/rounded_button"
         android:paddingHorizontal="50dp"
         android:text="BACK TO MAIN"
@@ -125,9 +126,7 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.8" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/tvNewBest"
