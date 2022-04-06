@@ -40,15 +40,8 @@ class SuccessFragment : Fragment() {
 
         Log.d(TAG, "bonusen är ${modelIngame.bonus}")
 
-        val successPlayer = MediaPlayer.create(context, R.raw.perfect2)
+        val successPlayer = MediaPlayer.create(context, R.raw.success)
         successPlayer.start()
-
-        if (modelIngame.bonus != 0) {
-            val perfectPlayer = MediaPlayer.create(context, R.raw.success)
-            perfectPlayer.start()
-        }
-
-
 
         binding.tvGuessesRemaining.text = modelIngame.points.toString()
         binding.tvCurrentPhrase.text = (modelIngame.phraseIndex - 1).toString()

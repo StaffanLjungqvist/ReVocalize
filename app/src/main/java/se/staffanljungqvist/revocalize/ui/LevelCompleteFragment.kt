@@ -34,7 +34,7 @@ class LevelCompleteFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val stageCompletePlayer = MediaPlayer.create(context, R.raw.perfect3)
+        val stageCompletePlayer = MediaPlayer.create(context, R.raw.perfect)
         stageCompletePlayer.start()
 
         if (modelIngame.newRecord) binding.tvNewBest.isVisible = true
