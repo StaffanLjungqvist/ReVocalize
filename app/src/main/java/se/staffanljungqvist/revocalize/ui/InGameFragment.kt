@@ -160,7 +160,6 @@ class InGameFragment : Fragment() {
     private fun loadAudio() {
         val audioFile = Uri.parse(requireContext().filesDir.toString() + "/myreq.wav")
         Log.d(TAG, "AA Uri omgord till File : $audioFile")
-        mediaPlayer?.release()
         mediaPlayer = MediaPlayer.create(context, audioFile)
         mediaPlayer!!.setOnPreparedListener {
             Log.d(TAG, "nu är mediaplayer skapad")
