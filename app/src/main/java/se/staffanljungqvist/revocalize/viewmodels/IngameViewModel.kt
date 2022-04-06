@@ -34,7 +34,6 @@ class IngameViewModel : ViewModel() {
     var stageComplete = false
     var gameOver = false
     var bonus = 0
-    var userRecord = 0
     var newRecord = false
     var toFragment = 0
     val loopHandler = Handler(Looper.getMainLooper())
@@ -60,7 +59,7 @@ class IngameViewModel : ViewModel() {
     }
 
 
-    fun loadStage(context: Context, stageId: Int, record: Int) {
+    fun loadStage(context: Context, stageId: Int) {
         Log.d(TAG, "Loading stage number $stageId")
         try {
             val jsonString = getJSONFromAssets(context)!!
@@ -73,7 +72,6 @@ class IngameViewModel : ViewModel() {
             e.printStackTrace()
         }
         points = currentStage.startingPoints
-        userRecord = record
     }
 
     fun loadPhrase() {
@@ -146,7 +144,9 @@ class IngameViewModel : ViewModel() {
             guessesUsed++
             points--
         }
-        if (points < 1) gameOver = true
+        if (points < 1) {
+            gameOver = true
+        }
         return correct
     }
 

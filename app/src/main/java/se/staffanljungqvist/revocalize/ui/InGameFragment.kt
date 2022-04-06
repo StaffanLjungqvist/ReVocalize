@@ -48,7 +48,8 @@ class InGameFragment : Fragment() {
     private lateinit var ttsAdapter: TTSAdapter
 
     private var mediaPlayer: MediaPlayer? = null
-    private var failPlayer: MediaPlayer? = null
+    private lateinit var failPlayer: MediaPlayer
+    private lateinit var warningPlayer: MediaPlayer
 
     private var listenMode = true
 
@@ -56,17 +57,13 @@ class InGameFragment : Fragment() {
         super.onCreate(savedInstanceState)
         slizeRecAdapter.fragment = this
         val stageIndex = arguments?.getInt("stage")
-        val stageRecord = arguments?.getInt("score")
-        model.loadStage(requireContext(), stageIndex!!, stageRecord!!)
+        model.loadStage(requireContext(), stageIndex!!)
         model.stageIndex = stageIndex
 
         firebaseAnalytics = Firebase.analytics
-
-
         firebaseAnalytics.logEvent(FirebaseAnalytics.Event.LEVEL_START) {
             param("stage index", stageIndex.toString())
         }
-
     }
 
     override fun onCreateView(
@@ -75,6 +72,10 @@ class InGameFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         _binding = FragmentInGameBinding.inflate(inflater, container, false)
+
+        failPlayer = MediaPlayer.create(requireContext(), R.raw.warning)
+        warningPlayer = MediaPlayer.create(requireContext(), R.raw.fail)
+
         return binding.root
     }
 
@@ -114,10 +115,6 @@ class InGameFragment : Fragment() {
             slizeRecAdapter.notifyDataSetChanged()
         }
 
-        model.audioReady.observe(viewLifecycleOwner) {
-            if (it) binding.tvGuessesRemaining.text = model.points.toString()
-        }
-
         binding.btnPlay.setOnClickListener {
             model.iterateSlices(model.slices!!)
             it.isVisible = false
@@ -135,6 +132,8 @@ class InGameFragment : Fragment() {
 
     private fun initializeUI() {
         makeSlices()
+        binding.tvGuessesRemaining.text = model.points.toString()
+        if (model.points != 1) binding.tvLastGuess.isVisible = false
         binding.btnPlay.isVisible = true
         binding.tvSentence.text = model.currentPhrase.text.parentenses()
         binding.tvCurrentPhrase.text = model.phraseIndex.toString()
@@ -161,6 +160,7 @@ class InGameFragment : Fragment() {
     private fun loadAudio() {
         val audioFile = Uri.parse(requireContext().filesDir.toString() + "/myreq.wav")
         Log.d(TAG, "AA Uri omgord till File : $audioFile")
+        mediaPlayer?.release()
         mediaPlayer = MediaPlayer.create(context, audioFile)
         mediaPlayer!!.setOnPreparedListener {
             Log.d(TAG, "nu är mediaplayer skapad")
@@ -207,7 +207,6 @@ class InGameFragment : Fragment() {
     }
 
     private fun wrongAnswer() {
-            failPlayer = MediaPlayer.create(requireContext(), R.raw.fail)
             failPlayer!!.start()
 
             binding.tvMinusPoint.apply {
@@ -228,7 +227,17 @@ class InGameFragment : Fragment() {
                     .setListener(null)
             }
 
-        if (model.)
+        if (model.points == 1) {
+            binding.tvLastGuess.isVisible = true
+            warningPlayer.start()
+        }
+
+        if (model.gameOver) {
+            requireActivity().supportFragmentManager.beginTransaction()
+                .add(R.id.fragmentContainerView, GameOverFragment()).addToBackStack(null)
+                .commit()
+            return
+        }
 
         binding.btnCheck.isVisible = true
     }
