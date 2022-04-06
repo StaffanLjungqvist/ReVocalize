@@ -18,16 +18,13 @@ class TTSAdapter(val context: Context) : TextToSpeech.OnInitListener {
     private var mAudioFilename = ""
     private val mUtteranceID = "totts"
     private var tts = TextToSpeech(context, this)
-    var textPhrase ="Default textfrase"
-    var fileLocation = File(context.filesDir.toString() + "/myreq.wav")
-    val path = context.filesDir.toString() + "/myreq.wav"
-
-    var ttsInitiated = MutableLiveData<Boolean>()
+    var textPhrase = "Default textfrase"
+    private var fileLocation = File(context.filesDir.toString() + "/myreq.wav")
     var ttsAudiofileWritten = MutableLiveData<Boolean>()
 
     override fun onInit(status: Int) {
         if (status == TextToSpeech.SUCCESS) {
-            val result = tts!!.setLanguage(Locale.US)
+            val result = tts.setLanguage(Locale.US)
             if (result == TextToSpeech.LANG_MISSING_DATA) {
                 Log.e(TAG, "The language specified is not supported")
             }
@@ -43,13 +40,13 @@ class TTSAdapter(val context: Context) : TextToSpeech.OnInitListener {
     }
 
     //Skapar en tom fil i minnet vilket data senare kommer att skrivas till.
-    fun createAudioFile() {
+    private fun createAudioFile() {
         // Create audio file location
         val sddir = File(Environment.getExternalStorageDirectory().toString() + "/My File/")
         sddir.mkdir()
         mAudioFilename = sddir.absolutePath.toString() + "/" + mUtteranceID + ".wav"
 
-        Log.d(TAG, "tts skapade fil : ${mAudioFilename}")
+        Log.d(TAG, "tts skapade fil : $mAudioFilename")
         saveToAudioFile(textPhrase)
     }
 
@@ -58,12 +55,15 @@ class TTSAdapter(val context: Context) : TextToSpeech.OnInitListener {
     fun saveToAudioFile(text: String) {
 
         //Tar ut alla röster tillgängliga i mobilen med engelsk språk, och sätter slumpmässigt till tts.
-        val voicesAllEnglish = tts.voices.filter { it.name.toLowerCase().contains("en") }
+        val voicesAllEnglish =
+            tts.voices.filter { it.name.lowercase(Locale.getDefault()).contains("en") }
         val voicesFiltered = voicesAllEnglish.filterNot {
-            it.name.toLowerCase().contains("en-in") || it.name.toLowerCase().contains("en-ng")
+            it.name.lowercase(Locale.getDefault())
+                .contains("en-in") || it.name.lowercase(Locale.getDefault())
+                .contains("en-ng")
         }
         val voice = voicesFiltered.random()
-        tts.setVoice(voice)
+        tts.voice = voice
         tts.setSpeechRate("0.8".toFloat())
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -72,13 +72,13 @@ class TTSAdapter(val context: Context) : TextToSpeech.OnInitListener {
             tts.setOnUtteranceProgressListener(listener)
 
             //Skapar filen.
-            tts!!.synthesizeToFile(text, null, fileLocation, mUtteranceID)
+            tts.synthesizeToFile(text, null, fileLocation, mUtteranceID)
 
         } else {
             val hm = HashMap<String, String>()
-            hm.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, mUtteranceID)
-            tts!!.synthesizeToFile("testing", hm, mAudioFilename)
-            Log.d(TAG, "tts fulskrev  till" + mAudioFilename)
+            hm[TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID] = mUtteranceID
+            tts.synthesizeToFile("testing", hm, mAudioFilename)
+            Log.d(TAG, "tts fulskrev  till $mAudioFilename")
             ttsAudiofileWritten.value = true
             ttsAudiofileWritten.value = false
         }
@@ -87,13 +87,11 @@ class TTSAdapter(val context: Context) : TextToSpeech.OnInitListener {
 
     fun synthDone() {
         val mainHandler = Handler(Looper.getMainLooper())
-        mainHandler.post(object : Runnable {
-            override fun run() {
-                Log.d(TAG, "handler är färdig")
-                ttsAudiofileWritten.value = true
-                ttsAudiofileWritten.value = false
-            }
-        })
+        mainHandler.post {
+            Log.d(TAG, "handler är färdig")
+            ttsAudiofileWritten.value = true
+            ttsAudiofileWritten.value = false
+        }
     }
 
 

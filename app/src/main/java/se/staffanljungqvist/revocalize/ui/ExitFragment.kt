@@ -1,11 +1,11 @@
 package se.staffanljungqvist.revocalize.ui
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import androidx.fragment.app.Fragment
 import se.staffanljungqvist.revocalize.R
 
 class ExitFragment : Fragment() {
@@ -24,8 +24,9 @@ class ExitFragment : Fragment() {
 
         view.findViewById<Button>(R.id.btnConfirm).setOnClickListener {
             requireActivity().supportFragmentManager.popBackStack()
-            requireActivity().supportFragmentManager.beginTransaction().replace(R.id.fragmentContainerView, StageSelectFragment()).commit()
-            activity?.viewModelStore?.clear();
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainerView, StageSelectFragment()).commit()
+            activity?.viewModelStore?.clear()
         }
 
         view.findViewById<Button>(R.id.btnCancel).setOnClickListener {

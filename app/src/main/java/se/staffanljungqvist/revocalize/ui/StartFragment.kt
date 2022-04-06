@@ -1,13 +1,12 @@
 package se.staffanljungqvist.revocalize.ui
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import se.staffanljungqvist.revocalize.R
 import se.staffanljungqvist.revocalize.databinding.FragmentStartBinding
-import se.staffanljungqvist.revocalize.databinding.FragmentSuccessBinding
 
 
 class StartFragment : Fragment() {

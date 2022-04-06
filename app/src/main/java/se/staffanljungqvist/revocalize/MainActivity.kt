@@ -4,15 +4,11 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.WindowManager
-import com.google.firebase.analytics.FirebaseAnalytics
-import com.google.firebase.analytics.ktx.analytics
-import com.google.firebase.analytics.ktx.logEvent
-import com.google.firebase.ktx.Firebase
 import se.staffanljungqvist.revocalize.databinding.ActivityMainBinding
 import se.staffanljungqvist.revocalize.ui.*
 import java.io.File
 
-val TAG = "revodebug"
+const val TAG = "revodebug"
 
 class MainActivity : AppCompatActivity() {
 
@@ -26,12 +22,13 @@ class MainActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
+        //Kollar om ljudfilen har skapats/Det är första gången appen körs. Isåfall visas tutorial fragment
         val file = File(this.filesDir.toString() + "/myreq.wav")
-      //  if(!file.exists()) {
+        if(!file.exists()) {
             Log.d(TAG, "the audio file doesnt exists")
             supportFragmentManager.beginTransaction()
                 .add(R.id.fragmentContainerView, TutorialFragment()).addToBackStack(null).commit()
-   //     }
+        }
 
 
 
@@ -43,8 +40,8 @@ class MainActivity : AppCompatActivity() {
         }*/
 
         //Göm navigation bar och action bar
-        getSupportActionBar()?.hide();
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        supportActionBar?.hide()
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
     }
 
 

@@ -2,14 +2,13 @@ package se.staffanljungqvist.revocalize.ui
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import se.staffanljungqvist.revocalize.R
 import se.staffanljungqvist.revocalize.databinding.FragmentIntroBinding
 import se.staffanljungqvist.revocalize.viewmodels.IngameViewModel
@@ -17,7 +16,7 @@ import se.staffanljungqvist.revocalize.viewmodels.IngameViewModel
 
 class IntroFragment : Fragment() {
 
-    val modelIngame : IngameViewModel by activityViewModels()
+    private val modelIngame: IngameViewModel by activityViewModels()
 
     private var _binding: FragmentIntroBinding? = null
     private val binding get() = _binding!!
@@ -35,7 +34,7 @@ class IntroFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        var stage = modelIngame.currentStage
+        val stage = modelIngame.currentStage
 
         binding.tvStageNumber.text = (modelIngame.stageIndex + 1).toString()
         binding.tvStageName.text = stage.name
@@ -46,9 +45,9 @@ class IntroFragment : Fragment() {
         Log.d(TAG, "Skriver ute användarrekordet ${stage.pointRecord}")
         binding.tvUserBest.text = modelIngame.score.toString()
 
-        modelIngame.audioReady.observe(requireActivity(), Observer {
+        modelIngame.audioReady.observe(requireActivity()) {
             if (it) view.findViewById<Button>(R.id.btnStart).isVisible = true
-        })
+        }
 
         binding.btnStart.setOnClickListener {
             requireActivity().supportFragmentManager.popBackStack()

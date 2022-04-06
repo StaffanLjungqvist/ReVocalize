@@ -10,10 +10,6 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.analytics.FirebaseAnalytics
-import com.google.firebase.analytics.ktx.analytics
-import com.google.firebase.analytics.ktx.logEvent
-import com.google.firebase.ktx.Firebase
 import se.staffanljungqvist.revocalize.R
 import se.staffanljungqvist.revocalize.ui.InGameFragment
 import se.staffanljungqvist.revocalize.ui.StageSelectFragment
@@ -23,12 +19,12 @@ class StageRecAdapter : RecyclerView.Adapter<StageRecAdapter.StageViewHolder>() 
     lateinit var fragment: StageSelectFragment
 
     inner class StageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val cardView = view.findViewById<CardView>(R.id.cvStageCard)
-        val tvStageName = view.findViewById<TextView>(R.id.tvStageName)
-        val tvStageBeatenRank = view.findViewById<TextView>(R.id.tvStageRank)
-        val tvStageNumber = view.findViewById<TextView>(R.id.tvStageNumber)
-        val cardViewLocked = view.findViewById<CardView>(R.id.cardViewLocked)
-        val llPlay = view.findViewById<LinearLayout>(R.id.llPlay)
+        val cardView: CardView = view.findViewById(R.id.cvStageCard)
+        val tvStageName: TextView = view.findViewById(R.id.tvStageName)
+        val tvStageBeatenRank: TextView = view.findViewById(R.id.tvStageRank)
+        val tvStageNumber: TextView = view.findViewById(R.id.tvStageNumber)
+        val cardViewLocked: CardView = view.findViewById(R.id.cardViewLocked)
+        val llPlay: LinearLayout = view.findViewById(R.id.llPlay)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StageViewHolder {
@@ -47,39 +43,39 @@ class StageRecAdapter : RecyclerView.Adapter<StageRecAdapter.StageViewHolder>() 
                 isLocked = true
             }
         }
-            holder.tvStageNumber.text = (position + 1).toString()
-            holder.tvStageName.text = stage.name
+        holder.tvStageNumber.text = (position + 1).toString()
+        holder.tvStageName.text = stage.name
 
-            val cardColor =
-                when (stage.beatenWithRank) {
-                    "BRONZE" -> "#FF6C00"
-                    "SILVER" -> "#4BEBFF"
-                    "GOLD" -> "#FFFF58"
-                    else -> {
-                        "#FFFFFF"
-                    }
+        val cardColor =
+            when (stage.beatenWithRank) {
+                "BRONZE" -> "#FF6C00"
+                "SILVER" -> "#4BEBFF"
+                "GOLD" -> "#FFFF58"
+                else -> {
+                    "#FFFFFF"
                 }
-
-            if (stage.isComplete) {
-                holder.tvStageBeatenRank.text = stage.beatenWithRank
-                holder.cardView.setCardBackgroundColor(Color.parseColor(cardColor))
-            } else {
-                holder.tvStageBeatenRank.text = "NOT COMPLETE"
             }
 
+        if (stage.isComplete) {
+            holder.tvStageBeatenRank.text = stage.beatenWithRank
+            holder.cardView.setCardBackgroundColor(Color.parseColor(cardColor))
+        } else {
+            holder.tvStageBeatenRank.text = "NOT COMPLETE"
+        }
 
-            holder.llPlay.setOnClickListener {
-                passData(position, stage.pointRecord)
-            }
+
+        holder.llPlay.setOnClickListener {
+            passData(position, stage.pointRecord)
+        }
 
         //Läser nivåer som inte är avklarade
-/*        if (isLocked) {
+        if (isLocked) {
             holder.cardViewLocked.isVisible = true
             holder.llPlay.isVisible = false
-        }*/
+        }
     }
 
-    fun passData(stage: Int, score : Int) {
+    private fun passData(stage: Int, score: Int) {
 
         val bundle = Bundle()
         bundle.putInt("stage", stage)
@@ -88,7 +84,6 @@ class StageRecAdapter : RecyclerView.Adapter<StageRecAdapter.StageViewHolder>() 
         ingameFragment.arguments = bundle
         fragment.requireActivity().supportFragmentManager.beginTransaction()
             .replace(R.id.fragmentContainerView, ingameFragment).commit()
-
 
 
     }

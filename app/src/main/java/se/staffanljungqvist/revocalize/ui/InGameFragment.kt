@@ -30,7 +30,7 @@ import se.staffanljungqvist.revocalize.viewmodels.IngameViewModel
 import java.util.*
 
 
-val TAG = "revodebug"
+const val TAG = "revodebug"
 
 class InGameFragment : Fragment() {
 
@@ -45,8 +45,8 @@ class InGameFragment : Fragment() {
     private var slizeRecAdapter: SlizeRecAdapter = SlizeRecAdapter()
     private lateinit var ttsAdapter: TTSAdapter
 
-    var mediaPlayer: MediaPlayer? = null
-    var failPlayer : MediaPlayer? = null
+    private var mediaPlayer: MediaPlayer? = null
+    private var failPlayer: MediaPlayer? = null
 
     private var listenMode = true
 
@@ -94,21 +94,21 @@ class InGameFragment : Fragment() {
         myRecyclerView.layoutManager = GridLayoutManager(requireContext(), 1)
         itemTouchHelper.attachToRecyclerView(myRecyclerView)
 
-        ttsAdapter.ttsAudiofileWritten.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        ttsAdapter.ttsAudiofileWritten.observe(viewLifecycleOwner) {
             if (it) loadAudio()
-        })
+        }
 
-        model.slizeIndex.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        model.slizeIndex.observe(viewLifecycleOwner) {
             slizeRecAdapter.blinknumber = it
             slizeRecAdapter.notifyDataSetChanged()
             if (it != -1 && it != -2 && !model.isCorrect) playSlize(model.slices!![it])
             if (it == -2 && mediaPlayer != null) mediaPlayer?.pause()
-        })
+        }
 
 
-        model.doneIterating.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        model.doneIterating.observe(viewLifecycleOwner) {
             if (it) checkAnswer()
-        })
+        }
 
         binding.btnPlay.setOnClickListener {
             model.iterateSlices(model.slices!!)
@@ -125,7 +125,7 @@ class InGameFragment : Fragment() {
         }
     }
 
-    fun initializeUI() {
+    private fun initializeUI() {
         makeSlices()
         binding.btnPlay.isVisible = true
         binding.tvSentence.text = model.currentPhrase.text.parentenses()
@@ -138,86 +138,92 @@ class InGameFragment : Fragment() {
         listenMode = true
     }
 
-    fun makeSlices() {
+    private fun makeSlices() {
         model.makeSlices(mediaPlayer!!.duration)
         slizeRecAdapter.slizes = model.slices!!
         myRecyclerView.layoutManager = GridLayoutManager(requireContext(), model.slices!!.size)
         slizeRecAdapter.notifyDataSetChanged()
     }
 
-    fun loadNewPhrase() {
+    private fun loadNewPhrase() {
         model.loadPhrase()
         ttsAdapter.saveToAudioFile(model.currentPhrase.text)
         listenMode = true
     }
 
-    fun loadAudio() {
+    private fun loadAudio() {
         val audioFile = Uri.parse(requireContext().filesDir.toString() + "/myreq.wav")
-        Log.d(TAG, "AA Uri omgord till File : ${audioFile}")
+        Log.d(TAG, "AA Uri omgord till File : $audioFile")
         mediaPlayer = MediaPlayer.create(context, audioFile)
-        mediaPlayer!!.setOnPreparedListener(MediaPlayer.OnPreparedListener {
+        mediaPlayer!!.setOnPreparedListener {
             Log.d(TAG, "nu är mediaplayer skapad")
             initializeUI()
-        })
+        }
     }
 
-    fun playSlize(slize: Slize) {
+    private fun playSlize(slize: Slize) {
         mediaPlayer?.seekTo(slize.start)
         mediaPlayer?.start()
     }
 
-    fun playFullPhrase() {
+    private fun playFullPhrase() {
         mediaPlayer?.seekTo(0)
         mediaPlayer?.start()
     }
 
-    fun checkAnswer(){
-            slizeRecAdapter.blinknumber = -1
-            slizeRecAdapter.notifyDataSetChanged()
-            binding.tvGuessesRemaining.text = model.points.toString()
+    private fun checkAnswer() {
+        slizeRecAdapter.blinknumber = -1
+        slizeRecAdapter.notifyDataSetChanged()
+        binding.tvGuessesRemaining.text = model.points.toString()
 
-            if (model.gameOver) {
-
+        when {
+            model.gameOver -> {
                 Firebase.analytics.logEvent("game over") {
                     param("stage index", arguments?.getInt("stage").toString())
                     param("phrase index", model.phraseIndex.toString())
                 }
-
                 requireActivity().supportFragmentManager.beginTransaction()
                     .add(R.id.fragmentContainerView, GameOverFragment()).addToBackStack(null)
                     .commit()
-            } else if (model.stageComplete) {
+            }
+            model.stageComplete -> {
 
                 Firebase.analytics.logEvent(FirebaseAnalytics.Event.LEVEL_END) {
                     param("stage index", arguments?.getInt("stage").toString())
                 }
-
-
                 requireActivity().supportFragmentManager.beginTransaction()
                     .add(R.id.fragmentContainerView, LevelCompleteFragment())
                     .addToBackStack(null)
                     .commit()
-            } else if (model.isCorrect) correctAnswer()
-            else wrongAnswer()
+            }
+            model.isCorrect -> correctAnswer()
+            else -> wrongAnswer()
+        }
     }
 
-    fun correctAnswer() {
+    private fun correctAnswer() {
         requireActivity().supportFragmentManager.beginTransaction()
             .add(R.id.fragmentContainerView, SuccessFragment()).addToBackStack(null)
             .commit()
         loadNewPhrase()
     }
 
-    fun wrongAnswer() {
+    private fun wrongAnswer() {
         if (!listenMode) {
             failPlayer = MediaPlayer.create(requireContext(), R.raw.fail)
             failPlayer!!.start()
 
-            binding.llGuessesCircle.background.setColorFilter(Color.parseColor("#FF0000"), PorterDuff.Mode.SRC_ATOP)
+            binding.llGuessesCircle.background.setColorFilter(
+                Color.parseColor("#FF0000"),
+                PorterDuff.Mode.SRC_ATOP
+            )
             binding.tvGuessesRemaining.setTextColor(Color.parseColor("#FFFFFF"))
 
-            Handler(Looper.getMainLooper()).postDelayed(Runnable {
-                binding.llGuessesCircle.background.setColorFilter(Color.parseColor("#FFFFFF"), PorterDuff.Mode.SRC_ATOP)
+            Handler(Looper.getMainLooper()).postDelayed({
+                binding.llGuessesCircle.background.setColorFilter(
+                    Color.parseColor("#FFFFFF"),
+                    PorterDuff.Mode.SRC_ATOP
+                )
                 binding.tvGuessesRemaining.setTextColor(Color.parseColor("#000000"))
             }, 500)
             listenMode = false
@@ -232,7 +238,7 @@ class InGameFragment : Fragment() {
         Log.d(TAG, "inGameFragment Destroyed")
         mediaPlayer?.stop()
         _binding = null
-        slizeRecAdapter.blinkHandler.removeCallbacksAndMessages(null);
+        slizeRecAdapter.blinkHandler.removeCallbacksAndMessages(null)
     }
 
 
@@ -244,7 +250,7 @@ class InGameFragment : Fragment() {
                         ItemTouchHelper.RIGHT or
                         ItemTouchHelper.START or
                         ItemTouchHelper.END, 0
-            ){
+            ) {
                 override fun onMove(
                     recyclerView: RecyclerView,
                     viewHolder: RecyclerView.ViewHolder,
@@ -270,6 +276,7 @@ class InGameFragment : Fragment() {
                     //    ItemTouchHelper handles horizontal swipe as well, but
                     //    it is not relevant with reordering. Ignoring here.
                 }
+
                 override fun isLongPressDragEnabled(): Boolean {
                     return true
                 }
@@ -281,7 +288,7 @@ class InGameFragment : Fragment() {
         itemTouchHelper.startDrag(viewHolder)
     }
 
-    fun String.parentenses() : String{
+    private fun String.parentenses(): String {
         return "\"" + this + "\""
     }
 

@@ -3,11 +3,11 @@ package se.staffanljungqvist.revocalize.ui
 import android.graphics.Color
 import android.media.MediaPlayer
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import se.staffanljungqvist.revocalize.R
 import se.staffanljungqvist.revocalize.databinding.FragmentLevelCompleteBinding
@@ -16,7 +16,7 @@ import se.staffanljungqvist.revocalize.viewmodels.IngameViewModel
 
 class LevelCompleteFragment : Fragment() {
 
-    val modelIngame : IngameViewModel by activityViewModels()
+    private val modelIngame: IngameViewModel by activityViewModels()
 
     private var _binding: FragmentLevelCompleteBinding? = null
     private val binding get() = _binding!!
@@ -55,9 +55,10 @@ class LevelCompleteFragment : Fragment() {
         binding.tvCompleteRank.setTextColor(Color.parseColor(rankColor))
 
         binding.btnReturnMain.setOnClickListener {
-            requireActivity().supportFragmentManager.beginTransaction().replace(R.id.fragmentContainerView, StageSelectFragment()).commit()
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainerView, StageSelectFragment()).commit()
             requireActivity().supportFragmentManager.popBackStack()
-            activity?.viewModelStore?.clear();
+            activity?.viewModelStore?.clear()
         }
 
     }

@@ -12,7 +12,6 @@ import android.widget.Button
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import se.staffanljungqvist.revocalize.R
 import se.staffanljungqvist.revocalize.databinding.FragmentSuccessBinding
 import se.staffanljungqvist.revocalize.viewmodels.IngameViewModel
@@ -23,7 +22,7 @@ class SuccessFragment : Fragment() {
     private var _binding: FragmentSuccessBinding? = null
     private val binding get() = _binding!!
 
-    val modelIngame : IngameViewModel by activityViewModels()
+    private val modelIngame : IngameViewModel by activityViewModels()
 
 
     override fun onCreateView(
@@ -55,11 +54,11 @@ class SuccessFragment : Fragment() {
         binding.tvCurrentPhrase.text = (modelIngame.phraseIndex - 1).toString()
         binding.tvTotalPhrases.text = modelIngame.currentStage.phraseList.size.toString()
 
-        if (modelIngame.bonus > 0) showBonus(modelIngame.bonus)
+        if (modelIngame.bonus > 0) showBonus()
 
-        modelIngame.audioReady.observe(requireActivity(), Observer {
+        modelIngame.audioReady.observe(requireActivity()) {
             if (it) view.findViewById<Button>(R.id.btnCloseContinue).isVisible = true
-        })
+        }
 
         view.findViewById<Button>(R.id.btnCloseContinue).setOnClickListener {
             if (modelIngame.stageComplete) {
@@ -70,7 +69,7 @@ class SuccessFragment : Fragment() {
         }
     }
 
-    fun showBonus(bonus : Int) {
+    fun showBonus() {
         binding.llBonus.isVisible = true
         binding.tvBonus.text = modelIngame.toFragment.toString()
         binding.llGuessesCircle.background.setColorFilter(Color.parseColor("#4BEBFF"), PorterDuff.Mode.SRC_ATOP)
