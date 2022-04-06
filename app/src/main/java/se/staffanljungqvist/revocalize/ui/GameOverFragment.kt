@@ -29,7 +29,7 @@ class GameOverFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
-        val gameOverPlayer = MediaPlayer.create(context, R.raw.fail)
+        val gameOverPlayer = MediaPlayer.create(context, R.raw.game_over)
         gameOverPlayer.start()
 
         binding.btnBackToMain.setOnClickListener {

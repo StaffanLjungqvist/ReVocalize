@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.gson.Gson
@@ -35,6 +36,7 @@ class IngameViewModel : ViewModel() {
     var gameOver = false
     var bonus = 0
     var score = 0
+    var userRecord = 0
     var newRecord = false
     var toFragment = 0
     val loopHandler = Handler(Looper.getMainLooper())
@@ -152,8 +154,12 @@ class IngameViewModel : ViewModel() {
 
 
     fun calculateScore(context: Context) {
+
+        val sharedPref = context.getSharedPreferences("userScore", Context.MODE_PRIVATE)
+        val userRecord = sharedPref.getInt(currentStage.name, 0)
+
         //Kollar om nuvarande poängen är bättre än poängrekordet. Ändrar därefter.
-        if (points > currentStage.pointRecord || currentStage.pointRecord == 0) {
+        if (points > userRecord || userRecord == 0) {
             Log.d(TAG, "Nytt rekord; $points")
             newRecord = true
             saveUserData(context)

@@ -65,7 +65,7 @@ class StageRecAdapter : RecyclerView.Adapter<StageRecAdapter.StageViewHolder>() 
 
 
         holder.llPlay.setOnClickListener {
-            passData(position, stage.pointRecord)
+            passData(position)
         }
 
         //Läser nivåer som inte är avklarade
@@ -75,11 +75,10 @@ class StageRecAdapter : RecyclerView.Adapter<StageRecAdapter.StageViewHolder>() 
         }
     }
 
-    private fun passData(stage: Int, score: Int) {
+    private fun passData(stage: Int) {
 
         val bundle = Bundle()
         bundle.putInt("stage", stage)
-        bundle.putInt("score", score)
         val ingameFragment = InGameFragment()
         ingameFragment.arguments = bundle
         fragment.requireActivity().supportFragmentManager.beginTransaction()

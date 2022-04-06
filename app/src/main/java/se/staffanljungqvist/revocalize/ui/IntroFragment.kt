@@ -1,5 +1,6 @@
 package se.staffanljungqvist.revocalize.ui
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -42,8 +43,12 @@ class IntroFragment : Fragment() {
         binding.tvStartPoints.text = stage.startingPoints.toString()
         binding.tvPointsForGold.text = stage.pointsForGold.toString()
         binding.tvPointsForSilver.text = stage.pointsForSilver.toString()
-        Log.d(TAG, "Skriver ute användarrekordet ${stage.pointRecord}")
-        binding.tvUserBest.text = modelIngame.score.toString()
+
+
+        val sharedPref = requireContext().getSharedPreferences("userScore", Context.MODE_PRIVATE)
+        val userRecord = sharedPref.getInt(stage.name, 0).toString()
+        binding.tvUserBest.text = userRecord
+        Log.d(TAG, "Skriver ute användarrekordet $userRecord")
 
         modelIngame.audioReady.observe(requireActivity()) {
             if (it) view.findViewById<Button>(R.id.btnStart).isVisible = true

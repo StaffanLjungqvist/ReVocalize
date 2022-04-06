@@ -17,7 +17,6 @@ data class StageModelClass(
     val startingPoints : Int,
     var isComplete : Boolean = false,
     var beatenWithRank : String = "N/A",
-    var pointRecord : Int = 0,
     val phraseList : List<Phrase> = listOf(),
 )
 
