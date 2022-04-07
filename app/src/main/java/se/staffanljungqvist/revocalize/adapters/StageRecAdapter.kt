@@ -74,22 +74,18 @@ class StageRecAdapter(val stageList: List<StageModelClass>) : RecyclerView.Adapt
             holder.tvStageBeatenRank.text = "NOT COMPLETE"
         }
 
-
         holder.llPlay.setOnClickListener {
             passData(position)
         }
     }
 
     private fun passData(stage: Int) {
-
         val bundle = Bundle()
         bundle.putInt("stage", stage)
         val ingameFragment = InGameFragment()
         ingameFragment.arguments = bundle
         fragment.requireActivity().supportFragmentManager.beginTransaction()
             .replace(R.id.fragmentContainerView, ingameFragment).commit()
-
-
     }
 
     override fun getItemCount(): Int {

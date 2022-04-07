@@ -1,7 +1,5 @@
 package se.staffanljungqvist.revocalize.ui
 
-import android.graphics.Color
-import android.graphics.PorterDuff
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.util.Log
@@ -26,7 +24,7 @@ class SuccessFragment : Fragment() {
     private var _binding: FragmentSuccessBinding? = null
     private val binding get() = _binding!!
 
-    private val modelIngame : IngameViewModel by activityViewModels()
+    private val modelIngame: IngameViewModel by activityViewModels()
 
 
     override fun onCreateView(
@@ -74,13 +72,14 @@ class SuccessFragment : Fragment() {
                 }
 
                 requireActivity().supportFragmentManager.popBackStack()
-                requireActivity().supportFragmentManager.beginTransaction().replace(R.id.fragmentContainerView, LevelCompleteFragment()).commit()
+                requireActivity().supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragmentContainerView, LevelCompleteFragment()).commit()
             }
             requireActivity().supportFragmentManager.popBackStack()
         }
     }
 
-    fun animateScore() {
+    private fun animateScore() {
         binding.tvGuessesRemainingWhite.text = binding.tvGuessesRemaining.text
         /*       binding.tvGuessesRemainingWhite.isVisible = true
                binding.tvGuessesRemainingWhite.apply {
@@ -120,7 +119,7 @@ class SuccessFragment : Fragment() {
         }
     }
 
-    fun showBonus() {
+    private fun showBonus() {
         animateScore()
         binding.llBonus.isVisible = true
         binding.llCorrect.isVisible = false

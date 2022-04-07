@@ -25,8 +25,8 @@ class SlizeRecAdapter() : RecyclerView.Adapter<SlizeRecAdapter.MyViewHolder>() {
     val blinkHandler = Handler(Looper.getMainLooper())
 
     inner class MyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val cardView = view.findViewById<CardView>(R.id.cardView)
-        val highLight = view.findViewById<CardView>(R.id.cvWhite)
+        val cardView: CardView = view.findViewById(R.id.cardView)
+        val highLight: CardView = view.findViewById(R.id.cvWhite)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {

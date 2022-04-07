@@ -1,10 +1,5 @@
 package se.staffanljungqvist.revocalize.ui
 
-import android.graphics.Color
-import android.graphics.PorterDuff
-import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.Drawable
-import android.graphics.drawable.TransitionDrawable
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
@@ -12,7 +7,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -207,7 +201,7 @@ class InGameFragment : Fragment() {
     }
 
     private fun wrongAnswer() {
-            failPlayer!!.start()
+            failPlayer.start()
 
             binding.tvMinusPoint.apply {
                 alpha = 1f
