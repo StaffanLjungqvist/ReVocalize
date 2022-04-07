@@ -10,8 +10,8 @@ import com.google.gson.Gson
 import org.json.JSONException
 import se.staffanljungqvist.revocalize.Colors
 import se.staffanljungqvist.revocalize.models.Phrase
+import se.staffanljungqvist.revocalize.models.Phrases
 import se.staffanljungqvist.revocalize.models.Slize
-import se.staffanljungqvist.revocalize.models.StageModelClass
 import se.staffanljungqvist.revocalize.models.Stages
 import java.io.IOException
 import java.nio.charset.Charset
@@ -22,21 +22,20 @@ class IngameViewModel : ViewModel() {
 
     //TODO Sortera stagelist efter svårighetsgrad
 
-    var currentStage: StageModelClass = StageModelClass(0, "No Stage", 0, 0, 100)
-    var stageIndex = 0
-    var phraseIndex = 0
+    var phraseIndex = 1
     var slices: List<Slize>? = null
-    lateinit var currentPhrase: Phrase
+    var currentPhrase: Phrase = Phrase("This is the default testphrase")
     var isCorrect = false
     private var guessesUsed = 0
-    var points = 100
-    var rank = "BRONZE"
-    var stageComplete = false
+    var points = 5
     var gameOver = false
     var bonus = 0
     var newRecord = false
     var toFragment = 0
     val loopHandler = Handler(Looper.getMainLooper())
+    var phraseList = listOf<Phrase>()
+    var level = 1
+    var slizeDivisions = 3
 
     val slizeIndex: MutableLiveData<Int> by lazy {
         MutableLiveData<Int>(-1)
@@ -58,42 +57,63 @@ class IngameViewModel : ViewModel() {
         Log.d(TAG, "skapar en ingameViewModel")
     }
 
-
-    fun loadStage(context: Context, stageId: Int) {
-        Log.d(TAG, "Loading stage number $stageId")
+    fun loadPhraseList(context: Context) {
         try {
             val jsonString = getJSONFromAssets(context)!!
-            val stages = Gson().fromJson(jsonString, Stages::class.java)
-            Log.d(TAG, "returnerar en lista med storleken ${stages.stageList.size}")
-            currentStage = stages.stageList[stageId]
-            Log.d(TAG, "Satte currentStage till ${stages.stageList[stageId].name}")
+             var tempPhraseList = Gson().fromJson(jsonString, Phrases::class.java)
+                phraseList = tempPhraseList.phraseList
 
+            for (phrase in phraseList) {
+                Log.d(TAG, phrase.text)
+            }
+
+
+         //   loadUserData(context)
         } catch (e: JSONException) {
             e.printStackTrace()
         }
-        points = currentStage.startingPoints
     }
 
     fun loadPhrase() {
+        setDivisions()
+        val minLength =
+        when (slizeDivisions) {
+            3 -> 0
+            4 -> 40
+            5 -> 80
+            6 -> 100
+            7 -> 120
+            else -> 0
+        }
+        currentPhrase = phraseList.random()
+        while (currentPhrase.text.length < minLength) {
+            currentPhrase = phraseList.random()
+            Log.d(TAG, "Längd på fras : ${currentPhrase.text.length}. Minsta längd är $minLength")
+        }
+        Log.d(TAG, "Kom ur loopen. Längd på fras : ${currentPhrase.text.length}")
+
         guessesUsed = 0
         isCorrect = false
-
-        if (phraseIndex < currentStage.phraseList.size) {
-            Log.d(TAG, "Laddar in fras ${currentStage.phraseList[phraseIndex]}")
-            currentPhrase = currentStage.phraseList[phraseIndex]
-            phraseIndex++
-        } else {
-            stageComplete = true
-        }
         phraseLoaded.value = true
         phraseLoaded.value = false
+    }
 
+    fun setDivisions() {
+        slizeDivisions = when (level) {
+            in 0..1 -> 3
+            in 2..3 -> 4
+            in 4..5 -> 5
+            in 6..7 -> 6
+            in 16..19 -> 7
+            else -> {
+                2
+            }
+        }
     }
 
     fun makeSlices(duration: Int) {
         //lista av sliceobjekt initialiseras
         val sliceList = mutableListOf<Slize>()
-        val slizeDivisions = currentPhrase.slizediv
         val randomColors = Colors.colors.take(slizeDivisions).shuffled()
         val sliceLength = (duration / slizeDivisions)
         for (number in 1..slizeDivisions) {
@@ -138,8 +158,8 @@ class IngameViewModel : ViewModel() {
         if (sortedList == slices) {
             giveBonus()
             correct = true
+            phraseIndex ++
             isCorrect = true
-            if (phraseIndex == currentStage.phraseList.size) stageComplete = true
         } else {
             guessesUsed++
             points--
@@ -147,44 +167,25 @@ class IngameViewModel : ViewModel() {
         if (points < 1) {
             gameOver = true
         }
+
+        if (phraseIndex > (level * 3)) {
+            level++
+            Log.d(TAG, "Leveling up! New level : $level")
+
+        }
         return correct
     }
 
 
     fun calculateScore(context: Context) {
-
         val sharedPref = context.getSharedPreferences("userScore", Context.MODE_PRIVATE)
-        val userRecord = sharedPref.getInt(currentStage.name, 0)
-
+        val userRecord = sharedPref.getInt("user_record", 0)
         //Kollar om nuvarande poängen är bättre än poängrekordet. Ändrar därefter.
         if (points > userRecord || userRecord == 0) {
             Log.d(TAG, "Nytt rekord; $points")
             newRecord = true
             saveUserData(context)
         }
-        /*Bestämmer vilken rank som sätts beroende på nuvarandande ranks specifieringar
-        Om ranken är högra än tidigare så sparas den över
-        */
-        rank = when {
-            points >= currentStage.pointsForGold -> {
-                "GOLD"
-            }
-            points >= currentStage.pointsForSilver -> {
-                "SILVER"
-            }
-            else -> {
-                "BRONZE"
-            }
-        }
-        if (rank == "GOLD") {
-            currentStage.beatenWithRank = rank
-        } else if (rank == "SILVER" && currentStage.beatenWithRank != "GOLD") {
-            currentStage.beatenWithRank = rank
-        } else if (rank == "BRONZE" && currentStage.beatenWithRank != "SILVER") {
-            currentStage.beatenWithRank = rank
-        }
-        currentStage.isComplete = true
-
     }
 
     private fun giveBonus() {
@@ -199,9 +200,8 @@ class IngameViewModel : ViewModel() {
             Log.d(TAG, "Saving the new record : $points")
             val sharedPref = context.getSharedPreferences("userScore", Context.MODE_PRIVATE)
             val edit = sharedPref.edit()
-            edit.putInt(currentStage.name, points)
+            edit.putInt("user_record", points)
             edit.commit()
-            Log.d(TAG, "Sparade poängen $points till nivån ${currentStage.name}")
         }
     }
 
@@ -215,13 +215,11 @@ class IngameViewModel : ViewModel() {
             override fun run() {
                 if (sliceNumber < (slizes.size - 1)) {
                     sliceNumber += 1
-                    Log.d("revodebugmodel", "ändrade slize till $sliceNumber")
                     slizeIndex.value = sliceNumber
                     loopHandler.postDelayed(this, slizes[sliceNumber].length)
                 } else {
                     slizeIndex.value = -2
                     slizeIndex.value = -1
-                    Log.d("revodebugmodel", "ändrade slize till ${slizeIndex.value}")
                     doneIterating.value = true
                 }
             }

@@ -57,8 +57,8 @@ class InGameFragment : Fragment() {
         super.onCreate(savedInstanceState)
         slizeRecAdapter.fragment = this
         val stageIndex = arguments?.getInt("stage")
-        model.loadStage(requireContext(), stageIndex!!)
-        model.stageIndex = stageIndex
+
+
 
         firebaseAnalytics = Firebase.analytics
         firebaseAnalytics.logEvent(FirebaseAnalytics.Event.LEVEL_START) {
@@ -85,8 +85,7 @@ class InGameFragment : Fragment() {
         requireActivity().supportFragmentManager.beginTransaction()
             .add(R.id.fragmentContainerView, IntroFragment()).addToBackStack(null).commit()
 
-
-
+        model.loadPhraseList(requireContext())
         model.loadPhrase()
 
         ttsAdapter = TTSAdapter(requireContext())
@@ -132,15 +131,14 @@ class InGameFragment : Fragment() {
 
     private fun initializeUI() {
         makeSlices()
+        binding.tvCurrentLevel.text = model.level.toString()
+        binding.tvCurrentPhrase.text = model.phraseIndex.toString()
         binding.tvGuessesRemaining.text = model.points.toString()
         if (model.points != 1) binding.tvLastGuess.isVisible = false
         binding.btnPlay.isVisible = true
         binding.tvSentence.text = model.currentPhrase.text.parentenses()
-        binding.tvCurrentPhrase.text = model.phraseIndex.toString()
-        binding.tvTotalPhrases.text = model.currentStage.phraseList.size.toString()
+
         binding.btnCheck.visibility = View.INVISIBLE
-
-
         listenMode = true
     }
 
@@ -232,12 +230,12 @@ class InGameFragment : Fragment() {
         }
 
         if (model.gameOver) {
+            model.calculateScore(requireContext())
             requireActivity().supportFragmentManager.beginTransaction()
                 .add(R.id.fragmentContainerView, GameOverFragment()).addToBackStack(null)
                 .commit()
             return
         }
-
         binding.btnCheck.isVisible = true
     }
 

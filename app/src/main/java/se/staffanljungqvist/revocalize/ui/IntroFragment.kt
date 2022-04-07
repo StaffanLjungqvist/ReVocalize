@@ -35,20 +35,11 @@ class IntroFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val stage = modelIngame.currentStage
 
-        binding.tvStageNumber.text = (modelIngame.stageIndex + 1).toString()
-        binding.tvStageName.text = stage.name
-        binding.tvLevels.text = stage.phraseList.size.toString()
-        binding.tvStartPoints.text = stage.startingPoints.toString()
-        binding.tvPointsForGold.text = stage.pointsForGold.toString()
-        binding.tvPointsForSilver.text = stage.pointsForSilver.toString()
 
 
         val sharedPref = requireContext().getSharedPreferences("userScore", Context.MODE_PRIVATE)
-        val userRecord = sharedPref.getInt(stage.name, 0).toString()
-        binding.tvUserBest.text = userRecord
-        Log.d(TAG, "Skriver ute användarrekordet $userRecord")
+
 
         modelIngame.audioReady.observe(requireActivity()) {
             if (it) view.findViewById<Button>(R.id.btnStart).isVisible = true

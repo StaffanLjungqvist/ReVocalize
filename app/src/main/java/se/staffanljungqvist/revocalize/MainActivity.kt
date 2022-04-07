@@ -53,11 +53,7 @@ class MainActivity : AppCompatActivity() {
         {
             super.onBackPressed()
         }
-        if(supportFragmentManager.fragments.first() is StageSelectFragment)
-        {
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.fragmentContainerView, StartFragment()).commit()
-        }
+
         if(supportFragmentManager.fragments.first() is InGameFragment)
         {
             supportFragmentManager.beginTransaction()

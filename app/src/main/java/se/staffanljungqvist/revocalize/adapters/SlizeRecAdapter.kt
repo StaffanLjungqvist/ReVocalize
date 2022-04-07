@@ -64,7 +64,6 @@ class SlizeRecAdapter() : RecyclerView.Adapter<SlizeRecAdapter.MyViewHolder>() {
                     //                .setListener(null)
                 }
             }
-            Log.d(TAG, "slizepositionen $position är vit")
         } else {
             holder.highLight.isVisible = false
         }

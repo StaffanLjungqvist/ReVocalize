@@ -26,9 +26,9 @@ class StartFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.btnStageSelect.setOnClickListener {
+        binding.btnStartNewGame.setOnClickListener {
             requireActivity().supportFragmentManager.beginTransaction()
-                .replace(R.id.fragmentContainerView, StageSelectFragment()).commit()
+                .replace(R.id.fragmentContainerView, InGameFragment()).commit()
         }
 
         binding.btnInstructions.setOnClickListener {

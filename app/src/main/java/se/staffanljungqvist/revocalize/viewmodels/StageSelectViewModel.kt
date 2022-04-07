@@ -25,17 +25,7 @@ class StageSelectViewModel : ViewModel() {
         MutableLiveData<Boolean>(false)
     }
 
-    fun loadStages(context: Context) {
 
-        try {
-            val jsonString = getJSONFromAssets(context)!!
-            val stages = Gson().fromJson(jsonString, Stages::class.java)
-            stageList = stages.stageList
-            loadUserData(context)
-        } catch (e: JSONException) {
-            e.printStackTrace()
-        }
-    }
 
     private fun loadUserData(context: Context) {
         val sharedPref = context.getSharedPreferences("userScore", Context.MODE_PRIVATE)

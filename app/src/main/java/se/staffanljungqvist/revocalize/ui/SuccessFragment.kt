@@ -48,10 +48,6 @@ class SuccessFragment : Fragment() {
         successPlayer.start()
 
         binding.tvGuessesRemaining.text = modelIngame.points.toString()
-        binding.tvCurrentPhrase.text = (modelIngame.phraseIndex - 1).toString()
-        binding.tvTotalPhrases.text = modelIngame.currentStage.phraseList.size.toString()
-
-
 
         if (modelIngame.bonus > 0) showBonus()
         val trivia = arguments?.getString("trivia")
@@ -67,15 +63,6 @@ class SuccessFragment : Fragment() {
         }
 
         view.findViewById<Button>(R.id.btnCloseContinue).setOnClickListener {
-            if (modelIngame.stageComplete) {
-
-                Firebase.analytics.logEvent(FirebaseAnalytics.Event.LEVEL_END) {
-                    param("stage index", arguments?.getInt("stage").toString())
-                }
-
-                requireActivity().supportFragmentManager.popBackStack()
-                requireActivity().supportFragmentManager.beginTransaction().replace(R.id.fragmentContainerView, LevelCompleteFragment()).commit()
-            }
             requireActivity().supportFragmentManager.popBackStack()
         }
     }

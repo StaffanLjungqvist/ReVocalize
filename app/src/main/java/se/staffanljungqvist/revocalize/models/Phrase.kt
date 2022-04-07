@@ -1,16 +1,12 @@
 package se.staffanljungqvist.revocalize.models
 
-data class Phrase(
 
+data class Phrases (
+    val phraseList : ArrayList<Phrase>
+)
+
+data class Phrase(
     val text: String,
     val trivia: String? = null,
-    val slizediv: Int,
-    var slizes: List<Slize> = listOf(),
-    var audioFile: AudioFile? = null,
-
+    var slizes: List<Slize> = listOf()
     )
-
-data class AudioFile(
-    var file: Int,
-    var duration: Int = 0
-)
