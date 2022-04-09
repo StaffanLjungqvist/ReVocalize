@@ -40,33 +40,9 @@ class SlizeRecAdapter() : RecyclerView.Adapter<SlizeRecAdapter.MyViewHolder>() {
 
         val slice = slizes[position]
 
-        holder.cardView.apply {
-            animate()
-                .alpha(1f)
-                .setDuration(200.toLong())
-                .setListener(null)
-        }
-
-
         holder.cardView.setCardBackgroundColor(Color.parseColor(slice.color))
 
-        val slizeLength = fragment.model.slices?.get(0)?.length
-
-        if (position == blinknumber) {
-            holder.highLight.isVisible = true
-            holder.highLight.apply {
-                if (slizeLength != null) {
-                    holder.highLight.isVisible = true
-                    //           animate()
-                    //                .scaleX(1f)
-                    //                  .alpha(0f)
-                    //                 .setDuration(2000.toLong())
-                    //                .setListener(null)
-                }
-            }
-        } else {
-            holder.highLight.isVisible = false
-        }
+        holder.highLight.isVisible = position == blinknumber
 
 
         holder.itemView.setOnTouchListener { view, event ->
@@ -75,7 +51,6 @@ class SlizeRecAdapter() : RecyclerView.Adapter<SlizeRecAdapter.MyViewHolder>() {
 
                 if (event.actionMasked == MotionEvent.ACTION_DOWN) {
                     (fragment as InGameFragment).startDragging(holder)
-                    Log.d(TAG, "Tryckte ner knappen")
                 }
             }
             return@setOnTouchListener true

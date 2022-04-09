@@ -1,21 +1,16 @@
 package se.staffanljungqvist.revocalize.ui
 
-import android.graphics.Color
-import android.graphics.PorterDuff
+import android.animation.ObjectAnimator
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
+import androidx.core.animation.addListener
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import com.google.firebase.analytics.FirebaseAnalytics
-import com.google.firebase.analytics.ktx.analytics
-import com.google.firebase.analytics.ktx.logEvent
-import com.google.firebase.ktx.Firebase
 import se.staffanljungqvist.revocalize.R
 import se.staffanljungqvist.revocalize.databinding.FragmentSuccessBinding
 import se.staffanljungqvist.revocalize.viewmodels.IngameViewModel
@@ -26,7 +21,9 @@ class SuccessFragment : Fragment() {
     private var _binding: FragmentSuccessBinding? = null
     private val binding get() = _binding!!
 
-    private val modelIngame : IngameViewModel by activityViewModels()
+    lateinit var fragment : Fragment
+
+    private val model : IngameViewModel by activityViewModels()
 
 
     override fun onCreateView(
@@ -41,82 +38,88 @@ class SuccessFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
-        Log.d(TAG, "bonusen är ${modelIngame.bonus}")
-
-        val successPlayer = MediaPlayer.create(context, R.raw.success)
+        val successPlayer = MediaPlayer.create(requireContext(), R.raw.success)
         successPlayer.start()
 
-        binding.tvGuessesRemaining.text = modelIngame.points.toString()
+        ObjectAnimator.ofFloat(binding.llSuccessText, "translationY", -1000f).apply {
+            duration = 0
+            start()
+        }
 
-        if (modelIngame.bonus > 0) showBonus()
+        ObjectAnimator.ofFloat(binding.btnContinute, "translationX", -1000f).apply {
+            duration = 0
+            start()
+        }
+
+
+
+        animateIn()
+
+        if (model.bonus > 0) showBonus()
+
         val trivia = arguments?.getString("trivia")
 
         if (trivia != null) {
-            binding.tvTrivia.isVisible = true
             binding.tvTrivia.text = trivia
         }
 
-
-        modelIngame.audioReady.observe(viewLifecycleOwner) {
-            if (it) view.findViewById<Button>(R.id.btnCloseContinue).isVisible = true
+        model.audioReady.observe(viewLifecycleOwner) {
+            if (it) {
+                animateButton()
+            }
         }
 
-        view.findViewById<Button>(R.id.btnCloseContinue).setOnClickListener {
-            requireActivity().supportFragmentManager.popBackStack()
+
+        binding.btnContinute.setOnClickListener {
+            it.isVisible = false
+            animateOut()
+        }
+    }
+
+    fun animateIn() {
+        ObjectAnimator.ofFloat(binding.llSuccessText, "translationY", 0f).apply {
+            duration = 300
+            start()
+            addListener(onEnd = {
+            })
         }
     }
 
-    fun animateScore() {
-        binding.tvGuessesRemainingWhite.text = binding.tvGuessesRemaining.text
-        /*       binding.tvGuessesRemainingWhite.isVisible = true
-               binding.tvGuessesRemainingWhite.apply {
-                   alpha = 1f
-                   visibility = View.VISIBLE
-
-                   // Animate the content view to 100% opacity, and clear any animation
-                   // listener set on the view.
-                   animate()
-                       .alpha(0f)
-                       .setDuration(2000.toLong())
-                       .setListener(null)
-               }*/
-
-        binding.tvMinusPoint.apply {
-            alpha = 1f
-            visibility = View.VISIBLE
-
-            // Animate the content view to 100% opacity, and clear any animation
-            // listener set on the view.
-            animate()
-                .alpha(0f)
-                .setDuration(2000.toLong())
-                .setListener(null)
-        }
-
-        binding.llGuessesCircleRed.apply {
-            alpha = 1f
-            visibility = View.VISIBLE
-
-            // Animate the content view to 100% opacity, and clear any animation
-            // listener set on the view.
-            animate()
-                .alpha(0f)
-                .setDuration(2000.toLong())
-                .setListener(null)
+    fun animateButton() {
+        ObjectAnimator.ofFloat(binding.btnContinute, "translationX", 0f).apply {
+            duration = 300
+            start()
         }
     }
+
+    fun animateOut() {
+        ObjectAnimator.ofFloat(binding.llSuccessText, "translationY", -1500f).apply {
+            duration = 300
+            start()
+            addListener(onEnd = {
+                requireActivity().supportFragmentManager.popBackStack()
+                if (model.levelUp) {
+                    requireActivity().supportFragmentManager.beginTransaction()
+                        .add(R.id.fragmentContainerView, LevelUpFragment()).addToBackStack(null)
+                        .commit()
+                    model.levelUp = false
+                } else {
+                    model.loadUI.value = true
+                    model.loadUI.value = false
+                }
+            }) {
+            }
+        }
+    }
+
 
     fun showBonus() {
-        animateScore()
         binding.llBonus.isVisible = true
         binding.llCorrect.isVisible = false
-        binding.tvBonus.text = modelIngame.toFragment.toString()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-
 }

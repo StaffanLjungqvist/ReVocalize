@@ -7,112 +7,104 @@
     tools:context=".ui.SuccessFragment">
 
 
-
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="@color/black"
+        android:layout_height="match_parent"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/llGuessesCircle">
+        app:layout_constraintTop_toTopOf="parent">
 
-
-        <LinearLayout
-            android:id="@+id/llCorrect"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="horizontal"
-            app:layout_constraintBottom_toTopOf="@+id/btnCloseContinue"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.30"
-            tools:visibility="visible">
-
-            <TextView
-                android:id="@+id/tvFirstHalf"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="THAT IS "
-                android:textColor="@color/white"
-                android:textSize="40sp"
-                android:textStyle="bold"
-                tools:visibility="visible" />
-
-            <TextView
-                android:id="@+id/tvSecondHalf"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="CORRECT!"
-                android:textColor="@color/silver"
-                android:textSize="40sp"
-                android:textStyle="bold"
-                tools:visibility="visible" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/llBonus"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/llSuccessText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:visibility="invisible"
-            app:layout_constraintBottom_toTopOf="@+id/btnCloseContinue"
+            app:layout_constraintBottom_toTopOf="@+id/button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.3"
-            tools:visibility="visible">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="FIRST TRY!"
-                android:textColor="@color/white"
-                android:textSize="40sp"
-                android:textStyle="bold"
-                tools:visibility="visible" />
+            app:layout_constraintTop_toBottomOf="@+id/placeholder">
 
             <LinearLayout
+                android:id="@+id/llCorrect"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:gravity="center"
                 android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 tools:visibility="visible">
 
                 <TextView
+                    android:id="@+id/tvFirstHalf"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:text="+"
-                    android:textColor="@color/green"
+                    android:text="THAT IS "
+                    android:textColor="@color/white"
                     android:textSize="40sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    tools:visibility="visible" />
 
                 <TextView
-                    android:id="@+id/tvBonus"
+                    android:id="@+id/tvSecondHalf"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:text="0"
-                    android:textColor="@color/green"
+                    android:text="CORRECT!"
+                    android:textColor="@color/silver"
                     android:textSize="40sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/textView26"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:text="POINTS!"
-                    android:textColor="@color/green"
-                    android:textSize="40sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    tools:visibility="visible" />
 
             </LinearLayout>
 
-        </LinearLayout>
+            <LinearLayout
+                android:id="@+id/llBonus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="FIRST TRY!"
+                    android:textColor="@color/white"
+                    android:textSize="40sp"
+                    android:textStyle="bold"
+                    tools:visibility="visible" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    tools:visibility="visible">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:text="BONUS POINT!"
+                        android:textColor="@color/silver"
+                        android:textSize="40sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
 
         <TextView
@@ -126,8 +118,8 @@
             android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/llCorrect"
-            tools:visibility="gone" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible" />
 
 
         <LinearLayout
@@ -145,23 +137,6 @@
         </LinearLayout>
 
 
-        <Button
-            android:id="@+id/btnCloseContinue"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:layout_marginBottom="32dp"
-            android:background="@drawable/rounded_button"
-            android:paddingHorizontal="26dp"
-            android:soundEffectsEnabled="false"
-            android:text="CONTINUE"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:visibility="invisible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:visibility="visible" />
-
         <TextView
             android:id="@+id/tvTrivia"
             android:layout_width="wrap_content"
@@ -170,82 +145,53 @@
             android:textColor="@color/white"
             android:textSize="22sp"
             android:visibility="invisible"
-            app:layout_constraintBottom_toTopOf="@+id/btnCloseContinue"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/llCorrect" />
+            tools:visibility="gone" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/llGuessesCircle"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="18dp"
-        android:background="@drawable/circle"
-        android:gravity="center"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <LinearLayout
-            android:id="@+id/llGuessesCircleRed"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/placeholder"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:background="@drawable/circle"
-            android:backgroundTint="@color/green"
+            android:layout_marginTop="18dp"
             android:gravity="center"
             android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Button"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-
-        <TextView
-            android:id="@+id/tvGuessesRemaining"
+        <Button
+            android:id="@+id/btn_continute"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="13"
-            android:textColor="@color/black"
-            android:textSize="14sp"
+            android:layout_height="50dp"
+            android:background="@drawable/rounded_button"
+            android:paddingHorizontal="34dp"
+            android:soundEffectsEnabled="false"
+            android:text="CONTINUTE"
+            android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/tvGuessesRemainingWhite"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="13"
-            android:textColor="@color/white"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:visibility="invisible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <TextView
-        android:id="@+id/tvMinusPoint"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="22dp"
-        android:text="+1 POINT "
-        android:textColor="@color/green"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:visibility="invisible"
-        app:layout_constraintStart_toEndOf="@+id/llGuessesCircle"
-        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

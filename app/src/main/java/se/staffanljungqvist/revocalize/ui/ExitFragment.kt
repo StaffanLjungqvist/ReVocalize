@@ -6,12 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import se.staffanljungqvist.revocalize.R
 import se.staffanljungqvist.revocalize.viewmodels.IngameViewModel
 
 class ExitFragment : Fragment() {
 
-    lateinit var model: IngameViewModel
+    val model: IngameViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -25,6 +26,7 @@ class ExitFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         view.findViewById<Button>(R.id.btnConfirm).setOnClickListener {
+            model.calculateScore(requireContext())
             requireActivity().supportFragmentManager.popBackStack()
             requireActivity().supportFragmentManager.beginTransaction()
                 .replace(R.id.fragmentContainerView, StartFragment()).commit()
@@ -32,7 +34,6 @@ class ExitFragment : Fragment() {
         }
 
         view.findViewById<Button>(R.id.btnCancel).setOnClickListener {
-            model.calculateScore(requireContext())
             requireActivity().supportFragmentManager.popBackStack()
         }
     }

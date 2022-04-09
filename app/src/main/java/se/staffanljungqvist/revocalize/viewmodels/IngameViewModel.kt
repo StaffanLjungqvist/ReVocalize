@@ -12,7 +12,6 @@ import se.staffanljungqvist.revocalize.Colors
 import se.staffanljungqvist.revocalize.models.Phrase
 import se.staffanljungqvist.revocalize.models.Phrases
 import se.staffanljungqvist.revocalize.models.Slize
-import se.staffanljungqvist.revocalize.models.Stages
 import java.io.IOException
 import java.nio.charset.Charset
 
@@ -22,26 +21,43 @@ class IngameViewModel : ViewModel() {
 
     //TODO Sortera stagelist efter svårighetsgrad
 
-    var phraseIndex = 1
+    var phraseIndex = 0
     var slices: List<Slize>? = null
     var currentPhrase: Phrase = Phrase("This is the default testphrase")
     var isCorrect = false
     private var guessesUsed = 0
-    var points = 5
     var gameOver = false
     var bonus = 0
     var newRecord = false
     var toFragment = 0
     val loopHandler = Handler(Looper.getMainLooper())
     var phraseList = listOf<Phrase>()
-    var level = 1
     var slizeDivisions = 3
+    var levelUp = false
+    var points = 5
 
-    val slizeIndex: MutableLiveData<Int> by lazy {
-        MutableLiveData<Int>(-1)
+    val observedPoints: MutableLiveData<Int> by lazy {
+        MutableLiveData<Int>(5)
     }
 
-    private val phraseLoaded: MutableLiveData<Boolean> by lazy {
+    val numberOfphrasesDone: MutableLiveData<Int> by lazy {
+        MutableLiveData<Int>(0)
+    }
+
+    var level = 0
+    val observedlevel: MutableLiveData<Int> by lazy {
+        MutableLiveData<Int>(0)
+    }
+
+    val loadUI: MutableLiveData<Boolean> by lazy {
+        MutableLiveData<Boolean>(false)
+    }
+
+    val slizeIndex: MutableLiveData<Int> by lazy {
+        MutableLiveData<Int>()
+    }
+
+    val phraseLoaded: MutableLiveData<Boolean> by lazy {
         MutableLiveData<Boolean>(false)
     }
 
@@ -53,9 +69,8 @@ class IngameViewModel : ViewModel() {
         MutableLiveData<Boolean>(false)
     }
 
-    init {
-        Log.d(TAG, "skapar en ingameViewModel")
-    }
+
+
 
     fun loadPhraseList(context: Context) {
         try {
@@ -63,52 +78,49 @@ class IngameViewModel : ViewModel() {
              var tempPhraseList = Gson().fromJson(jsonString, Phrases::class.java)
                 phraseList = tempPhraseList.phraseList
 
-            for (phrase in phraseList) {
-                Log.d(TAG, phrase.text)
-            }
-
-
-         //   loadUserData(context)
         } catch (e: JSONException) {
             e.printStackTrace()
         }
     }
 
     fun loadPhrase() {
-        setDivisions()
-        val minLength =
+        val minLength: Int
+        val maxLength: Int
+        slizeDivisions = levels[level][phraseIndex]
         when (slizeDivisions) {
-            3 -> 0
-            4 -> 40
-            5 -> 80
-            6 -> 100
-            7 -> 120
-            else -> 0
+            3 -> {
+                minLength = 0
+                maxLength = 60
+            }
+            4 -> {
+                minLength = 40
+                maxLength = 80
+            }
+            5 -> {
+                minLength = 80
+                maxLength = 200
+            }
+            6 -> {
+                minLength = 100
+                maxLength = 200
+            }
+            7 -> {
+                minLength = 120
+                maxLength = 200
+            }
+            else -> {
+                minLength = 0
+                maxLength = 200
+            }
         }
         currentPhrase = phraseList.random()
-        while (currentPhrase.text.length < minLength) {
+        while (currentPhrase.text.length > maxLength || currentPhrase.text.length < minLength ) {
             currentPhrase = phraseList.random()
-            Log.d(TAG, "Längd på fras : ${currentPhrase.text.length}. Minsta längd är $minLength")
         }
-        Log.d(TAG, "Kom ur loopen. Längd på fras : ${currentPhrase.text.length}")
-
         guessesUsed = 0
         isCorrect = false
         phraseLoaded.value = true
         phraseLoaded.value = false
-    }
-
-    fun setDivisions() {
-        slizeDivisions = when (level) {
-            in 0..1 -> 3
-            in 2..3 -> 4
-            in 4..5 -> 5
-            in 6..7 -> 6
-            in 16..19 -> 7
-            else -> {
-                2
-            }
-        }
     }
 
     fun makeSlices(duration: Int) {
@@ -147,35 +159,48 @@ class IngameViewModel : ViewModel() {
         return list
     }
 
+    fun checkAnswer(): Boolean {
+        val sortedList = slices!!.sortedBy { it.number }
+        return sortedList == slices
+    }
+
     //Kollar om listan är i rätt ordning
     //Kollar om det va sista frasen. Sätter isåfall stageComplete
     //Om gissningen är fel ökas antal gissningar, och ett poäng dras bort.
     //Kollar om poängen är slut. Om så är fallet sätts gameOver
     fun makeGuess(): Boolean {
-        var correct = false
-        val sortedList = slices!!.sortedBy { it.number }
+        var iscorrect: Boolean
         bonus = 0
-        if (sortedList == slices) {
+        if (checkAnswer()) {
+            Log.d("gamedebug", "right answer, guesses is now $guessesUsed")
             giveBonus()
-            correct = true
-            phraseIndex ++
-            isCorrect = true
+            numberOfphrasesDone.value = numberOfphrasesDone.value?.plus(1)
+            iscorrect = true
         } else {
             guessesUsed++
+            Log.d("gamedebug", "wrong answer, guesses is now $guessesUsed")
             points--
+            iscorrect = false
         }
         if (points < 1) {
             gameOver = true
         }
-
-        if (phraseIndex > (level * 3)) {
-            level++
-            Log.d(TAG, "Leveling up! New level : $level")
-
-        }
-        return correct
+        observedPoints.value = points
+        return iscorrect
     }
 
+    fun advancePhrase() {
+        Log.d("gamedebug", "advancing stage, guesses is now $guessesUsed")
+        if (phraseIndex == 4) {
+            levelUp = true
+            level ++
+            observedlevel.value = level
+            Log.d(TAG, "Leveling up! New level : $level")
+            phraseIndex = 0
+        } else {
+            phraseIndex++
+        }
+    }
 
     fun calculateScore(context: Context) {
         val sharedPref = context.getSharedPreferences("userScore", Context.MODE_PRIVATE)
@@ -189,10 +214,12 @@ class IngameViewModel : ViewModel() {
     }
 
     private fun giveBonus() {
+        Log.d("gamedebug", "Giving bonus. guesses used : $guessesUsed")
         if (guessesUsed == 0) bonus = 1
         points += bonus
         toFragment = bonus
         Log.d(TAG, "Sätter bonus till $bonus")
+        advancePhrase()
     }
 
     private fun saveUserData(context: Context) {
@@ -247,4 +274,27 @@ class IngameViewModel : ViewModel() {
         Log.d(TAG, "destroying viewmodel")
         super.onCleared()
     }
+
+    var levels = listOf(
+        listOf(3, 3, 3, 3, 4),
+        listOf(3, 3, 3, 4, 4),
+        listOf(3, 3, 4, 4, 4),
+        listOf(3, 4, 4, 4, 4),
+        listOf(3, 4, 4, 4, 5),
+        listOf(3, 4, 4, 5, 5),
+        listOf(3, 4, 5, 5, 5),
+        listOf(3, 4, 5, 5, 6),
+        listOf(4, 4, 5, 6, 6),
+        listOf(4, 5, 5, 6, 6),
+        listOf(4, 5, 6, 6, 6),
+        listOf(4, 5, 6, 6, 7),
+        listOf(5, 5, 6, 6, 7),
+        listOf(4, 5, 5, 6, 6),
+        listOf(4, 5, 5, 6, 7),
+        listOf(4, 5, 6, 6, 7),
+        listOf(4, 5, 6, 7, 7),
+        listOf(5, 5, 6, 7, 7),
+        listOf(5, 5, 6, 7, 8),
+        listOf(5, 6, 6, 7, 8),
+    )
 }
