@@ -1,5 +1,6 @@
 package se.staffanljungqvist.revocalize.viewmodels
 
+import android.app.ProgressDialog
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
@@ -12,6 +13,7 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.google.gson.Gson
 import org.json.JSONException
+import org.json.JSONObject
 import se.staffanljungqvist.revocalize.Colors
 import se.staffanljungqvist.revocalize.models.Phrase
 import se.staffanljungqvist.revocalize.models.Phrases
@@ -82,42 +84,50 @@ class IngameViewModel : ViewModel() {
     }
 
 
-    fun loadPhrase() {
-        val minLength: Int
-        val maxLength: Int
-        slizeDivisions = levels[level][phraseIndex]
-        when (slizeDivisions) {
-            3 -> {
-                minLength = 0
-                maxLength = 60
+    fun downloadPhrases(context : Context) {
+        val url = "https://firebasestorage.googleapis.com/v0/b/revocalize-bf576.appspot.com/o/phrases.json?alt=media&token=3668417e-3ad4-4fd2-82e3-d1ffd1db073f"
+        val queue = Volley.newRequestQueue(context)
+        val request = StringRequest(Request.Method.GET, url,
+            Response.Listener { response ->
+                Log.e(TAG, "Laddade ner Json data}")
+                loadPhraseList(response.toString())
+            }, Response.ErrorListener {
+                Log.e(TAG, it.toString())
+            })
+        queue.add(request)
+    }
+
+
+    private fun loadPhraseList(jsonString : String) {
+        Log.d(TAG, "Försöker ladda")
+        try {
+            var tempPhraseList = Gson().fromJson(jsonString, Phrases::class.java)
+            phraseList = tempPhraseList.phraseList
+
+            for (phrase in phraseList) {
+                Log.d(TAG, "${phrase.text}")
             }
-            4 -> {
-                minLength = 40
-                maxLength = 80
-            }
-            5 -> {
-                minLength = 80
-                maxLength = 200
-            }
-            6 -> {
-                minLength = 100
-                maxLength = 200
-            }
-            7 -> {
-                minLength = 120
-                maxLength = 200
-            }
-            else -> {
-                minLength = 0
-                maxLength = 200
-            }
+
+            loadPhrase()
+        } catch (e: JSONException) {
+            Log.d(TAG, "Nåt fel på jsonfil")
+            e.printStackTrace()
         }
+    }
+
+
+    fun loadPhrase() {
+
+        val div = getSliceDivisions()
+        Log.d(TAG, "min + max ${div[0]}, ${div[1]}")
+
         currentPhrase = phraseList.random()
-        while (currentPhrase.text.length > maxLength || currentPhrase.text.length < minLength ) {
+        while (currentPhrase.text.length > div[1] || currentPhrase.text.length < div[0] ) {
             currentPhrase = phraseList.random()
         }
         guessesUsed = 0
         isCorrect = false
+        Log.d(TAG, "Laddade in fras med storlek ${currentPhrase.text.length}")
         phraseLoaded.value = true
         phraseLoaded.value = false
     }
@@ -246,11 +256,44 @@ class IngameViewModel : ViewModel() {
         }
     }
 
+    fun getSliceDivisions() : List<Int>{
+        val minLength: Int
+        val maxLength: Int
+
+        slizeDivisions = levels[level][phraseIndex]
+        when (slizeDivisions) {
+            3 -> {
+                minLength = 0
+                maxLength = 60
+            }
+            4 -> {
+                minLength = 40
+                maxLength = 100
+            }
+            5 -> {
+                minLength = 80
+                maxLength = 200
+            }
+            6 -> {
+                minLength = 100
+                maxLength = 300
+            }
+            7 -> {
+                minLength = 120
+                maxLength = 300
+            }
+            else -> {
+                minLength = 0
+                maxLength = 200
+            }
+        }
+        return listOf(minLength, maxLength)
+    }
+
 
     fun iterateSlices(slizes: List<Slize>) {
         doneIterating.value = false
         var sliceNumber = -1
-        Log.d("revodebugmodel", "Detta är den första slizen. borde vara noll $sliceNumber")
         slizeIndex.value = sliceNumber
         loopHandler.post(object : Runnable {
             override fun run() {
@@ -267,28 +310,33 @@ class IngameViewModel : ViewModel() {
         })
     }
 
-    fun downloadPhrases(context : Context) {
-        val url = "https://firebasestorage.googleapis.com/v0/b/revocalize-bf576.appspot.com/o/phrases.json?alt=media&token=3668417e-3ad4-4fd2-82e3-d1ffd1db073f"
-            val queue = Volley.newRequestQueue(context)
-            val request = StringRequest(Request.Method.GET, url,
-                Response.Listener { response ->
-                    loadPhraseList(response)
-                    Log.e(TAG, "Laddade ner Json data")
+     fun getJSONFromAssets(context: Context){
+        val json: String?
+        val charset: Charset = Charsets.UTF_8
+        try {
+            val myjsonFile = context.assets.open("phrases.json")
+            val size = myjsonFile.available()
+            val buffer = ByteArray(size)
+            myjsonFile.read(buffer)
+            myjsonFile.close()
+            json = String(buffer, charset)
+            loadPhraseList(json)
+        } catch (ex: IOException) {
+            ex.printStackTrace()
 
-                }, Response.ErrorListener {
-                    Log.e(TAG, "Kunde inte ladda ner jsondata")
-                })
-            queue.add(request)
+        }
+
     }
 
-    private fun loadPhraseList(jsonString : String) {
-        try {
-            var tempPhraseList = Gson().fromJson(jsonString, Phrases::class.java)
-            phraseList = tempPhraseList.phraseList
-            loadPhrase()
-        } catch (e: JSONException) {
-            e.printStackTrace()
-        }
+
+
+
+
+     fun prepareText() : String {
+        val text1 = currentPhrase.text.uppercase().trim().replace("â\u0080\u0098","’")
+       val text2 = text1.replace("Â", "'")
+        val text3 = text2.replace("Â\u0080¦", "...")
+        return "\"" + text3 + "\""
     }
 
     override fun onCleared() {

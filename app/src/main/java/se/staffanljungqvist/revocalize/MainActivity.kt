@@ -7,6 +7,9 @@ import android.view.WindowManager
 import se.staffanljungqvist.revocalize.databinding.ActivityMainBinding
 import se.staffanljungqvist.revocalize.ui.*
 import java.io.File
+import java.io.IOException
+import java.net.HttpURLConnection
+import java.net.MalformedURLException
 
 const val TAG = "revodebug"
 
@@ -42,6 +45,19 @@ class MainActivity : AppCompatActivity() {
         //Göm navigation bar och action bar
         supportActionBar?.hide()
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
+    }
+
+    class fetchData : Thread() {
+        override fun run() {
+            try {
+                val url = ""
+
+            } catch ( e : MalformedURLException) {
+                e.printStackTrace()
+            } catch (e : IOException) {
+                e.printStackTrace()
+            }
+        }
     }
 
 

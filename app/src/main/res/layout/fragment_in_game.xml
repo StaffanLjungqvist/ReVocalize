@@ -22,21 +22,18 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-
-
-
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvSlizes"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginHorizontal="32dp"
+        android:layout_marginTop="8dp"
         android:layout_marginBottom="16dp"
-        android:layout_marginTop="18dp"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnCheck"/>
+        app:layout_constraintTop_toBottomOf="@+id/btnCheck" />
 
     <TextView
         android:id="@+id/tvSentence"
@@ -53,10 +50,11 @@
         android:text="Loading."
         android:textColor="@color/white"
         android:textSize="26sp"
-        android:visibility="visible"
-        app:autoSizeMaxTextSize="22sp"
+        android:visibility="invisible"
+        app:autoSizeMaxTextSize="20sp"
         app:autoSizeMinTextSize="14sp"
         app:autoSizeTextType="uniform"
+        app:guidelineUseRtl="false"
         app:layout_constraintBottom_toTopOf="@+id/btnCheck"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -74,6 +72,8 @@
         android:text="CHECK SEQUENCE"
         android:textSize="18sp"
         android:textStyle="bold"
+        android:textColor="@color/black"
+        android:backgroundTint="@color/white"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -86,13 +86,13 @@
         android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:background="@drawable/rounded_button"
-        android:backgroundTint="#38FF75"
         android:paddingHorizontal="50dp"
         android:soundEffectsEnabled="false"
         android:text="LISTEN"
         android:textSize="18sp"
         android:textStyle="bold"
         android:visibility="gone"
+        android:backgroundTint="#38FF75"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

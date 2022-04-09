@@ -106,7 +106,7 @@ class ScoreFragment : Fragment() {
             visibility = View.VISIBLE
             animate()
                 .alpha(0f)
-                .setDuration(1000.toLong())
+                .setDuration(2000.toLong())
                 .setListener(null)
         }
     }

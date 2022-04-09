@@ -83,8 +83,6 @@ class InGameFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        model.downloadPhrases(requireContext())
-
         ttsAdapter = TTSAdapter(requireContext())
         ttsAdapter.textPhrase = model.currentPhrase.text
 
@@ -92,6 +90,15 @@ class InGameFragment : Fragment() {
         myRecyclerView.adapter = slizeRecAdapter
         myRecyclerView.layoutManager = GridLayoutManager(requireContext(), 1)
         itemTouchHelper.attachToRecyclerView(myRecyclerView)
+
+        ttsAdapter.ttsInitiated.observe(viewLifecycleOwner) {
+            if (it) {
+               // model.getJSONFromAssets(requireContext())
+                model.downloadPhrases(requireContext())
+            }
+        }
+
+        setupAnimation()
 
         model.phraseLoaded.observe(viewLifecycleOwner) {
             if (it) ttsAdapter.saveToAudioFile(model.currentPhrase.text)
@@ -155,10 +162,8 @@ class InGameFragment : Fragment() {
 
     private fun initializeUI() {
         makeSlices()
-        if (model.numberOfphrasesDone.value == 0) {
-            animateIn()
-        }
-        binding.tvSentence.text = model.currentPhrase.text.parentenses()
+        binding.tvSentence.text = model.prepareText()
+        Log.d(TAG, "Visar fras ${model.prepareText()}")
     }
 
     private fun makeSlices() {
@@ -244,18 +249,37 @@ class InGameFragment : Fragment() {
             duration = 600
             start()
             addListener(onEnd = {
+                Log.d(TAG, "Visar listenknapp")
                 animateButton(binding.btnListen, true)
             })
         }
     }
 
+    fun setupAnimation(){
+        ObjectAnimator.ofFloat(binding.tvSentence, "translationY", -500f).apply {
+            duration = 0
+            start()
+            addListener(onEnd = {
+                binding.tvSentence.isVisible = true
+            })
+        }
+        ObjectAnimator.ofFloat(binding.rvSlizes, "translationY", 1000f).apply {
+            duration = 0
+            start()
+            addListener(onEnd = {
+                binding.rvSlizes.isVisible = true
+            })
+        }
+    }
+
     fun animateButton(button : Button, show: Boolean) {
+        val duration = if (show) 200 else 100
         button.apply {
             alpha = if (show) 0f else 1f
             visibility = View.VISIBLE
             animate()
                 .alpha(if (show) 1f else 0f)
-                .setDuration(100.toLong())
+                .setDuration(duration.toLong())
                 .setListener(object : AnimatorListenerAdapter() {
                     override fun onAnimationEnd(animation: Animator) {
                         button.visibility = if (show) View.VISIBLE else View.INVISIBLE
@@ -318,10 +342,4 @@ class InGameFragment : Fragment() {
     fun startDragging(viewHolder: RecyclerView.ViewHolder) {
         itemTouchHelper.startDrag(viewHolder)
     }
-
-    private fun String.parentenses(): String {
-        val text = this.uppercase()
-        return "\"" + text + "\""
-    }
-
 }

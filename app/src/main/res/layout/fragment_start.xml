@@ -12,7 +12,9 @@
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:src="@drawable/revocalize_logo"
+        app:layout_constraintBottom_toTopOf="@+id/btnStartNewGame"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -20,12 +22,14 @@
         android:id="@+id/btnStartNewGame"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
+        android:layout_margin="32dp"
         android:background="@drawable/rounded_button"
         android:paddingHorizontal="50dp"
         android:text="START"
         android:textStyle="bold"
-        android:layout_margin="32dp"
+        app:layout_constraintBottom_toTopOf="@+id/btnInstructions"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
@@ -34,11 +38,14 @@
         android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:layout_margin="32dp"
+        android:layout_marginBottom="16dp"
         android:background="@drawable/rounded_button"
         android:paddingHorizontal="50dp"
         android:text="Instructions"
         android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnStartNewGame" />
 

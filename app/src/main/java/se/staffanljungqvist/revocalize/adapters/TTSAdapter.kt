@@ -22,17 +22,19 @@ class TTSAdapter(val context: Context) : TextToSpeech.OnInitListener {
     private var fileLocation = File(context.filesDir.toString() + "/myreq.wav")
     var ttsAudiofileWritten = MutableLiveData<Boolean>()
 
+    val ttsInitiated: MutableLiveData<Boolean> by lazy {
+        MutableLiveData<Boolean>(false)
+    }
+
     override fun onInit(status: Int) {
         if (status == TextToSpeech.SUCCESS) {
             val result = tts.setLanguage(Locale.US)
             if (result == TextToSpeech.LANG_MISSING_DATA) {
                 Log.e(TAG, "The language specified is not supported")
             }
-            if (fileLocation.exists()) {
-                Log.d(TAG, "TTS initialiserades korrekt")
-            } else {
-                createAudioFile()
-            }
+            Log.d(TAG, "TTS initialiserades korrekt")
+            ttsInitiated.value = true
+            ttsInitiated.value = false
         } else {
             Log.e(TAG, "TTS Initialization Failed")
         }

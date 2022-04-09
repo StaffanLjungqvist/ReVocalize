@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.core.animation.addListener
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -49,9 +50,17 @@ class SuccessFragment : Fragment() {
             start()
         }
 
+        textToShow = binding.llLevelUp
+        animateText(false)
+
+
+
         model.answerCorrect.observe(viewLifecycleOwner) {
             if (it) {
                 successPlayer.start()
+
+                if (model.levelUp) binding.tvLevelUpLevel.text = (model.level + 1).toString()
+
                 textToShow = if (model.levelUp) {
                     binding.llLevelUp
                 } else if (model.bonus > 0) {
@@ -64,15 +73,15 @@ class SuccessFragment : Fragment() {
         }
 
         model.audioReady.observe(viewLifecycleOwner) {
-            if (it && model.numberOfphrasesDone.value != 0) {
-                animateButton(true)
+            if (it) {
+                animateText(true)
             }
         }
 
 
         binding.btnContinute.setOnClickListener {
             animateButton(false)
-            animateText(true)
+
         }
     }
 
