@@ -1,5 +1,7 @@
 package se.staffanljungqvist.revocalize.ui
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import android.media.MediaPlayer
 import android.os.Bundle
@@ -41,17 +43,10 @@ class SuccessFragment : Fragment() {
         val successPlayer = MediaPlayer.create(requireContext(), R.raw.success)
         successPlayer.start()
 
-        ObjectAnimator.ofFloat(binding.llSuccessText, "translationY", -1000f).apply {
+        ObjectAnimator.ofFloat(binding.llSuccessText, "translationY", -600f).apply {
             duration = 0
             start()
         }
-
-        ObjectAnimator.ofFloat(binding.btnContinute, "translationX", -1000f).apply {
-            duration = 0
-            start()
-        }
-
-
 
         animateIn()
 
@@ -65,7 +60,8 @@ class SuccessFragment : Fragment() {
 
         model.audioReady.observe(viewLifecycleOwner) {
             if (it) {
-                animateButton()
+                Log.d(TAG, "börjar animera")
+                animateButton(true)
             }
         }
 
@@ -77,18 +73,28 @@ class SuccessFragment : Fragment() {
     }
 
     fun animateIn() {
+        binding.llSuccessText.offsetTopAndBottom(-1000)
         ObjectAnimator.ofFloat(binding.llSuccessText, "translationY", 0f).apply {
-            duration = 300
+            duration = 800
             start()
             addListener(onEnd = {
             })
         }
     }
 
-    fun animateButton() {
-        ObjectAnimator.ofFloat(binding.btnContinute, "translationX", 0f).apply {
-            duration = 300
-            start()
+    fun animateButton(show : Boolean) {
+        binding.btnContinute.apply {
+            alpha = 0f
+            visibility = View.VISIBLE
+            animate()
+                .alpha(1f)
+                .setDuration(300.toLong())
+                .setListener(object : AnimatorListenerAdapter() {
+                    override fun onAnimationEnd(animation: Animator) {
+                        binding.btnContinute.visibility = View.VISIBLE
+                    }
+                })
+
         }
     }
 

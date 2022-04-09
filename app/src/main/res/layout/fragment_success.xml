@@ -45,7 +45,7 @@
                     android:layout_height="wrap_content"
                     android:text="THAT IS "
                     android:textColor="@color/white"
-                    android:textSize="40sp"
+                    android:textSize="26sp"
                     android:textStyle="bold"
                     tools:visibility="visible" />
 
@@ -55,7 +55,7 @@
                     android:layout_height="wrap_content"
                     android:text="CORRECT!"
                     android:textColor="@color/silver"
-                    android:textSize="40sp"
+                    android:textSize="26sp"
                     android:textStyle="bold"
                     tools:visibility="visible" />
 
@@ -72,14 +72,14 @@
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:visibility="gone">
+                tools:visibility="visible">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="FIRST TRY!"
                     android:textColor="@color/white"
-                    android:textSize="40sp"
+                    android:textSize="26sp"
                     android:textStyle="bold"
                     tools:visibility="visible" />
 
@@ -95,7 +95,7 @@
                         android:layout_marginStart="16dp"
                         android:text="BONUS POINT!"
                         android:textColor="@color/silver"
-                        android:textSize="40sp"
+                        android:textSize="26sp"
                         android:textStyle="bold" />
 
                 </LinearLayout>
@@ -186,11 +186,12 @@
             android:text="CONTINUTE"
             android:textSize="18sp"
             android:textStyle="bold"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="visible" />
+            tools:visibility="invisible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

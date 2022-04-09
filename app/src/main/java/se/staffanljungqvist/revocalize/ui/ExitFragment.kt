@@ -26,10 +26,22 @@ class ExitFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         view.findViewById<Button>(R.id.btnConfirm).setOnClickListener {
+
             model.calculateScore(requireContext())
+
             requireActivity().supportFragmentManager.popBackStack()
+
+            val bundle = Bundle()
+            model.numberOfphrasesDone.value?.let { it1 -> bundle.putInt("score", it1) }
+            bundle.putBoolean("isRecord", model.newRecord)
+            val theFragment = GameOverFragment()
+            theFragment.arguments = bundle
             requireActivity().supportFragmentManager.beginTransaction()
-                .replace(R.id.fragmentContainerView, StartFragment()).commit()
+                .add(R.id.fragmentContainerView, theFragment).addToBackStack(null)
+                .commit()
+
+
+
             activity?.viewModelStore?.clear()
         }
 

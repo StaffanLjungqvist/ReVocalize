@@ -47,12 +47,16 @@
         android:layout_marginEnd="32dp"
         android:autoSizeTextType="uniform"
         android:gravity="center_vertical"
+        android:maxLines="2"
         android:paddingHorizontal="40dp"
         android:paddingVertical="10dp"
         android:text="Loading."
         android:textColor="@color/white"
-        android:textSize="28sp"
+        android:textSize="26sp"
         android:visibility="visible"
+        app:autoSizeMaxTextSize="38sp"
+        app:autoSizeMinTextSize="14sp"
+        app:autoSizeTextType="uniform"
         app:layout_constraintBottom_toTopOf="@+id/btnCheck"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -103,10 +107,10 @@
         android:textColor="@color/white"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/rvSlizes"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/rvSlizes" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 

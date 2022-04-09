@@ -203,13 +203,18 @@ class IngameViewModel : ViewModel() {
     }
 
     fun calculateScore(context: Context) {
+
         val sharedPref = context.getSharedPreferences("userScore", Context.MODE_PRIVATE)
         val userRecord = sharedPref.getInt("user_record", 0)
+        val userScore = numberOfphrasesDone.value
+        Log.d(TAG, "Game over. Antal fraser klarade : $userScore. Tidigare rekord: $userRecord")
         //Kollar om nuvarande poängen är bättre än poängrekordet. Ändrar därefter.
-        if (points > userRecord || userRecord == 0) {
-            Log.d(TAG, "Nytt rekord; $points")
-            newRecord = true
-            saveUserData(context)
+        if (userScore != null) {
+            if (userScore + 1 > userRecord || userRecord == 0) {
+                Log.d(TAG, "Nytt rekord; $userScore klarade fraser")
+                newRecord = true
+                saveUserData(context)
+            }
         }
     }
 
@@ -223,12 +228,15 @@ class IngameViewModel : ViewModel() {
     }
 
     private fun saveUserData(context: Context) {
-        if (newRecord) {
-            Log.d(TAG, "Saving the new record : $points")
-            val sharedPref = context.getSharedPreferences("userScore", Context.MODE_PRIVATE)
-            val edit = sharedPref.edit()
-            edit.putInt("user_record", points)
-            edit.commit()
+        val userScore = numberOfphrasesDone.value
+        if (userScore != null) {
+            if (newRecord) {
+                Log.d(TAG, "Saving the new record : $userScore")
+                val sharedPref = context.getSharedPreferences("userScore", Context.MODE_PRIVATE)
+                val edit = sharedPref.edit()
+                edit.putInt("user_record", userScore + 1)
+                edit.commit()
+            }
         }
     }
 
@@ -276,12 +284,12 @@ class IngameViewModel : ViewModel() {
     }
 
     var levels = listOf(
-        listOf(3, 3, 3, 3, 4),
-        listOf(3, 3, 3, 4, 4),
-        listOf(3, 3, 4, 4, 4),
-        listOf(3, 4, 4, 4, 4),
-        listOf(3, 4, 4, 4, 5),
-        listOf(3, 4, 4, 5, 5),
+        listOf(3, 3, 3, 3, 3, 3),
+        listOf(4, 4, 4, 4, 4, 4),
+        listOf(5, 5, 5, 5, 5, 5),
+        listOf(6, 6, 6, 6, 6, 6),
+        listOf(7, 7, 7, 7, 7, 7),
+        listOf(8, 8, 8, 8, 8, 8),
         listOf(3, 4, 5, 5, 5),
         listOf(3, 4, 5, 5, 6),
         listOf(4, 4, 5, 6, 6),

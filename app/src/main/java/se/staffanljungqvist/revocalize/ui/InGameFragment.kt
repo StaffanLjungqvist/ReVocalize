@@ -1,5 +1,7 @@
 package se.staffanljungqvist.revocalize.ui
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import android.media.MediaPlayer
 import android.net.Uri
@@ -8,6 +10,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import androidx.core.animation.addListener
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -113,11 +116,11 @@ class InGameFragment : Fragment() {
                 Log.d(TAG, "done iterating")
                 if (listenMode) {
                     listenMode = false
-                    binding.btnCheck.isVisible = true
+                    animateButton(binding.btnCheck, true)
                 } else {
                     if (model.makeGuess()) correctAnswer() else {
                         wrongAnswer()
-                        binding.btnCheck.isVisible = true
+                        animateButton(binding.btnCheck, true)
                     }
                 }
                 slizeRecAdapter.blinknumber = -1
@@ -128,11 +131,11 @@ class InGameFragment : Fragment() {
         binding.btnListen.setOnClickListener {
             model.iterateSlices(model.slices!!)
             listenMode = true
-            it.isVisible = false
+            animateButton(binding.btnListen, false)
         }
 
         binding.btnCheck.setOnClickListener {
-            it.visibility = View.INVISIBLE
+            animateButton(binding.btnCheck, false)
             if (model.checkAnswer()) {
                 model.iterateSlices(model.slices!!)
                 playFullPhrase()
@@ -141,7 +144,6 @@ class InGameFragment : Fragment() {
             }
 
         }
-
 
 
     }
@@ -171,6 +173,7 @@ class InGameFragment : Fragment() {
         Log.d(TAG, "AA Uri omgord till File : $audioFile")
         mediaPlayer = MediaPlayer.create(context, audioFile)
         mediaPlayer!!.setOnPreparedListener {
+            it.seekTo(0);
             Log.d(TAG, "Audio är redo att spelas")
             initializeUI()
             ObjectAnimator.ofFloat(binding.tvLoading, "translationY", 500f).apply {
@@ -232,8 +235,8 @@ class InGameFragment : Fragment() {
             }
         }
 
-        ObjectAnimator.ofFloat(binding.tvSentence, "translationY", -400f).apply {
-            duration = 1000
+        ObjectAnimator.ofFloat(binding.tvSentence, "translationY", -300f).apply {
+            duration = 600
             start()
         }
 
@@ -250,13 +253,29 @@ class InGameFragment : Fragment() {
         }
 
         ObjectAnimator.ofFloat(binding.tvSentence, "translationY", 0f).apply {
-            duration = 1000
+            duration = 600
             start()
             addListener(onEnd = {
-                binding.btnListen.isVisible = true
+                animateButton(binding.btnListen, true)
             })
         }
     }
+
+    fun animateButton(button : Button, show: Boolean) {
+        button.apply {
+            alpha = if (show) 0f else 1f
+            visibility = View.VISIBLE
+            animate()
+                .alpha(if (show) 1f else 0f)
+                .setDuration(100.toLong())
+                .setListener(object : AnimatorListenerAdapter() {
+                    override fun onAnimationEnd(animation: Animator) {
+                        button.visibility = if (show) View.VISIBLE else View.INVISIBLE
+                    }
+                })
+        }
+    }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
