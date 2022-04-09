@@ -56,8 +56,6 @@ class InGameFragment : Fragment() {
         slizeRecAdapter.fragment = this
         val stageIndex = arguments?.getInt("stage")
 
-
-
         firebaseAnalytics = Firebase.analytics
         firebaseAnalytics.logEvent(FirebaseAnalytics.Event.LEVEL_START) {
             param("stage index", stageIndex.toString())
@@ -85,8 +83,7 @@ class InGameFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        model.loadPhraseList(requireContext())
-        model.loadPhrase()
+        model.downloadPhrases(requireContext())
 
         ttsAdapter = TTSAdapter(requireContext())
         ttsAdapter.textPhrase = model.currentPhrase.text
@@ -95,6 +92,10 @@ class InGameFragment : Fragment() {
         myRecyclerView.adapter = slizeRecAdapter
         myRecyclerView.layoutManager = GridLayoutManager(requireContext(), 1)
         itemTouchHelper.attachToRecyclerView(myRecyclerView)
+
+        model.phraseLoaded.observe(viewLifecycleOwner) {
+            if (it) ttsAdapter.saveToAudioFile(model.currentPhrase.text)
+        }
 
         ttsAdapter.ttsAudiofileWritten.observe(viewLifecycleOwner) {
             if (it) loadAudio()
@@ -167,11 +168,6 @@ class InGameFragment : Fragment() {
         slizeRecAdapter.notifyDataSetChanged()
     }
 
-    private fun loadNewPhrase() {
-        model.loadPhrase()
-        ttsAdapter.saveToAudioFile(model.currentPhrase.text)
-    }
-
     private fun loadAudio() {
         val audioFile = Uri.parse(requireContext().filesDir.toString() + "/myreq.wav")
         Log.d(TAG, "AA Uri omgord till File : $audioFile")
@@ -221,7 +217,7 @@ class InGameFragment : Fragment() {
             duration = 1000
             start()
             addListener(onEnd = {
-                loadNewPhrase()
+                model.loadPhrase()
                 ObjectAnimator.ofFloat(binding.tvLoading, "translationY", 0f).apply {
                     duration = 300
                     start()

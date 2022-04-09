@@ -6,6 +6,10 @@ import android.os.Looper
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.android.volley.Request
+import com.android.volley.Response
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
 import com.google.gson.Gson
 import org.json.JSONException
 import se.staffanljungqvist.revocalize.Colors
@@ -57,6 +61,10 @@ class IngameViewModel : ViewModel() {
         MutableLiveData<Int>()
     }
 
+    val phraselistDownloaded: MutableLiveData<Boolean> by lazy {
+        MutableLiveData<Boolean>(false)
+    }
+
     val phraseLoaded: MutableLiveData<Boolean> by lazy {
         MutableLiveData<Boolean>(false)
     }
@@ -73,19 +81,6 @@ class IngameViewModel : ViewModel() {
         MutableLiveData<Boolean>(false)
     }
 
-
-
-
-    fun loadPhraseList(context: Context) {
-        try {
-            val jsonString = getJSONFromAssets(context)!!
-             var tempPhraseList = Gson().fromJson(jsonString, Phrases::class.java)
-                phraseList = tempPhraseList.phraseList
-
-        } catch (e: JSONException) {
-            e.printStackTrace()
-        }
-    }
 
     fun loadPhrase() {
         val minLength: Int
@@ -272,21 +267,28 @@ class IngameViewModel : ViewModel() {
         })
     }
 
-    private fun getJSONFromAssets(context: Context): String? {
-        val json: String?
-        val charset: Charset = Charsets.UTF_8
+    fun downloadPhrases(context : Context) {
+        val url = "https://firebasestorage.googleapis.com/v0/b/revocalize-bf576.appspot.com/o/phrases.json?alt=media&token=3668417e-3ad4-4fd2-82e3-d1ffd1db073f"
+            val queue = Volley.newRequestQueue(context)
+            val request = StringRequest(Request.Method.GET, url,
+                Response.Listener { response ->
+                    loadPhraseList(response)
+                    Log.e(TAG, "Laddade ner Json data")
+
+                }, Response.ErrorListener {
+                    Log.e(TAG, "Kunde inte ladda ner jsondata")
+                })
+            queue.add(request)
+    }
+
+    private fun loadPhraseList(jsonString : String) {
         try {
-            val myjsonFile = context.assets.open("phrases.json")
-            val size = myjsonFile.available()
-            val buffer = ByteArray(size)
-            myjsonFile.read(buffer)
-            myjsonFile.close()
-            json = String(buffer, charset)
-        } catch (ex: IOException) {
-            ex.printStackTrace()
-            return null
+            var tempPhraseList = Gson().fromJson(jsonString, Phrases::class.java)
+            phraseList = tempPhraseList.phraseList
+            loadPhrase()
+        } catch (e: JSONException) {
+            e.printStackTrace()
         }
-        return json
     }
 
     override fun onCleared() {

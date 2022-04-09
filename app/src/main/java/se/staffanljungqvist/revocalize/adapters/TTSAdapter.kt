@@ -30,7 +30,6 @@ class TTSAdapter(val context: Context) : TextToSpeech.OnInitListener {
             }
             if (fileLocation.exists()) {
                 Log.d(TAG, "TTS initialiserades korrekt")
-                saveToAudioFile(textPhrase)
             } else {
                 createAudioFile()
             }
