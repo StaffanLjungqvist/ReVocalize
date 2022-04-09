@@ -1,6 +1,5 @@
 package se.staffanljungqvist.revocalize.viewmodels
 
-import android.app.ProgressDialog
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
@@ -13,8 +12,8 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.google.gson.Gson
 import org.json.JSONException
-import org.json.JSONObject
 import se.staffanljungqvist.revocalize.Colors
+import se.staffanljungqvist.revocalize.PowerUp
 import se.staffanljungqvist.revocalize.models.Phrase
 import se.staffanljungqvist.revocalize.models.Phrases
 import se.staffanljungqvist.revocalize.models.Slize
@@ -63,10 +62,6 @@ class IngameViewModel : ViewModel() {
         MutableLiveData<Int>()
     }
 
-    val phraselistDownloaded: MutableLiveData<Boolean> by lazy {
-        MutableLiveData<Boolean>(false)
-    }
-
     val phraseLoaded: MutableLiveData<Boolean> by lazy {
         MutableLiveData<Boolean>(false)
     }
@@ -81,6 +76,10 @@ class IngameViewModel : ViewModel() {
 
     val answerCorrect: MutableLiveData<Boolean> by lazy {
         MutableLiveData<Boolean>(false)
+    }
+
+    val powerUpUsed: MutableLiveData<PowerUp> by lazy {
+        MutableLiveData<PowerUp>()
     }
 
 
@@ -117,8 +116,7 @@ class IngameViewModel : ViewModel() {
 
 
     fun loadPhrase() {
-
-        val div = getSliceDivisions()
+        val div = getTextlengthAttributes()
         Log.d(TAG, "min + max ${div[0]}, ${div[1]}")
 
         currentPhrase = phraseList.random()
@@ -131,6 +129,17 @@ class IngameViewModel : ViewModel() {
         phraseLoaded.value = true
         phraseLoaded.value = false
     }
+
+    fun usePowerUp(powerUp : PowerUp) {
+
+        when (powerUp) {
+            PowerUp.REMOVESLIZE -> {
+                slizeDivisions--
+            }
+        }
+        powerUpUsed.value = powerUp
+    }
+
 
     fun makeSlices(duration: Int) {
         //lista av sliceobjekt initialiseras
@@ -152,21 +161,7 @@ class IngameViewModel : ViewModel() {
     }
 
 
-    private fun superShuffle(list: MutableList<Slize>): List<Slize> {
-        var superShuffled = false
-        while (!superShuffled) {
-            superShuffled = true
-            list.shuffle()
-            for (i in 0..list.size) {
-                if (i <= list.size - 2) {
-                    if ((list[i].number + 1) == list[i + 1].number) {
-                        superShuffled = false
-                    }
-                }
-            }
-        }
-        return list
-    }
+
 
     fun checkAnswer(): Boolean {
         val sortedList = slices!!.sortedBy { it.number }
@@ -215,7 +210,6 @@ class IngameViewModel : ViewModel() {
     }
 
     fun calculateScore(context: Context) {
-
         val userRecord = getUserHighScore(context)
         val userScore = numberOfphrasesDone.value
         Log.d(TAG, "Game over. Antal fraser klarade : $userScore. Tidigare rekord: $userRecord")
@@ -256,7 +250,7 @@ class IngameViewModel : ViewModel() {
         }
     }
 
-    fun getSliceDivisions() : List<Int>{
+    fun getTextlengthAttributes() : List<Int>{
         val minLength: Int
         val maxLength: Int
 
@@ -337,6 +331,22 @@ class IngameViewModel : ViewModel() {
        val text2 = text1.replace("Â", "'")
         val text3 = text2.replace("Â\u0080¦", "...")
         return "\"" + text3 + "\""
+    }
+
+    private fun superShuffle(list: MutableList<Slize>): List<Slize> {
+        var superShuffled = false
+        while (!superShuffled) {
+            superShuffled = true
+            list.shuffle()
+            for (i in 0..list.size) {
+                if (i <= list.size - 2) {
+                    if ((list[i].number + 1) == list[i + 1].number) {
+                        superShuffled = false
+                    }
+                }
+            }
+        }
+        return list
     }
 
     override fun onCleared() {

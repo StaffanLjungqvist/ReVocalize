@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.core.animation.addListener
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -81,7 +80,6 @@ class SuccessFragment : Fragment() {
 
         binding.btnContinute.setOnClickListener {
             animateButton(false)
-
         }
     }
 
@@ -98,18 +96,15 @@ class SuccessFragment : Fragment() {
                         binding.btnContinute.visibility = if (show) View.VISIBLE else View.GONE
                     }
                 })
-
         }
     }
 
     fun animateText(out: Boolean) {
-
         textToShow.isVisible = true
-
         val position = if (out) -500f else 0f
         ObjectAnimator.ofFloat(binding.llSuccessText, "translationY", position).apply {
-            duration = 400
-            startDelay = if (out) 0 else 400
+            duration = if (out) 400 else 200
+            startDelay = if (out) 400 else 200
             start()
             addListener(onEnd = {
                 if (out) {

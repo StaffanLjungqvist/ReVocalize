@@ -12,3 +12,7 @@ object Colors {
 
     )
 }
+
+enum class PowerUp {
+    REMOVESLIZE
+}

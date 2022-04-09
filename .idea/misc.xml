@@ -9,8 +9,9 @@
         <entry key="..\:/Users/Staffan/AndroidStudioProjects/ReVocalize/app/src/main/res/layout/fragment_exit.xml" value="0.2578125" />
         <entry key="..\:/Users/Staffan/AndroidStudioProjects/ReVocalize/app/src/main/res/layout/fragment_game_beat.xml" value="0.5401041666666667" />
         <entry key="..\:/Users/Staffan/AndroidStudioProjects/ReVocalize/app/src/main/res/layout/fragment_game_over.xml" value="0.2994791666666667" />
-        <entry key="..\:/Users/Staffan/AndroidStudioProjects/ReVocalize/app/src/main/res/layout/fragment_in_game.xml" value="0.7474619289340102" />
+        <entry key="..\:/Users/Staffan/AndroidStudioProjects/ReVocalize/app/src/main/res/layout/fragment_in_game.xml" value="0.5" />
         <entry key="..\:/Users/Staffan/AndroidStudioProjects/ReVocalize/app/src/main/res/layout/fragment_intro.xml" value="0.33" />
+        <entry key="..\:/Users/Staffan/AndroidStudioProjects/ReVocalize/app/src/main/res/layout/fragment_inventory.xml" value="0.75" />
         <entry key="..\:/Users/Staffan/AndroidStudioProjects/ReVocalize/app/src/main/res/layout/fragment_level_complete.xml" value="0.67" />
         <entry key="..\:/Users/Staffan/AndroidStudioProjects/ReVocalize/app/src/main/res/layout/fragment_level_up.xml" value="0.4390625" />
         <entry key="..\:/Users/Staffan/AndroidStudioProjects/ReVocalize/app/src/main/res/layout/fragment_score.xml" value="0.75" />

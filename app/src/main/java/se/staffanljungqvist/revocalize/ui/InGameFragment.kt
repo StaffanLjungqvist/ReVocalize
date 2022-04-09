@@ -22,6 +22,7 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.analytics.ktx.logEvent
 import com.google.firebase.ktx.Firebase
+import se.staffanljungqvist.revocalize.PowerUp
 import se.staffanljungqvist.revocalize.R
 import se.staffanljungqvist.revocalize.adapters.SlizeRecAdapter
 import se.staffanljungqvist.revocalize.adapters.TTSAdapter
@@ -47,9 +48,8 @@ class InGameFragment : Fragment() {
     private lateinit var ttsAdapter: TTSAdapter
 
     private var mediaPlayer: MediaPlayer? = null
-
-
     private var listenMode = true
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,6 +75,10 @@ class InGameFragment : Fragment() {
 
         requireActivity().supportFragmentManager.beginTransaction()
             .add(R.id.fragmentContainerView, ScoreFragment())
+            .commit()
+
+        requireActivity().supportFragmentManager.beginTransaction()
+            .add(R.id.fragmentContainerView, InventoryFragment())
             .commit()
 
         return binding.root
@@ -110,7 +114,10 @@ class InGameFragment : Fragment() {
 
         model.loadUI.observe(viewLifecycleOwner) {
             if (it) {
-                animateIn()
+                animate(binding.tvSentence, 0){}
+                animate(binding.rvSlizes, 0) {
+                    animateButton(binding.btnListen, true)
+                }
             }
         }
 
@@ -137,6 +144,15 @@ class InGameFragment : Fragment() {
                 }
                 slizeRecAdapter.blinknumber = -1
                 slizeRecAdapter.notifyDataSetChanged()
+            }
+        }
+
+        model.powerUpUsed.observe(viewLifecycleOwner) {
+            when (it) {
+                PowerUp.REMOVESLIZE -> {
+                    makeSlices()
+                    slizeRecAdapter.notifyDataSetChanged()
+                }
             }
         }
 
@@ -181,7 +197,7 @@ class InGameFragment : Fragment() {
             it.seekTo(0);
             Log.d(TAG, "Audio är redo att spelas")
             initializeUI()
-            ObjectAnimator.ofFloat(binding.tvLoading, "translationY", 500f).apply {
+            ObjectAnimator.ofFloat(binding.tvLoading, "translationY", 600f).apply {
                 duration = 300
                 start()
             }
@@ -203,7 +219,11 @@ class InGameFragment : Fragment() {
     }
 
     private fun correctAnswer() {
-        animateOut()
+        animate(binding.tvSentence, -500, 300){}
+        animate(binding.rvSlizes, 800, 300) {
+            model.loadPhrase()
+            animate(binding.tvLoading, 0, 200){}
+        }
     }
 
     private fun wrongAnswer() {
@@ -217,41 +237,14 @@ class InGameFragment : Fragment() {
         binding.btnCheck.isVisible = true
     }
 
-    fun animateOut() {
-        ObjectAnimator.ofFloat(binding.rvSlizes, "translationY", 1000f).apply {
-            duration = 1000
+    fun animate(view : View, position : Int, time : Int = 1000, doThis : () -> Unit) {
+        ObjectAnimator.ofFloat(view, "translationY", position.toFloat()).apply {
+            duration = time.toLong()
             start()
             addListener(onEnd = {
-                model.loadPhrase()
-                ObjectAnimator.ofFloat(binding.tvLoading, "translationY", 0f).apply {
-                    duration = 300
-                    start()
-                }
+                doThis()
             }) {
             }
-        }
-
-        ObjectAnimator.ofFloat(binding.tvSentence, "translationY", -500f).apply {
-            duration = 400
-            start()
-        }
-
-
-    }
-
-    fun animateIn() {
-        ObjectAnimator.ofFloat(binding.rvSlizes, "translationY", 0f).apply {
-            duration = 500
-            start()
-        }
-
-        ObjectAnimator.ofFloat(binding.tvSentence, "translationY", 0f).apply {
-            duration = 600
-            start()
-            addListener(onEnd = {
-                Log.d(TAG, "Visar listenknapp")
-                animateButton(binding.btnListen, true)
-            })
         }
     }
 
