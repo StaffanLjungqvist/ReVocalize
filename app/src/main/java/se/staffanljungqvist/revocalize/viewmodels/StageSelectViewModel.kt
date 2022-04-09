@@ -3,10 +3,7 @@ package se.staffanljungqvist.revocalize.viewmodels
 import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.google.gson.Gson
-import org.json.JSONException
 import se.staffanljungqvist.revocalize.models.StageModelClass
-import se.staffanljungqvist.revocalize.models.Stages
 import java.io.IOException
 import java.nio.charset.Charset
 
@@ -105,7 +102,7 @@ class StageSelectViewModel : ViewModel() {
         val json: String?
         val charset: Charset = Charsets.UTF_8
         try {
-            val myjsonFile = context.assets.open("Stages.json")
+            val myjsonFile = context.assets.open("phrases.json")
             val size = myjsonFile.available()
             val buffer = ByteArray(size)
             myjsonFile.read(buffer)

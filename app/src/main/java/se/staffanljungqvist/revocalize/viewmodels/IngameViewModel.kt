@@ -69,6 +69,10 @@ class IngameViewModel : ViewModel() {
         MutableLiveData<Boolean>(false)
     }
 
+    val answerCorrect: MutableLiveData<Boolean> by lazy {
+        MutableLiveData<Boolean>(false)
+    }
+
 
 
 
@@ -176,6 +180,8 @@ class IngameViewModel : ViewModel() {
             giveBonus()
             numberOfphrasesDone.value = numberOfphrasesDone.value?.plus(1)
             iscorrect = true
+            answerCorrect.value = true
+            answerCorrect.value = false
         } else {
             guessesUsed++
             Log.d("gamedebug", "wrong answer, guesses is now $guessesUsed")
@@ -198,14 +204,14 @@ class IngameViewModel : ViewModel() {
             Log.d(TAG, "Leveling up! New level : $level")
             phraseIndex = 0
         } else {
+            levelUp = false
             phraseIndex++
         }
     }
 
     fun calculateScore(context: Context) {
 
-        val sharedPref = context.getSharedPreferences("userScore", Context.MODE_PRIVATE)
-        val userRecord = sharedPref.getInt("user_record", 0)
+        val userRecord = getUserHighScore(context)
         val userScore = numberOfphrasesDone.value
         Log.d(TAG, "Game over. Antal fraser klarade : $userScore. Tidigare rekord: $userRecord")
         //Kollar om nuvarande poängen är bättre än poängrekordet. Ändrar därefter.
@@ -225,6 +231,11 @@ class IngameViewModel : ViewModel() {
         toFragment = bonus
         Log.d(TAG, "Sätter bonus till $bonus")
         advancePhrase()
+    }
+
+    fun getUserHighScore(context: Context): Int {
+        val sharedPref = context.getSharedPreferences("userScore", Context.MODE_PRIVATE)
+         return sharedPref.getInt("user_record", 0)
     }
 
     private fun saveUserData(context: Context) {
@@ -265,7 +276,7 @@ class IngameViewModel : ViewModel() {
         val json: String?
         val charset: Charset = Charsets.UTF_8
         try {
-            val myjsonFile = context.assets.open("Stages.json")
+            val myjsonFile = context.assets.open("phrases.json")
             val size = myjsonFile.available()
             val buffer = ByteArray(size)
             myjsonFile.read(buffer)

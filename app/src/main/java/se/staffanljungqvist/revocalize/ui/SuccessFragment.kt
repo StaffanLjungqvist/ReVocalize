@@ -5,10 +5,10 @@ import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import android.media.MediaPlayer
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.core.animation.addListener
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -23,9 +23,11 @@ class SuccessFragment : Fragment() {
     private var _binding: FragmentSuccessBinding? = null
     private val binding get() = _binding!!
 
-    lateinit var fragment : Fragment
+    lateinit var fragment: Fragment
 
-    private val model : IngameViewModel by activityViewModels()
+    private val model: IngameViewModel by activityViewModels()
+
+    lateinit var textToShow: LinearLayout
 
 
     override fun onCreateView(
@@ -41,87 +43,73 @@ class SuccessFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val successPlayer = MediaPlayer.create(requireContext(), R.raw.success)
-        successPlayer.start()
 
-        ObjectAnimator.ofFloat(binding.llSuccessText, "translationY", -600f).apply {
+        ObjectAnimator.ofFloat(binding.llSuccessText, "translationY", -500f).apply {
             duration = 0
             start()
         }
 
-        animateIn()
-
-        if (model.bonus > 0) showBonus()
-
-        val trivia = arguments?.getString("trivia")
-
-        if (trivia != null) {
-            binding.tvTrivia.text = trivia
+        model.answerCorrect.observe(viewLifecycleOwner) {
+            if (it) {
+                successPlayer.start()
+                textToShow = if (model.levelUp) {
+                    binding.llLevelUp
+                } else if (model.bonus > 0) {
+                    binding.llBonus
+                } else {
+                    binding.llCorrect
+                }
+                animateText(false)
+            }
         }
 
         model.audioReady.observe(viewLifecycleOwner) {
-            if (it) {
-                Log.d(TAG, "börjar animera")
+            if (it && model.numberOfphrasesDone.value != 0) {
                 animateButton(true)
             }
         }
 
 
         binding.btnContinute.setOnClickListener {
-            it.isVisible = false
-            animateOut()
+            animateButton(false)
+            animateText(true)
         }
     }
 
-    fun animateIn() {
-        binding.llSuccessText.offsetTopAndBottom(-1000)
-        ObjectAnimator.ofFloat(binding.llSuccessText, "translationY", 0f).apply {
-            duration = 800
-            start()
-            addListener(onEnd = {
-            })
-        }
-    }
 
-    fun animateButton(show : Boolean) {
+    fun animateButton(show: Boolean) {
         binding.btnContinute.apply {
-            alpha = 0f
+            alpha = if (show) 0f else 1f
             visibility = View.VISIBLE
             animate()
-                .alpha(1f)
+                .alpha(if (show) 1f else 0f)
                 .setDuration(300.toLong())
                 .setListener(object : AnimatorListenerAdapter() {
                     override fun onAnimationEnd(animation: Animator) {
-                        binding.btnContinute.visibility = View.VISIBLE
+                        binding.btnContinute.visibility = if (show) View.VISIBLE else View.GONE
                     }
                 })
 
         }
     }
 
-    fun animateOut() {
-        ObjectAnimator.ofFloat(binding.llSuccessText, "translationY", -1500f).apply {
-            duration = 300
+    fun animateText(out: Boolean) {
+
+        textToShow.isVisible = true
+
+        val position = if (out) -500f else 0f
+        ObjectAnimator.ofFloat(binding.llSuccessText, "translationY", position).apply {
+            duration = 400
+            startDelay = if (out) 0 else 400
             start()
             addListener(onEnd = {
-                requireActivity().supportFragmentManager.popBackStack()
-                if (model.levelUp) {
-                    requireActivity().supportFragmentManager.beginTransaction()
-                        .add(R.id.fragmentContainerView, LevelUpFragment()).addToBackStack(null)
-                        .commit()
-                    model.levelUp = false
-                } else {
+                if (out) {
                     model.loadUI.value = true
                     model.loadUI.value = false
+                    textToShow.visibility = View.GONE
                 }
-            }) {
-            }
+            })
         }
-    }
-
-
-    fun showBonus() {
-        binding.llBonus.isVisible = true
-        binding.llCorrect.isVisible = false
     }
 
     override fun onDestroyView() {

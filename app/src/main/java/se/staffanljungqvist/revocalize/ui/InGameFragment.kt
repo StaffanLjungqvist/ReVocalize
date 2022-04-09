@@ -72,7 +72,11 @@ class InGameFragment : Fragment() {
         _binding = FragmentInGameBinding.inflate(inflater, container, false)
 
         requireActivity().supportFragmentManager.beginTransaction()
-            .add(R.id.fragmentContainerView, ScoreFragment()).addToBackStack(null)
+            .add(R.id.fragmentContainerView, SuccessFragment())
+            .commit()
+
+        requireActivity().supportFragmentManager.beginTransaction()
+            .add(R.id.fragmentContainerView, ScoreFragment())
             .commit()
 
         return binding.root
@@ -198,8 +202,6 @@ class InGameFragment : Fragment() {
     }
 
     private fun correctAnswer() {
-
-        showSuccesMessage()
         animateOut()
     }
 
@@ -214,36 +216,26 @@ class InGameFragment : Fragment() {
         binding.btnCheck.isVisible = true
     }
 
-    fun showSuccesMessage() {
-        val bundle = Bundle()
-        bundle.putString("trivia", model.currentPhrase.trivia)
-        val theFragment = SuccessFragment()
-        theFragment.arguments = bundle
-        theFragment.fragment = this
-        requireActivity().supportFragmentManager.beginTransaction()
-            .add(R.id.fragmentContainerView, theFragment).addToBackStack(null)
-            .commit()
-    }
-
     fun animateOut() {
         ObjectAnimator.ofFloat(binding.rvSlizes, "translationY", 1000f).apply {
             duration = 1000
             start()
             addListener(onEnd = {
                 loadNewPhrase()
+                ObjectAnimator.ofFloat(binding.tvLoading, "translationY", 0f).apply {
+                    duration = 300
+                    start()
+                }
             }) {
             }
         }
 
-        ObjectAnimator.ofFloat(binding.tvSentence, "translationY", -300f).apply {
-            duration = 600
+        ObjectAnimator.ofFloat(binding.tvSentence, "translationY", -500f).apply {
+            duration = 400
             start()
         }
 
-        ObjectAnimator.ofFloat(binding.tvLoading, "translationY", 0f).apply {
-            duration = 300
-            start()
-        }
+
     }
 
     fun animateIn() {
@@ -332,7 +324,8 @@ class InGameFragment : Fragment() {
     }
 
     private fun String.parentenses(): String {
-        return "\"" + this + "\""
+        val text = this.uppercase()
+        return "\"" + text + "\""
     }
 
 }

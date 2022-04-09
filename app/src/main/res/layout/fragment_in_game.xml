@@ -54,7 +54,7 @@
         android:textColor="@color/white"
         android:textSize="26sp"
         android:visibility="visible"
-        app:autoSizeMaxTextSize="38sp"
+        app:autoSizeMaxTextSize="22sp"
         app:autoSizeMinTextSize="14sp"
         app:autoSizeTextType="uniform"
         app:layout_constraintBottom_toTopOf="@+id/btnCheck"

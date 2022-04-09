@@ -2,13 +2,13 @@ package se.staffanljungqvist.revocalize.ui
 
 import android.media.MediaPlayer
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import se.staffanljungqvist.revocalize.R
 import se.staffanljungqvist.revocalize.databinding.FragmentScoreBinding
@@ -24,6 +24,7 @@ class ScoreFragment : Fragment() {
     private lateinit var failPlayer: MediaPlayer
     private lateinit var warningPlayer: MediaPlayer
     private lateinit var bonusPlayer: MediaPlayer
+    private lateinit var levelUpPlayer: MediaPlayer
 
     private var points = 5
 
@@ -48,9 +49,16 @@ class ScoreFragment : Fragment() {
         bonusPlayer = MediaPlayer.create(context, R.raw.good)
         failPlayer = MediaPlayer.create(requireContext(), R.raw.warning)
         warningPlayer = MediaPlayer.create(requireContext(), R.raw.fail)
+        levelUpPlayer = MediaPlayer.create(requireContext(), R.raw.perfect)
+
+        view.findViewById<TextView>(R.id.tvBestScore).text = model.getUserHighScore(requireContext()).toString()
 
         model.observedlevel.observe(viewLifecycleOwner) {
             view.findViewById<TextView>(R.id.tvCurrentLevel).text = (it + 1).toString()
+            if (model.level != 0) {
+                levelUpPlayer.start()
+            }
+
         }
 
         model.numberOfphrasesDone.observe(viewLifecycleOwner) {
@@ -58,69 +66,49 @@ class ScoreFragment : Fragment() {
         }
 
         model.observedPoints.observe(viewLifecycleOwner) {
-
             if (it < points) {
                 failPlayer!!.start()
-                llCircleRed.apply {
-                    alpha = 1f
-                    visibility = View.VISIBLE
-                    animate()
-                        .alpha(0f)
-                        .setDuration(2000.toLong())
-                        .setListener(null)
-                }
-
-                tvPointMinus.apply {
-                    alpha = 1f
-                    visibility = View.VISIBLE
-
-                    // Animate the content view to 100% opacity, and clear any animation
-                    // listener set on the view.
-                    animate()
-                        .alpha(0f)
-                        .setDuration(2000.toLong())
-                        .setListener(null)
-                }
+                animateCircle(llCircleRed)
+                animatePoints(tvPointMinus)
             }
+
 
             if (it > points) {
-                llCircleGreen.apply {
-                    alpha = 1f
-                    visibility = View.VISIBLE
-                    animate()
-                        .alpha(0f)
-                        .setDuration(2000.toLong())
-                        .setListener(null)
-                }
-                tvPointPlus.apply {
-                    alpha = 1f
-                    visibility = View.VISIBLE
-
-                    // Animate the content view to 100% opacity, and clear any animation
-                    // listener set on the view.
-                    animate()
-                        .alpha(0f)
-                        .setDuration(2000.toLong())
-                        .setListener(null)
-                }
+                animateCircle(llCircleGreen)
+                animatePoints(tvPointPlus)
             }
-
             points = it
             tvScore.text = points.toString()
             if (it == 1) {
                 view.findViewById<TextView>(R.id.tvLastGuess).isVisible = true
-            //    warningPlayer.start()
+                //    warningPlayer.start()
             } else {
                 view.findViewById<TextView>(R.id.tvLastGuess).isVisible = false
             }
-
         }
+    }
 
 
+    fun animateCircle(circle: LinearLayout) {
+        circle.apply {
+            alpha = 1f
+            visibility = View.VISIBLE
+            animate()
+                .alpha(0f)
+                .setDuration(1000.toLong())
+                .setListener(null)
+        }
+    }
 
-
-
-
+    fun animatePoints(pointsText: TextView) {
+        pointsText.apply {
+            alpha = 1f
+            visibility = View.VISIBLE
+            animate()
+                .alpha(0f)
+                .setDuration(1000.toLong())
+                .setListener(null)
+        }
     }
 
     override fun onDestroyView() {

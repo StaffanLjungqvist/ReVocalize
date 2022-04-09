@@ -39,12 +39,8 @@ class SlizeRecAdapter() : RecyclerView.Adapter<SlizeRecAdapter.MyViewHolder>() {
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
 
         val slice = slizes[position]
-
         holder.cardView.setCardBackgroundColor(Color.parseColor(slice.color))
-
         holder.highLight.isVisible = position == blinknumber
-
-
         holder.itemView.setOnTouchListener { view, event ->
 
             if (fragment.model.doneIterating.value!!) {
