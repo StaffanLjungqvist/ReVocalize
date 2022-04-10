@@ -1,7 +1,5 @@
 package se.staffanljungqvist.revocalize.ui
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import android.media.MediaPlayer
 import android.os.Bundle
@@ -29,6 +27,9 @@ class SuccessFragment : Fragment() {
 
     lateinit var textToShow: LinearLayout
 
+    private var postTop = -400
+    private var duration = 200
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,74 +45,42 @@ class SuccessFragment : Fragment() {
 
         val successPlayer = MediaPlayer.create(requireContext(), R.raw.success)
 
-        ObjectAnimator.ofFloat(binding.llSuccessText, "translationY", -500f).apply {
+        ObjectAnimator.ofFloat(binding.llSuccessText, "translationY", -200f).apply {
             duration = 0
             start()
         }
 
-        textToShow = binding.llLevelUp
-        animateText(false)
+        textToShow = binding.llCorrect
 
-
-
-        model.answerCorrect.observe(viewLifecycleOwner) {
+        model.showSuccess.observe(viewLifecycleOwner) {
             if (it) {
                 successPlayer.start()
-
-                if (model.levelUp) binding.tvLevelUpLevel.text = (model.level + 1).toString()
-
-                textToShow = if (model.levelUp) {
-                    binding.llLevelUp
-                } else if (model.bonus > 0) {
+                textToShow = if (model.bonus > 0) {
                     binding.llBonus
                 } else {
                     binding.llCorrect
                 }
-                animateText(false)
-            }
-        }
-
-        model.audioReady.observe(viewLifecycleOwner) {
-            if (it) {
-                animateText(true)
-            }
-        }
-
-
-        binding.btnContinute.setOnClickListener {
-            animateButton(false)
-        }
-    }
-
-
-    fun animateButton(show: Boolean) {
-        binding.btnContinute.apply {
-            alpha = if (show) 0f else 1f
-            visibility = View.VISIBLE
-            animate()
-                .alpha(if (show) 1f else 0f)
-                .setDuration(300.toLong())
-                .setListener(object : AnimatorListenerAdapter() {
-                    override fun onAnimationEnd(animation: Animator) {
-                        binding.btnContinute.visibility = if (show) View.VISIBLE else View.GONE
-                    }
-                })
-        }
-    }
-
-    fun animateText(out: Boolean) {
-        textToShow.isVisible = true
-        val position = if (out) -500f else 0f
-        ObjectAnimator.ofFloat(binding.llSuccessText, "translationY", position).apply {
-            duration = if (out) 400 else 200
-            startDelay = if (out) 400 else 200
-            start()
-            addListener(onEnd = {
-                if (out) {
-                    model.loadUI.value = true
-                    model.loadUI.value = false
-                    textToShow.visibility = View.GONE
+                binding.llSuccessText.isVisible = true
+                animPos(false){}
+            } else if (it == false) {
+                animPos(true){
+                    binding.llBonus.isVisible = false
+                    binding.llCorrect.isVisible = false
                 }
+            }
+        }
+    }
+
+
+    fun animPos(out: Boolean, time : Int = duration, doThis: (out : Boolean) -> Unit) {
+        textToShow.isVisible = true
+        val position = if (out) postTop.toFloat() else 0f
+        ObjectAnimator.ofFloat(binding.llSuccessText, "translationY", position).apply {
+            duration = time.toLong()
+            start()
+
+            addListener(onEnd = {
+                doThis(out)
             })
         }
     }

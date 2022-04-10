@@ -49,6 +49,9 @@ class InGameFragment : Fragment() {
 
     private var mediaPlayer: MediaPlayer? = null
     private var listenMode = true
+    private var postTop = -400
+    private var posBottom = 500
+    private var duration = 300
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -81,6 +84,10 @@ class InGameFragment : Fragment() {
             .add(R.id.fragmentContainerView, InventoryFragment())
             .commit()
 
+        requireActivity().supportFragmentManager.beginTransaction()
+            .add(R.id.fragmentContainerView, LevelUpFragment()).addToBackStack(null)
+            .commit()
+
         return binding.root
     }
 
@@ -96,29 +103,42 @@ class InGameFragment : Fragment() {
         itemTouchHelper.attachToRecyclerView(myRecyclerView)
 
         ttsAdapter.ttsInitiated.observe(viewLifecycleOwner) {
-            if (it) {
-               // model.getJSONFromAssets(requireContext())
-                model.downloadPhrases(requireContext())
-            }
+            if (it) model.downloadPhrases(requireContext())
         }
 
-        setupAnimation()
-
         model.phraseLoaded.observe(viewLifecycleOwner) {
-            if (it) ttsAdapter.saveToAudioFile(model.currentPhrase.text)
+            if (it) {
+                ttsAdapter.saveToAudioFile(model.currentPhrase.text)
+                animPos(binding.tvLoading, 0, duration) {}
+            }
         }
 
         ttsAdapter.ttsAudiofileWritten.observe(viewLifecycleOwner) {
             if (it) loadAudio()
         }
 
-        model.loadUI.observe(viewLifecycleOwner) {
+        model.audioReady.observe(viewLifecycleOwner) {
             if (it) {
-                animate(binding.tvSentence, 0){}
-                animate(binding.rvSlizes, 0) {
-                    animateButton(binding.btnListen, true)
+                Log.d(TAG, "Audio är redo att spelas")
+                makeSlices()
+                binding.tvSentence.text = model.prepareText()
+                if (model.levelUp) {
+                    showLevelUp()
+                } else {
+                    animPos(binding.tvLoading, posBottom, duration) {
+                        animPos(binding.rvSlizes, 0, duration) {
+                            model.showSuccess.value = false
+                            animPos(binding.tvSentence, 0, duration, duration) {
+                                animateButton(binding.btnListen, true)
+                            }
+                        }
+                    }
                 }
             }
+        }
+
+        model.loadUI.observe(viewLifecycleOwner) {
+            if (it) initializeUI()
         }
 
         model.slizeIndex.observe(viewLifecycleOwner) {
@@ -150,8 +170,11 @@ class InGameFragment : Fragment() {
         model.powerUpUsed.observe(viewLifecycleOwner) {
             when (it) {
                 PowerUp.REMOVESLIZE -> {
-                    makeSlices()
-                    slizeRecAdapter.notifyDataSetChanged()
+                    animPos(binding.rvSlizes, posBottom, duration) {
+                        makeSlices()
+                        //    slizeRecAdapter.notifyDataSetChanged()
+                        animPos(binding.rvSlizes, 0, duration) {}
+                    }
                 }
             }
         }
@@ -170,16 +193,21 @@ class InGameFragment : Fragment() {
             } else {
                 model.iterateSlices(model.slices!!)
             }
-
         }
-
-
     }
 
-    private fun initializeUI() {
-        makeSlices()
-        binding.tvSentence.text = model.prepareText()
-        Log.d(TAG, "Visar fras ${model.prepareText()}")
+    fun initializeUI() {
+        Log.d(TAG, "Nollställer UI")
+        binding.btnListen.isVisible = false
+        animPos(binding.tvSentence, postTop, 0) {
+            animPos(binding.tvSentence, 0, duration) {
+                animateButton(binding.btnListen, true)
+            }
+        }
+        animPos(binding.rvSlizes, posBottom, 0) {
+            animPos(binding.rvSlizes, 0, duration) {}
+        }
+        animPos(binding.tvLoading, posBottom, 0) {}
     }
 
     private fun makeSlices() {
@@ -194,35 +222,19 @@ class InGameFragment : Fragment() {
         Log.d(TAG, "AA Uri omgord till File : $audioFile")
         mediaPlayer = MediaPlayer.create(context, audioFile)
         mediaPlayer!!.setOnPreparedListener {
-            it.seekTo(0);
-            Log.d(TAG, "Audio är redo att spelas")
-            initializeUI()
-            ObjectAnimator.ofFloat(binding.tvLoading, "translationY", 600f).apply {
-                duration = 300
-                start()
-            }
+            it.seekTo(0)
             model.audioReady.value = true
             model.audioReady.value = false
         }
     }
 
-    private fun playSlize(slize: Slize) {
-        Log.d(TAG, "Playing a slize")
-        mediaPlayer?.seekTo(slize.start)
-        mediaPlayer?.start()
-    }
-
-    private fun playFullPhrase() {
-        Log.d(TAG, "Playing full phrase")
-        mediaPlayer?.seekTo(0)
-        mediaPlayer?.start()
-    }
 
     private fun correctAnswer() {
-        animate(binding.tvSentence, -500, 300){}
-        animate(binding.rvSlizes, 800, 300) {
-            model.loadPhrase()
-            animate(binding.tvLoading, 0, 200){}
+        animPos(binding.tvSentence, postTop, duration) {
+            model.showSuccess.value = true
+            animPos(binding.rvSlizes, posBottom, duration, 500) {
+                model.loadPhrase()
+            }
         }
     }
 
@@ -237,9 +249,20 @@ class InGameFragment : Fragment() {
         binding.btnCheck.isVisible = true
     }
 
-    fun animate(view : View, position : Int, time : Int = 1000, doThis : () -> Unit) {
+    fun showLevelUp() {
+        animPos(binding.tvLoading, posBottom, duration){
+                requireActivity().supportFragmentManager.beginTransaction()
+                    .add(R.id.fragmentContainerView, LevelUpFragment()).addToBackStack(null)
+                    .commit()
+                model.levelUp = false
+        }
+        model.showSuccess.value = false
+    }
+
+    fun animPos(view: View, position: Int, time: Int, delay: Int = 0, doThis: () -> Unit) {
         ObjectAnimator.ofFloat(view, "translationY", position.toFloat()).apply {
-            duration = time.toLong()
+            startDelay = delay.toLong()
+            duration = if (position == 0) 300 else time.toLong()
             start()
             addListener(onEnd = {
                 doThis()
@@ -248,24 +271,7 @@ class InGameFragment : Fragment() {
         }
     }
 
-    fun setupAnimation(){
-        ObjectAnimator.ofFloat(binding.tvSentence, "translationY", -500f).apply {
-            duration = 0
-            start()
-            addListener(onEnd = {
-                binding.tvSentence.isVisible = true
-            })
-        }
-        ObjectAnimator.ofFloat(binding.rvSlizes, "translationY", 1000f).apply {
-            duration = 0
-            start()
-            addListener(onEnd = {
-                binding.rvSlizes.isVisible = true
-            })
-        }
-    }
-
-    fun animateButton(button : Button, show: Boolean) {
+    fun animateButton(button: Button, show: Boolean) {
         val duration = if (show) 200 else 100
         button.apply {
             alpha = if (show) 0f else 1f
@@ -279,6 +285,18 @@ class InGameFragment : Fragment() {
                     }
                 })
         }
+    }
+
+    private fun playSlize(slize: Slize) {
+        Log.d(TAG, "Playing a slize")
+        mediaPlayer?.seekTo(slize.start)
+        mediaPlayer?.start()
+    }
+
+    private fun playFullPhrase() {
+        Log.d(TAG, "Playing full phrase")
+        mediaPlayer?.seekTo(0)
+        mediaPlayer?.start()
     }
 
 

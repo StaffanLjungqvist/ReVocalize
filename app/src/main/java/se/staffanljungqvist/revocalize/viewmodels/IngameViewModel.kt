@@ -74,7 +74,7 @@ class IngameViewModel : ViewModel() {
         MutableLiveData<Boolean>(false)
     }
 
-    val answerCorrect: MutableLiveData<Boolean> by lazy {
+    val showSuccess: MutableLiveData<Boolean> by lazy {
         MutableLiveData<Boolean>(false)
     }
 
@@ -102,11 +102,6 @@ class IngameViewModel : ViewModel() {
         try {
             var tempPhraseList = Gson().fromJson(jsonString, Phrases::class.java)
             phraseList = tempPhraseList.phraseList
-
-            for (phrase in phraseList) {
-                Log.d(TAG, "${phrase.text}")
-            }
-
             loadPhrase()
         } catch (e: JSONException) {
             Log.d(TAG, "Nåt fel på jsonfil")
@@ -180,8 +175,6 @@ class IngameViewModel : ViewModel() {
             giveBonus()
             numberOfphrasesDone.value = numberOfphrasesDone.value?.plus(1)
             iscorrect = true
-            answerCorrect.value = true
-            answerCorrect.value = false
         } else {
             guessesUsed++
             Log.d("gamedebug", "wrong answer, guesses is now $guessesUsed")
@@ -197,7 +190,7 @@ class IngameViewModel : ViewModel() {
 
     fun advancePhrase() {
         Log.d("gamedebug", "advancing stage, guesses is now $guessesUsed")
-        if (phraseIndex == 4) {
+        if (phraseIndex == 1) {
             levelUp = true
             level ++
             observedlevel.value = level
@@ -330,7 +323,7 @@ class IngameViewModel : ViewModel() {
         val text1 = currentPhrase.text.uppercase().trim().replace("â\u0080\u0098","’")
        val text2 = text1.replace("Â", "'")
         val text3 = text2.replace("Â\u0080¦", "...")
-        return "\"" + text3 + "\""
+        return text3
     }
 
     private fun superShuffle(list: MutableList<Slize>): List<Slize> {
@@ -356,8 +349,8 @@ class IngameViewModel : ViewModel() {
 
     var levels = listOf(
         listOf(3, 3, 3, 3, 3, 3),
-        listOf(4, 4, 4, 4, 4, 4),
-        listOf(5, 5, 5, 5, 5, 5),
+        listOf(3, 3, 3, 4, 4, 4),
+        listOf(2, 2, 2, 5, 5, 5),
         listOf(6, 6, 6, 6, 6, 6),
         listOf(7, 7, 7, 7, 7, 7),
         listOf(8, 8, 8, 8, 8, 8),

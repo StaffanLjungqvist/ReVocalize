@@ -24,7 +24,6 @@ class ScoreFragment : Fragment() {
     private lateinit var failPlayer: MediaPlayer
     private lateinit var warningPlayer: MediaPlayer
     private lateinit var bonusPlayer: MediaPlayer
-    private lateinit var levelUpPlayer: MediaPlayer
 
     private var points = 5
 
@@ -49,16 +48,11 @@ class ScoreFragment : Fragment() {
         bonusPlayer = MediaPlayer.create(context, R.raw.good)
         failPlayer = MediaPlayer.create(requireContext(), R.raw.warning)
         warningPlayer = MediaPlayer.create(requireContext(), R.raw.fail)
-        levelUpPlayer = MediaPlayer.create(requireContext(), R.raw.perfect)
 
         view.findViewById<TextView>(R.id.tvBestScore).text = model.getUserHighScore(requireContext()).toString()
 
         model.observedlevel.observe(viewLifecycleOwner) {
             view.findViewById<TextView>(R.id.tvCurrentLevel).text = (it + 1).toString()
-            if (model.level != 0) {
-                levelUpPlayer.start()
-            }
-
         }
 
         model.numberOfphrasesDone.observe(viewLifecycleOwner) {
