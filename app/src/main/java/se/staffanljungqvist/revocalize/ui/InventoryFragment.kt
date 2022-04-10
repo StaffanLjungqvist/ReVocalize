@@ -36,10 +36,11 @@ class InventoryFragment : Fragment() {
                 it.isVisible = false
             }
 
-        model.observedlevel.observe(viewLifecycleOwner) {
-            binding.btnPowerSlizeRemove.isVisible = true
+        model.loadUI.observe(viewLifecycleOwner) {
+            if (it) {
+                binding.btnPowerSlizeRemove.isVisible = true
+            }
         }
-
     }
 
     override fun onDestroyView() {

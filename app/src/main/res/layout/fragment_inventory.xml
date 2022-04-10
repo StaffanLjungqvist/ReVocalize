@@ -4,29 +4,49 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.InventoryFragment" >
+    tools:context=".ui.InventoryFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/placeholder"
-        android:layout_width="30dp"
+        android:layout_width="wrap_content"
         android:layout_height="30dp"
-        android:layout_marginTop="18dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="42dp"
         android:gravity="center"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
+        <androidx.cardview.widget.CardView
             android:id="@+id/btnPowerSlizeRemove"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:scaleType="fitCenter"
+            android:layout_height="25dp"
+            app:cardCornerRadius="8dp"
+            android:backgroundTint="@color/black"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/icon_sliceremover" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="#FFF384"
+                    android:text="REMOVE 1 SLIZE" />
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
