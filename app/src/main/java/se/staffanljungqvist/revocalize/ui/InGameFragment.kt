@@ -108,6 +108,7 @@ class InGameFragment : Fragment() {
 
         model.phraseLoaded.observe(viewLifecycleOwner) {
             if (it) {
+                model.audioReady.value = false
                 ttsAdapter.saveToAudioFile(model.currentPhrase.text)
                 animPos(binding.tvLoading, 0, duration) {}
             }
@@ -224,7 +225,6 @@ class InGameFragment : Fragment() {
         mediaPlayer!!.setOnPreparedListener {
             it.seekTo(0)
             model.audioReady.value = true
-            model.audioReady.value = false
         }
     }
 

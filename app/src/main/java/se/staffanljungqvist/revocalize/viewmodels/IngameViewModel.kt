@@ -112,7 +112,6 @@ class IngameViewModel : ViewModel() {
 
     fun loadPhrase() {
         val div = getTextlengthAttributes()
-        Log.d(TAG, "min + max ${div[0]}, ${div[1]}")
 
         currentPhrase = phraseList.random()
         while (currentPhrase.text.length > div[1] || currentPhrase.text.length < div[0] ) {
@@ -122,6 +121,7 @@ class IngameViewModel : ViewModel() {
         isCorrect = false
         Log.d(TAG, "Laddade in fras med storlek ${currentPhrase.text.length}")
         phraseLoaded.value = true
+        Log.d(TAG, "Laddade in fras : ${currentPhrase.text}}")
         phraseLoaded.value = false
     }
 
@@ -190,7 +190,7 @@ class IngameViewModel : ViewModel() {
 
     fun advancePhrase() {
         Log.d("gamedebug", "advancing stage, guesses is now $guessesUsed")
-        if (phraseIndex == 1) {
+        if (phraseIndex == 3) {
             levelUp = true
             level ++
             observedlevel.value = level
@@ -269,9 +269,13 @@ class IngameViewModel : ViewModel() {
                 minLength = 120
                 maxLength = 300
             }
+            8 -> {
+                minLength = 120
+                maxLength = 300
+            }
             else -> {
-                minLength = 0
-                maxLength = 200
+                minLength = 120
+                maxLength = 300
             }
         }
         return listOf(minLength, maxLength)
@@ -349,12 +353,12 @@ class IngameViewModel : ViewModel() {
 
     var levels = listOf(
         listOf(3, 3, 3, 3, 3, 3),
-        listOf(3, 3, 3, 4, 4, 4),
-        listOf(2, 2, 2, 5, 5, 5),
+        listOf(4, 4, 4, 4, 4, 4),
+        listOf(5, 5, 5, 5, 5, 5),
         listOf(6, 6, 6, 6, 6, 6),
         listOf(7, 7, 7, 7, 7, 7),
         listOf(8, 8, 8, 8, 8, 8),
-        listOf(3, 4, 5, 5, 5),
+        listOf(9, 9, 9, 9, 9),
         listOf(3, 4, 5, 5, 6),
         listOf(4, 4, 5, 6, 6),
         listOf(4, 5, 5, 6, 6),

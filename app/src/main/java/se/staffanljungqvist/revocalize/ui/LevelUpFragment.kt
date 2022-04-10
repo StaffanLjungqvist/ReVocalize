@@ -40,8 +40,10 @@ class LevelUpFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val levelUpPlayer = MediaPlayer.create(requireContext(), R.raw.perfect2).setOnPreparedListener {
-       //     it.start()
+           if (model.numberOfphrasesDone.value != 0) it.start()
         }
+
+        if (model.numberOfphrasesDone.value == 0) binding.tvLevelUp.isVisible = false
 
         model.audioReady.observe(viewLifecycleOwner) {
             if (it) animateButton(binding.btnContinuteLevelUp, true)
