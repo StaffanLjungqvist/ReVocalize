@@ -6,9 +6,11 @@ import android.os.Looper
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.android.volley.NetworkResponse
+import com.android.volley.ParseError
 import com.android.volley.Request
 import com.android.volley.Response
-import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.HttpHeaderParser
 import com.android.volley.toolbox.Volley
 import com.google.gson.Gson
 import org.json.JSONException
@@ -18,6 +20,7 @@ import se.staffanljungqvist.revocalize.models.Phrase
 import se.staffanljungqvist.revocalize.models.Phrases
 import se.staffanljungqvist.revocalize.models.Slize
 import java.io.IOException
+import java.io.UnsupportedEncodingException
 import java.nio.charset.Charset
 
 const val TAG = "revodebug"
@@ -28,21 +31,25 @@ class IngameViewModel : ViewModel() {
 
     var phraseIndex = 0
     var slices: List<Slize>? = null
-    var currentPhrase: Phrase = Phrase("This is the default testphrase")
+    var currentPhrase: Phrase = Phrase("PHRASETEXT MISSING")
     var isCorrect = false
     private var guessesUsed = 0
     var gameOver = false
     var bonus = 0
     var newRecord = false
-    var toFragment = 0
     val loopHandler = Handler(Looper.getMainLooper())
     var phraseList = listOf<Phrase>()
     var slizeDivisions = 3
-    var levelUp = false
-    var points = 5
+    var levelUp = true
+    var tries = 5
+    var powerPoints = 0
 
-    val observedPoints: MutableLiveData<Int> by lazy {
+    val observedTries: MutableLiveData<Int> by lazy {
         MutableLiveData<Int>(5)
+    }
+
+    val observedPowerPoints: MutableLiveData<Int> by lazy {
+        MutableLiveData<Int>(2)
     }
 
     val numberOfphrasesDone: MutableLiveData<Int> by lazy {
@@ -78,26 +85,35 @@ class IngameViewModel : ViewModel() {
         MutableLiveData<Boolean>(false)
     }
 
+    val showLevelUp: MutableLiveData<Boolean> by lazy {
+        MutableLiveData<Boolean>(false)
+    }
+
+    val showInventory: MutableLiveData<Boolean> by lazy {
+        MutableLiveData<Boolean>()
+    }
     val powerUpUsed: MutableLiveData<PowerUp> by lazy {
         MutableLiveData<PowerUp>()
     }
 
 
-    fun downloadPhrases(context : Context) {
-        val url = "https://firebasestorage.googleapis.com/v0/b/revocalize-bf576.appspot.com/o/phrases.json?alt=media&token=3668417e-3ad4-4fd2-82e3-d1ffd1db073f"
+    fun downloadPhrases(context: Context) {
+        val url =
+            "https://firebasestorage.googleapis.com/v0/b/revocalize-bf576.appspot.com/o/phrases.json?alt=media&token=3668417e-3ad4-4fd2-82e3-d1ffd1db073f"
         val queue = Volley.newRequestQueue(context)
-        val request = StringRequest(Request.Method.GET, url,
+
+        val stringRequest = VolleyUTF8EncodingStringRequest(Request.Method.GET,url,
             Response.Listener { response ->
-                Log.e(TAG, "Laddade ner Json data}")
-                loadPhraseList(response.toString())
-            }, Response.ErrorListener {
-                Log.e(TAG, it.toString())
+                loadPhraseList(response)
+            },Response.ErrorListener {error ->
+                Log.d(TAG, error.toString())
             })
-        queue.add(request)
+        queue.add(stringRequest)
     }
 
 
-    private fun loadPhraseList(jsonString : String) {
+
+    private fun loadPhraseList(jsonString: String) {
         Log.d(TAG, "Försöker ladda")
         try {
             var tempPhraseList = Gson().fromJson(jsonString, Phrases::class.java)
@@ -114,10 +130,14 @@ class IngameViewModel : ViewModel() {
         val div = getTextlengthAttributes()
 
         currentPhrase = phraseList.random()
-        while (currentPhrase.text.length > div[1] || currentPhrase.text.length < div[0] ) {
-            currentPhrase = phraseList.random()
+        while (currentPhrase.text.length > div[1] || currentPhrase.text.length < div[0]) {
+            currentPhrase   = phraseList.random()
         }
         guessesUsed = 0
+        tries = 5
+        observedTries.value = tries
+        if (phraseIndex == 0) powerPoints += 2
+        observedPowerPoints.value = powerPoints
         isCorrect = false
         Log.d(TAG, "Laddade in fras med storlek ${currentPhrase.text.length}")
         phraseLoaded.value = true
@@ -125,13 +145,23 @@ class IngameViewModel : ViewModel() {
         phraseLoaded.value = false
     }
 
-    fun usePowerUp(powerUp : PowerUp) {
+    fun usePowerUp(powerUp: PowerUp) {
 
+        if (powerPoints < 1) {
+            return
+        }
         when (powerUp) {
             PowerUp.REMOVESLIZE -> {
                 slizeDivisions--
             }
+            PowerUp.EXTRATRY -> {
+                if (tries >= 5) return
+                tries++
+                observedTries.value = tries
+            }
         }
+        powerPoints--
+        observedPowerPoints.value = powerPoints
         powerUpUsed.value = powerUp
     }
 
@@ -156,8 +186,6 @@ class IngameViewModel : ViewModel() {
     }
 
 
-
-
     fun checkAnswer(): Boolean {
         val sortedList = slices!!.sortedBy { it.number }
         return sortedList == slices
@@ -173,26 +201,27 @@ class IngameViewModel : ViewModel() {
         if (checkAnswer()) {
             Log.d("gamedebug", "right answer, guesses is now $guessesUsed")
             giveBonus()
+            advancePhrase()
             numberOfphrasesDone.value = numberOfphrasesDone.value?.plus(1)
             iscorrect = true
         } else {
             guessesUsed++
             Log.d("gamedebug", "wrong answer, guesses is now $guessesUsed")
-            points--
+            tries--
             iscorrect = false
         }
-        if (points < 1) {
+        if (tries < 1) {
             gameOver = true
         }
-        observedPoints.value = points
+        observedTries.value = tries
         return iscorrect
     }
 
     fun advancePhrase() {
         Log.d("gamedebug", "advancing stage, guesses is now $guessesUsed")
-        if (phraseIndex == 3) {
+        if (phraseIndex == 4) {
             levelUp = true
-            level ++
+            level++
             observedlevel.value = level
             Log.d(TAG, "Leveling up! New level : $level")
             phraseIndex = 0
@@ -219,15 +248,13 @@ class IngameViewModel : ViewModel() {
     private fun giveBonus() {
         Log.d("gamedebug", "Giving bonus. guesses used : $guessesUsed")
         if (guessesUsed == 0) bonus = 1
-        points += bonus
-        toFragment = bonus
+        powerPoints++
         Log.d(TAG, "Sätter bonus till $bonus")
-        advancePhrase()
     }
 
     fun getUserHighScore(context: Context): Int {
         val sharedPref = context.getSharedPreferences("userScore", Context.MODE_PRIVATE)
-         return sharedPref.getInt("user_record", 0)
+        return sharedPref.getInt("user_record", 0)
     }
 
     private fun saveUserData(context: Context) {
@@ -243,12 +270,16 @@ class IngameViewModel : ViewModel() {
         }
     }
 
-    fun getTextlengthAttributes() : List<Int>{
+    fun getTextlengthAttributes(): List<Int> {
         val minLength: Int
         val maxLength: Int
 
         slizeDivisions = levels[level][phraseIndex]
         when (slizeDivisions) {
+            2 -> {
+                minLength = 0
+                maxLength = 60
+            }
             3 -> {
                 minLength = 0
                 maxLength = 60
@@ -259,19 +290,19 @@ class IngameViewModel : ViewModel() {
             }
             5 -> {
                 minLength = 80
-                maxLength = 200
+                maxLength = 130
             }
             6 -> {
                 minLength = 100
-                maxLength = 300
+                maxLength = 130
             }
             7 -> {
-                minLength = 120
-                maxLength = 300
+                minLength = 100
+                maxLength = 130
             }
             8 -> {
-                minLength = 120
-                maxLength = 300
+                minLength = 100
+                maxLength = 130
             }
             else -> {
                 minLength = 120
@@ -301,7 +332,7 @@ class IngameViewModel : ViewModel() {
         })
     }
 
-     fun getJSONFromAssets(context: Context){
+    fun getJSONFromAssets(context: Context) {
         val json: String?
         val charset: Charset = Charsets.UTF_8
         try {
@@ -320,14 +351,10 @@ class IngameViewModel : ViewModel() {
     }
 
 
-
-
-
-     fun prepareText() : String {
-        val text1 = currentPhrase.text.uppercase().trim().replace("â\u0080\u0098","’")
-       val text2 = text1.replace("Â", "'")
-        val text3 = text2.replace("Â\u0080¦", "...")
-        return text3
+    fun prepareText(text : String): String {
+        val preparedtext = text.uppercase().trim()
+    //    preparedtext.replace("Â ", "’")
+        return preparedtext
     }
 
     private fun superShuffle(list: MutableList<Slize>): List<Slize> {
@@ -359,18 +386,31 @@ class IngameViewModel : ViewModel() {
         listOf(7, 7, 7, 7, 7, 7),
         listOf(8, 8, 8, 8, 8, 8),
         listOf(9, 9, 9, 9, 9),
-        listOf(3, 4, 5, 5, 6),
-        listOf(4, 4, 5, 6, 6),
-        listOf(4, 5, 5, 6, 6),
-        listOf(4, 5, 6, 6, 6),
-        listOf(4, 5, 6, 6, 7),
-        listOf(5, 5, 6, 6, 7),
-        listOf(4, 5, 5, 6, 6),
-        listOf(4, 5, 5, 6, 7),
-        listOf(4, 5, 6, 6, 7),
-        listOf(4, 5, 6, 7, 7),
-        listOf(5, 5, 6, 7, 7),
-        listOf(5, 5, 6, 7, 8),
-        listOf(5, 6, 6, 7, 8),
     )
+}
+
+class VolleyUTF8EncodingStringRequest(
+    method: Int, url: String, private val mListener: Response.Listener<String>,
+    errorListener: Response.ErrorListener
+) : Request<String>(method, url, errorListener) {
+
+    override fun deliverResponse(response: String) {
+        mListener.onResponse(response)
+    }
+
+    override fun parseNetworkResponse(response: NetworkResponse): Response<String> {
+        var parsed = ""
+
+        val encoding = charset(HttpHeaderParser.parseCharset(response.headers))
+
+        try {
+            parsed = String(response.data, encoding)
+            val bytes = parsed.toByteArray(encoding)
+            parsed = String(bytes, charset("UTF-8"))
+
+            return Response.success(parsed, HttpHeaderParser.parseCacheHeaders(response))
+        } catch (e: UnsupportedEncodingException) {
+            return Response.error(ParseError(e))
+        }
+    }
 }

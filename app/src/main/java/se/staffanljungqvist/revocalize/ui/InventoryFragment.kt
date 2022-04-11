@@ -31,16 +31,20 @@ class InventoryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-            binding.btnPowerSlizeRemove.setOnClickListener {
-                model.usePowerUp(PowerUp.REMOVESLIZE)
-                it.isVisible = false
-            }
 
-        model.loadUI.observe(viewLifecycleOwner) {
+        model.showInventory.observe(viewLifecycleOwner) {
             if (it) {
                 binding.btnPowerSlizeRemove.isVisible = true
+            } else if (!it) {
+                binding.btnPowerSlizeRemove.isVisible = false
             }
         }
+
+            binding.btnPowerSlizeRemove.setOnClickListener {
+                model.usePowerUp(PowerUp.REMOVESLIZE)
+                model.showInventory.value = false
+            }
+
     }
 
     override fun onDestroyView() {

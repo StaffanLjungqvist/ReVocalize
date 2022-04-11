@@ -2,6 +2,7 @@ package se.staffanljungqvist.revocalize.ui
 
 import android.media.MediaPlayer
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,11 +11,12 @@ import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import se.staffanljungqvist.revocalize.PowerUp
 import se.staffanljungqvist.revocalize.R
 import se.staffanljungqvist.revocalize.databinding.FragmentScoreBinding
 import se.staffanljungqvist.revocalize.viewmodels.IngameViewModel
 
-class ScoreFragment : Fragment() {
+class ScoreBoardFragment : Fragment() {
 
     private val model: IngameViewModel by activityViewModels()
 
@@ -32,7 +34,8 @@ class ScoreFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_score, container, false)
+        _binding = FragmentScoreBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
 
@@ -49,17 +52,12 @@ class ScoreFragment : Fragment() {
         failPlayer = MediaPlayer.create(requireContext(), R.raw.warning)
         warningPlayer = MediaPlayer.create(requireContext(), R.raw.fail)
 
-        view.findViewById<TextView>(R.id.tvBestScore).text = model.getUserHighScore(requireContext()).toString()
-
-        model.observedlevel.observe(viewLifecycleOwner) {
-            view.findViewById<TextView>(R.id.tvCurrentLevel).text = (it + 1).toString()
-        }
 
         model.numberOfphrasesDone.observe(viewLifecycleOwner) {
             view.findViewById<TextView>(R.id.tvCurrentPhrase).text = (it + 1).toString()
         }
 
-        model.observedPoints.observe(viewLifecycleOwner) {
+        model.observedTries.observe(viewLifecycleOwner) {
             if (it < points) {
                 failPlayer!!.start()
                 animateCircle(llCircleRed)
@@ -79,6 +77,20 @@ class ScoreFragment : Fragment() {
             } else {
                 view.findViewById<TextView>(R.id.tvLastGuess).isVisible = false
             }
+        }
+
+        model.observedPowerPoints.observe(viewLifecycleOwner) {
+            binding.tvPowerPoints.text = it.toString()
+        }
+
+
+        binding.tvPowerRemove.setOnClickListener {
+            Log.d(TAG, "TRyckte på try")
+            model.usePowerUp(PowerUp.REMOVESLIZE)
+        }
+
+        binding.tvPowerTry.setOnClickListener {
+            model.usePowerUp(PowerUp.EXTRATRY)
         }
     }
 

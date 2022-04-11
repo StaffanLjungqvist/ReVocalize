@@ -47,7 +47,7 @@
                     android:layout_height="wrap_content"
                     android:text="THAT IS "
                     android:textColor="@color/white"
-                    android:textSize="26sp"
+                    android:textSize="32sp"
                     android:textStyle="bold"
                     tools:visibility="visible" />
 
@@ -57,7 +57,7 @@
                     android:layout_height="wrap_content"
                     android:text="CORRECT!"
                     android:textColor="@color/silver"
-                    android:textSize="26sp"
+                    android:textSize="32sp"
                     android:textStyle="bold"
                     tools:visibility="visible" />
 
@@ -80,7 +80,7 @@
                     android:layout_height="wrap_content"
                     android:text="FIRST TRY!"
                     android:textColor="@color/white"
-                    android:textSize="26sp"
+                    android:textSize="32sp"
                     android:textStyle="bold"
                     tools:visibility="visible" />
 
@@ -94,13 +94,34 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
-                        android:text="BONUS POINT!"
+                        android:text="EXTRA POWER-UP!"
                         android:textColor="#38FF75"
-                        android:textSize="26sp"
+                        android:textSize="32sp"
                         android:textStyle="bold" />
 
                 </LinearLayout>
 
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/llLevelUp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="LEVEL UP!"
+                    android:textColor="#38FF75"
+                    android:textSize="32sp"
+                    android:textStyle="bold"
+                    tools:visibility="visible" />
 
             </LinearLayout>
 
@@ -175,23 +196,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-        <Button
-            android:id="@+id/btn_continute"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:background="@drawable/rounded_button"
-            android:paddingHorizontal="34dp"
-            android:soundEffectsEnabled="false"
-            android:text="CONTINUTE"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:visibility="invisible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="invisible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

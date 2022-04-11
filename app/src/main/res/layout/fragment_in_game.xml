@@ -35,32 +35,44 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnCheck" />
 
-    <TextView
-        android:id="@+id/tvSentence"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginVertical="8dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
-        android:autoSizeTextType="uniform"
-        android:gravity="center_vertical"
-        android:maxLines="2"
-        android:paddingHorizontal="40dp"
-        android:paddingVertical="10dp"
-        android:text="Loading."
-        android:textColor="@color/white"
-        android:textSize="26sp"
-        android:textStyle="bold"
-        app:autoSizeMaxTextSize="20sp"
-        app:autoSizeMinTextSize="14sp"
-        app:autoSizeTextType="uniform"
-        app:guidelineUseRtl="false"
+        android:layout_marginStart="42dp"
+        android:layout_marginEnd="42dp"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toTopOf="@+id/btnCheck"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/placeholder"
-        tools:text="If you cannot do great things, do small things in a great way."
-        tools:visibility="visible" />
+        app:layout_constraintTop_toBottomOf="@+id/placeholder">
+
+        <TextView
+            android:id="@+id/tvSentence"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="8dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
+            android:autoSizeTextType="uniform"
+            android:gravity="center_vertical"
+            android:maxLines="2"
+            android:paddingHorizontal="40dp"
+            android:paddingVertical="10dp"
+            android:textColor="@color/white"
+            android:textSize="26sp"
+            android:textStyle="bold"
+            app:autoSizeMaxTextSize="38sp"
+            app:autoSizeMinTextSize="14sp"
+            app:autoSizeTextType="uniform"
+            app:guidelineUseRtl="false"
+
+            tools:text="If you cannot do great things, do small things in a great way."
+            tools:visibility="visible" />
+
+
+    </LinearLayout>
+
+
 
     <Button
         android:id="@+id/btnCheck"

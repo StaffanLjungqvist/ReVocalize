@@ -51,7 +51,8 @@ class InGameFragment : Fragment() {
     private var listenMode = true
     private var postTop = -400
     private var posBottom = 500
-    private var duration = 300
+    private var moveOutSpeed = 230
+    private var moveInSpeed = 250
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -77,16 +78,17 @@ class InGameFragment : Fragment() {
             .commit()
 
         requireActivity().supportFragmentManager.beginTransaction()
-            .add(R.id.fragmentContainerView, ScoreFragment())
+            .add(R.id.fragmentContainerView, ScoreBoardFragment())
             .commit()
 
-        requireActivity().supportFragmentManager.beginTransaction()
+/*        requireActivity().supportFragmentManager.beginTransaction()
             .add(R.id.fragmentContainerView, InventoryFragment())
-            .commit()
+            .commit()*/
 
-        requireActivity().supportFragmentManager.beginTransaction()
-            .add(R.id.fragmentContainerView, LevelUpFragment()).addToBackStack(null)
-            .commit()
+            showLevelUp()
+        move(binding.tvLoading, "down", true) {
+            move(binding.tvLoading, "show"){}
+        }
 
         return binding.root
     }
@@ -103,14 +105,17 @@ class InGameFragment : Fragment() {
         itemTouchHelper.attachToRecyclerView(myRecyclerView)
 
         ttsAdapter.ttsInitiated.observe(viewLifecycleOwner) {
-            if (it) model.downloadPhrases(requireContext())
+            if (it) {
+                model.downloadPhrases(requireContext())
+              //  model.getJSONFromAssets(requireContext())
+            }
         }
 
         model.phraseLoaded.observe(viewLifecycleOwner) {
             if (it) {
                 model.audioReady.value = false
                 ttsAdapter.saveToAudioFile(model.currentPhrase.text)
-                animPos(binding.tvLoading, 0, duration) {}
+                move(binding.tvLoading, "show"){}
             }
         }
 
@@ -122,14 +127,13 @@ class InGameFragment : Fragment() {
             if (it) {
                 Log.d(TAG, "Audio är redo att spelas")
                 makeSlices()
-                binding.tvSentence.text = model.prepareText()
-                if (model.levelUp) {
-                    showLevelUp()
-                } else {
-                    animPos(binding.tvLoading, posBottom, duration) {
-                        animPos(binding.rvSlizes, 0, duration) {
+                binding.tvSentence.text = model.prepareText(model.currentPhrase.text)
+                    move(binding.tvLoading, "down", false, 300) {
+
+                        if (!model.levelUp) {
+                        move(binding.rvSlizes, "show") {
                             model.showSuccess.value = false
-                            animPos(binding.tvSentence, 0, duration, duration) {
+                            move(binding.tvSentence, "show") {
                                 animateButton(binding.btnListen, true)
                             }
                         }
@@ -171,12 +175,21 @@ class InGameFragment : Fragment() {
         model.powerUpUsed.observe(viewLifecycleOwner) {
             when (it) {
                 PowerUp.REMOVESLIZE -> {
-                    animPos(binding.rvSlizes, posBottom, duration) {
+                    move(binding.rvSlizes, "down") {
                         makeSlices()
-                        //    slizeRecAdapter.notifyDataSetChanged()
-                        animPos(binding.rvSlizes, 0, duration) {}
+                        move(binding.rvSlizes, "show"){}
                     }
                 }
+            }
+        }
+
+        model.showInventory.observe(viewLifecycleOwner) {
+            if (it) {
+                if (!binding.btnListen.isVisible ) animateButton(binding.btnListen, true)
+                if (!binding.btnCheck.isVisible ) animateButton(binding.btnListen, true)
+            } else if (!it) {
+                if (!binding.btnListen.isVisible ) animateButton(binding.btnListen, false)
+                if (!binding.btnCheck.isVisible ) animateButton(binding.btnListen, false)
             }
         }
 
@@ -200,15 +213,13 @@ class InGameFragment : Fragment() {
     fun initializeUI() {
         Log.d(TAG, "Nollställer UI")
         binding.btnListen.isVisible = false
-        animPos(binding.tvSentence, postTop, 0) {
-            animPos(binding.tvSentence, 0, duration) {
+            move(binding.tvSentence, "show") {
                 animateButton(binding.btnListen, true)
-            }
         }
-        animPos(binding.rvSlizes, posBottom, 0) {
-            animPos(binding.rvSlizes, 0, duration) {}
-        }
-        animPos(binding.tvLoading, posBottom, 0) {}
+
+            move(binding.rvSlizes, "show") {}
+
+        move(binding.tvLoading, "down") {}
     }
 
     private fun makeSlices() {
@@ -230,39 +241,58 @@ class InGameFragment : Fragment() {
 
 
     private fun correctAnswer() {
-        animPos(binding.tvSentence, postTop, duration) {
+        move(binding.tvSentence, "up") {
             model.showSuccess.value = true
-            animPos(binding.rvSlizes, posBottom, duration, 500) {
+            move(binding.rvSlizes, "down", false, 300) {
                 model.loadPhrase()
+                if (model.levelUp) {
+                    move(binding.rvSlizes, "down", false, 1000) {
+                        model.showSuccess.value = false
+                        showLevelUp()
+                    }
+                }
             }
         }
     }
 
     private fun wrongAnswer() {
         if (model.gameOver) {
-            model.calculateScore(requireContext())
+            val bundle = Bundle()
+            model.numberOfphrasesDone.value?.let { it1 -> bundle.putInt("score", it1) }
+            bundle.putBoolean("isRecord", model.newRecord)
+            val theFragment = GameOverFragment()
+            theFragment.arguments = bundle
             requireActivity().supportFragmentManager.beginTransaction()
-                .add(R.id.fragmentContainerView, GameOverFragment()).addToBackStack(null)
+                .add(R.id.fragmentContainerView, theFragment).addToBackStack(null)
                 .commit()
-            return
+            activity?.viewModelStore?.clear()
         }
         binding.btnCheck.isVisible = true
     }
 
     fun showLevelUp() {
-        animPos(binding.tvLoading, posBottom, duration){
+
                 requireActivity().supportFragmentManager.beginTransaction()
                     .add(R.id.fragmentContainerView, LevelUpFragment()).addToBackStack(null)
                     .commit()
-                model.levelUp = false
-        }
-        model.showSuccess.value = false
+
+        move(binding.rvSlizes, "down", true) {}
+        move(binding.tvSentence, "up", true) {}
     }
 
-    fun animPos(view: View, position: Int, time: Int, delay: Int = 0, doThis: () -> Unit) {
-        ObjectAnimator.ofFloat(view, "translationY", position.toFloat()).apply {
+    fun move(view: View, direction : String, hide : Boolean = false, delay : Int = 0, doThis: () -> Unit) {
+        val moveTo = when(direction) {
+            "up" -> postTop
+            "down" -> posBottom
+            else -> 0
+        }
+
+        var speed = if (moveTo == 0) moveInSpeed else moveOutSpeed
+        if (hide) speed = 0
+
+        ObjectAnimator.ofFloat(view, "translationY", moveTo.toFloat()).apply {
             startDelay = delay.toLong()
-            duration = if (position == 0) 300 else time.toLong()
+            duration = speed.toLong()
             start()
             addListener(onEnd = {
                 doThis()
@@ -270,6 +300,7 @@ class InGameFragment : Fragment() {
             }
         }
     }
+
 
     fun animateButton(button: Button, show: Boolean) {
         val duration = if (show) 200 else 100

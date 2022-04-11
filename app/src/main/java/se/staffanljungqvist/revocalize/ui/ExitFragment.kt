@@ -39,9 +39,6 @@ class ExitFragment : Fragment() {
             requireActivity().supportFragmentManager.beginTransaction()
                 .add(R.id.fragmentContainerView, theFragment).addToBackStack(null)
                 .commit()
-
-
-
             activity?.viewModelStore?.clear()
         }
 

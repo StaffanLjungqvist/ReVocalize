@@ -5,64 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/black"
-    tools:context=".ui.ScoreFragment">
+    tools:context=".ui.ScoreBoardFragment">
 
-    <LinearLayout
-        android:id="@+id/llLevel"
-        android:layout_width="wrap_content"
-        android:layout_height="30dp"
-        android:layout_marginStart="42dp"
-        android:layout_marginTop="16dp"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:visibility="invisible"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="LEVEL "
-            android:textColor="@color/grey_dark"
-            android:textStyle="bold"
-            android:textSize="16sp" />
 
-        <TextView
-            android:id="@+id/tvCurrentLevel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="4"
-            android:textColor="#DDA9FF"
-            android:textSize="16sp"
-            android:textStyle="bold" />
 
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/tvPointMinus"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="15dp"
-        android:text="-1"
-        android:textColor="@color/pink"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:visibility="invisible"
-        app:layout_constraintStart_toEndOf="@+id/placeholder"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/tvLastGuess"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="LAST GUESS"
-        android:textColor="#FFF384"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/placeholder" />
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -107,7 +54,7 @@
 
 
         <TextView
-            android:id="@+id/tvPoints"
+            android:id="@+id/tvCurrentPhrase"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="1dp"
@@ -123,25 +70,13 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <TextView
-        android:id="@+id/tvPointPlus"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="15dp"
-        android:text="+1"
-        android:textColor="@color/green"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:visibility="invisible"
-        app:layout_constraintStart_toEndOf="@+id/placeholder"
-        app:layout_constraintTop_toTopOf="parent" />
+
 
     <LinearLayout
         android:id="@+id/llProgress"
         android:layout_width="wrap_content"
-        android:layout_height="30dp"
-        android:layout_marginStart="42dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="52dp"
         android:layout_marginTop="16dp"
         android:gravity="center"
         android:orientation="horizontal"
@@ -151,50 +86,106 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="PHRASE "
+            android:text="TRIES LEFT "
             android:textColor="@color/grey_light"
-            android:textSize="16sp"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/tvCurrentPhrase"
+            android:id="@+id/tvPoints"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="4"
-            android:textColor="#FFF384"
-            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvPointMinus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=" -1"
+            android:textColor="@color/pink"
+            android:textStyle="bold"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/tvPointPlus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=" +1"
+            android:visibility="gone"
+            android:textColor="@color/green"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/tvLastGuess"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=" LAST TRY!"
+            android:textColor="@color/pink"
             android:textStyle="bold" />
 
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/llBest"
         android:layout_width="wrap_content"
-        android:layout_height="30dp"
-        android:layout_marginStart="32dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:gravity="center"
         android:orientation="horizontal"
-        android:visibility="invisible"
+        app:layout_constraintEnd_toStartOf="@+id/placeholder"
         app:layout_constraintStart_toEndOf="@+id/llProgress"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="BEST "
+            android:layout_marginStart="8dp"
+            android:text="POWERUPS "
             android:textColor="@color/grey_light"
-            android:textSize="16sp"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/tvBestScore"
+            android:id="@+id/tvPowerPoints"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="4"
-            android:textColor="#FFF384"
-            android:textSize="16sp"
+
+            android:text="5"
+            android:textColor="@color/white"
             android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/llInventory"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="52dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/tvPowerRemove"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
+            android:text="REMOVE"
+            android:textColor="#FFF384"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvPowerTry"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
+            android:text="+TRY"
+            android:textColor="@color/silver"
+            android:textStyle="bold" />
+
+
+
+
 
     </LinearLayout>
 
