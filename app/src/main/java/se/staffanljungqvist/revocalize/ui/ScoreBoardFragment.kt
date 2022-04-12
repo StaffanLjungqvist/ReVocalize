@@ -1,5 +1,7 @@
 package se.staffanljungqvist.revocalize.ui
 
+import android.animation.ObjectAnimator
+import android.graphics.Color
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.util.Log
@@ -8,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.animation.addListener
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -23,11 +26,16 @@ class ScoreBoardFragment : Fragment() {
     private var _binding: FragmentScoreBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var failPlayer: MediaPlayer
     private lateinit var warningPlayer: MediaPlayer
     private lateinit var bonusPlayer: MediaPlayer
 
-    private var points = 5
+    private var postTop = -400
+    private var posBottom = 500
+    private var moveOutSpeed = 230
+    private var moveInSpeed = 250
+
+    private var points = 0
+    private var powers = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,55 +50,111 @@ class ScoreBoardFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val llCircleRed = view.findViewById<LinearLayout>(R.id.llGuessesCircleRed)
+
         val llCircleGreen = view.findViewById<LinearLayout>(R.id.llGuessesCircleGreen)
-        val tvScore = view.findViewById<TextView>(R.id.tvPoints)
-        val tvPointMinus = view.findViewById<TextView>(R.id.tvPointMinus)
-        val tvPointPlus = view.findViewById<TextView>(R.id.tvPointPlus)
+        val tvScore = view.findViewById<TextView>(R.id.tvNumberOfTries)
 
         bonusPlayer = MediaPlayer.create(context, R.raw.good)
-        failPlayer = MediaPlayer.create(requireContext(), R.raw.warning)
         warningPlayer = MediaPlayer.create(requireContext(), R.raw.fail)
+        move(binding.llScoreCircle, "up", true){}
 
 
         model.numberOfphrasesDone.observe(viewLifecycleOwner) {
             view.findViewById<TextView>(R.id.tvCurrentPhrase).text = (it + 1).toString()
+            animateCircle(llCircleGreen)
         }
 
         model.observedTries.observe(viewLifecycleOwner) {
             if (it < points) {
-                failPlayer!!.start()
-                animateCircle(llCircleRed)
-                animatePoints(tvPointMinus)
+
+          //      animateTryChange(binding.tvTriesNumberChange, false)
+                animateCircle(binding.llGuessesCircleRed)
             }
 
-
             if (it > points) {
-                animateCircle(llCircleGreen)
-                animatePoints(tvPointPlus)
+       //         animateTryChange(binding.tvTriesNumberChange, true)
+                animateCircle(binding.llGuessesCircleGreen)
             }
             points = it
             tvScore.text = points.toString()
+
             if (it == 1) {
-                view.findViewById<TextView>(R.id.tvLastGuess).isVisible = true
+                binding.llGuessesCircleRed.isVisible = true
+                binding.tvNumberOfTries.setTextColor(Color.parseColor("#FF0000"))
                 //    warningPlayer.start()
             } else {
-                view.findViewById<TextView>(R.id.tvLastGuess).isVisible = false
+
+                binding.tvNumberOfTries.setTextColor(Color.parseColor("#000000"))
             }
         }
 
-        model.observedPowerPoints.observe(viewLifecycleOwner) {
-            binding.tvPowerPoints.text = it.toString()
+        model.powerUpUsed.observe(viewLifecycleOwner) {
+            binding.tvPwrTryNumber.text = model.powerTryAmount.toString()
+            binding.tvPwrRemoveNumber.text = model.powerRemoveAmount.toString()
+        }
+
+        model.observedlevel.observe(viewLifecycleOwner) {
+            binding.tvLevelNumber.text = (model.level + 1).toString()
+            binding.tvPwrTryNumber.text = model.powerTryAmount.toString()
+            binding.tvPwrRemoveNumber.text = model.powerRemoveAmount.toString()
+        }
+
+        model.audioReady.observe(viewLifecycleOwner) {
+            if (model.phraseIndex != 0) {
+                if (it) move(binding.llScoreCircle, "show", false, 1000) {}
+            }
+        }
+
+        model.showSuccess.observe(viewLifecycleOwner) {
+            if (it) {
+                move(binding.llScoreCircle, "up", false, 300) {}
+            }
+        }
+
+        model.loadUI.observe(viewLifecycleOwner) {
+            if (it) move(binding.llScoreCircle, "show", false, 300){}
         }
 
 
+/*        model.observedPowerPoints.observe(viewLifecycleOwner) {
+            if (it < powers) {
+                animateTryChange(binding.tvPowerNumberChanged, false)
+            }
+
+            if (it > powers) {
+                animateTryChange(binding.tvPowerNumberChanged, true)
+            }
+            powers = it
+        }*/
+
         binding.tvPowerRemove.setOnClickListener {
-            Log.d(TAG, "TRyckte på try")
+            Log.d(TAG, "Tryckte på Remove power")
             model.usePowerUp(PowerUp.REMOVESLIZE)
         }
 
         binding.tvPowerTry.setOnClickListener {
             model.usePowerUp(PowerUp.EXTRATRY)
+        }
+    }
+
+    fun move(view: View, direction : String, hide : Boolean = false, delay : Int = 0, doThis: () -> Unit) {
+        val moveTo = when(direction) {
+            "up" -> postTop
+            "down" -> posBottom
+            else -> 0
+        }
+
+        var speed = if (moveTo == 0) moveInSpeed else moveOutSpeed
+        if (hide) speed = 0
+
+        ObjectAnimator.ofFloat(view, "translationY", moveTo.toFloat()).apply {
+            startDelay = delay.toLong()
+            duration = speed.toLong()
+            start()
+            addListener(onEnd = {
+                doThis()
+            }) {
+            }
         }
     }
 
@@ -106,8 +170,11 @@ class ScoreBoardFragment : Fragment() {
         }
     }
 
-    fun animatePoints(pointsText: TextView) {
-        pointsText.apply {
+    fun animateTryChange(view: TextView, tryAdded: Boolean) {
+        view.text = if (tryAdded) "+" else "-"
+        val textColor = if (tryAdded) "#38FF75" else "#FF0000"
+        view.setTextColor(Color.parseColor(textColor))
+        view.apply {
             alpha = 1f
             visibility = View.VISIBLE
             animate()

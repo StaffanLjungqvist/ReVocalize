@@ -47,7 +47,15 @@ class SlizeRecAdapter() : RecyclerView.Adapter<SlizeRecAdapter.MyViewHolder>() {
 
                 if (event.actionMasked == MotionEvent.ACTION_DOWN) {
                     (fragment as InGameFragment).startDragging(holder)
+                    if (fragment.model.clickPowerActive) {
+
+                    }
                 }
+
+                if (event.actionMasked == MotionEvent.ACTION_DOWN) {
+                    (fragment as InGameFragment).startDragging(holder)
+                }
+
             }
             return@setOnTouchListener true
         }
@@ -56,5 +64,10 @@ class SlizeRecAdapter() : RecyclerView.Adapter<SlizeRecAdapter.MyViewHolder>() {
 
     override fun getItemCount(): Int {
         return slizes.size
+    }
+
+
+    fun playSlize(slize : Slize) {
+        fragment.playSlize(slize)
     }
 }

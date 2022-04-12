@@ -32,17 +32,25 @@ class IngameViewModel : ViewModel() {
     var phraseIndex = 0
     var slices: List<Slize>? = null
     var currentPhrase: Phrase = Phrase("PHRASETEXT MISSING")
-    var isCorrect = false
+
     private var guessesUsed = 0
-    var gameOver = false
     var bonus = 0
+    var levelUp = true
+    var gameOver = false
     var newRecord = false
+    var isCorrect = false
     val loopHandler = Handler(Looper.getMainLooper())
     var phraseList = listOf<Phrase>()
     var slizeDivisions = 3
-    var levelUp = true
-    var tries = 5
+
+    var tries = 3
+    var startingTries = 3
     var powerPoints = 0
+    val phrasesPerLevel = 1
+
+    var powerTryAmount = 3
+    var powerRemoveAmount = 4
+    var clickPowerActive = true
 
     val observedTries: MutableLiveData<Int> by lazy {
         MutableLiveData<Int>(5)
@@ -134,7 +142,7 @@ class IngameViewModel : ViewModel() {
             currentPhrase   = phraseList.random()
         }
         guessesUsed = 0
-        tries = 5
+        tries = startingTries
         observedTries.value = tries
         if (phraseIndex == 0) powerPoints += 2
         observedPowerPoints.value = powerPoints
@@ -146,18 +154,18 @@ class IngameViewModel : ViewModel() {
     }
 
     fun usePowerUp(powerUp: PowerUp) {
-
-        if (powerPoints < 1) {
-            return
-        }
         when (powerUp) {
             PowerUp.REMOVESLIZE -> {
+                if (powerRemoveAmount < 1) return
                 slizeDivisions--
+                powerRemoveAmount--
             }
             PowerUp.EXTRATRY -> {
                 if (tries >= 5) return
+                if (powerTryAmount < 1) return
                 tries++
                 observedTries.value = tries
+                powerTryAmount--
             }
         }
         powerPoints--
@@ -219,7 +227,7 @@ class IngameViewModel : ViewModel() {
 
     fun advancePhrase() {
         Log.d("gamedebug", "advancing stage, guesses is now $guessesUsed")
-        if (phraseIndex == 4) {
+        if (phraseIndex == phrasesPerLevel) {
             levelUp = true
             level++
             observedlevel.value = level
@@ -247,8 +255,11 @@ class IngameViewModel : ViewModel() {
 
     private fun giveBonus() {
         Log.d("gamedebug", "Giving bonus. guesses used : $guessesUsed")
-        if (guessesUsed == 0) bonus = 1
-        powerPoints++
+        if (guessesUsed == 0) {
+            bonus = 1
+            powerPoints++
+        }
+
         Log.d(TAG, "Sätter bonus till $bonus")
     }
 

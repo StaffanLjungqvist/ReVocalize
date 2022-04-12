@@ -13,7 +13,7 @@
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/placeholder"
+        android:id="@+id/llScoreCircle"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:background="@drawable/circle"
@@ -29,7 +29,7 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:background="@drawable/circle"
-            android:backgroundTint="@color/pink"
+            android:backgroundTint="#FF0000"
             android:gravity="center"
             android:visibility="invisible"
             android:orientation="horizontal"
@@ -54,7 +54,7 @@
 
 
         <TextView
-            android:id="@+id/tvCurrentPhrase"
+            android:id="@+id/tvNumberOfTries"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="1dp"
@@ -86,43 +86,29 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="TRIES LEFT "
+            android:text="LEVEL "
             android:textColor="@color/grey_light"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/tvPoints"
+            android:id="@+id/tvLevelNumber"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="4"
             android:textColor="@color/white"
             android:textStyle="bold" />
 
+
         <TextView
-            android:id="@+id/tvPointMinus"
-            android:layout_width="wrap_content"
+            android:id="@+id/tv_tries_number_change"
+            android:layout_width="18dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
             android:text=" -1"
-            android:textColor="@color/pink"
-            android:textStyle="bold"
-            android:visibility="gone"/>
-
-        <TextView
-            android:id="@+id/tvPointPlus"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=" +1"
-            android:visibility="gone"
-            android:textColor="@color/green"
-            android:textStyle="bold"/>
-
-        <TextView
-            android:id="@+id/tvLastGuess"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=" LAST TRY!"
-            android:textColor="@color/pink"
+            android:textColor="@color/black"
             android:textStyle="bold" />
+
+
 
     </LinearLayout>
 
@@ -131,25 +117,33 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:orientation="horizontal"
-        app:layout_constraintEnd_toStartOf="@+id/placeholder"
         app:layout_constraintStart_toEndOf="@+id/llProgress"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
+            android:id="@+id/tv_powerups"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="POWERUPS "
+            android:layout_marginStart="16dp"
+            android:text="PHRASE  "
             android:textColor="@color/grey_light"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/tvPowerPoints"
+            android:id="@+id/tvCurrentPhrase"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
             android:text="5"
             android:textColor="@color/white"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvPowerNumberChanged"
+            android:layout_width="18dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text=" -1"
+            android:textColor="@color/black"
             android:textStyle="bold" />
 
     </LinearLayout>
@@ -169,18 +163,33 @@
             android:id="@+id/tvPowerRemove"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="8dp"
-            android:text="REMOVE"
+            android:text="REMOVE "
             android:textColor="#FFF384"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvPwrRemoveNumber"
+            android:layout_width="10dp"
+            android:layout_height="wrap_content"
+            android:text="1"
+            android:textColor="@color/white"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tvPowerTry"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="8dp"
-            android:text="+TRY"
+            android:layout_marginStart="16dp"
+            android:text="+TRY "
             android:textColor="@color/silver"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvPwrTryNumber"
+            android:layout_width="10dp"
+            android:layout_height="wrap_content"
+            android:text="1"
+            android:textColor="@color/white"
             android:textStyle="bold" />
 
 

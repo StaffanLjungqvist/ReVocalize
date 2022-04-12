@@ -48,6 +48,7 @@ class InGameFragment : Fragment() {
     private lateinit var ttsAdapter: TTSAdapter
 
     private var mediaPlayer: MediaPlayer? = null
+    private lateinit var failPlayer: MediaPlayer
     private var listenMode = true
     private var postTop = -400
     private var posBottom = 500
@@ -98,6 +99,8 @@ class InGameFragment : Fragment() {
 
         ttsAdapter = TTSAdapter(requireContext())
         ttsAdapter.textPhrase = model.currentPhrase.text
+
+        failPlayer = MediaPlayer.create(requireContext(), R.raw.warning)
 
         myRecyclerView = binding.rvSlizes
         myRecyclerView.adapter = slizeRecAdapter
@@ -256,6 +259,7 @@ class InGameFragment : Fragment() {
     }
 
     private fun wrongAnswer() {
+        failPlayer!!.start()
         if (model.gameOver) {
             val bundle = Bundle()
             model.numberOfphrasesDone.value?.let { it1 -> bundle.putInt("score", it1) }
@@ -318,7 +322,7 @@ class InGameFragment : Fragment() {
         }
     }
 
-    private fun playSlize(slize: Slize) {
+     fun playSlize(slize: Slize) {
         Log.d(TAG, "Playing a slize")
         mediaPlayer?.seekTo(slize.start)
         mediaPlayer?.start()
