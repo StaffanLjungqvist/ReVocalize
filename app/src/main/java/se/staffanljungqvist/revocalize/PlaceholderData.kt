@@ -15,5 +15,6 @@ object Colors {
 
 enum class PowerUp {
     REMOVESLIZE,
-    EXTRATRY
+    EXTRATRY,
+    CLICK
 }

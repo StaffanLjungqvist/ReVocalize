@@ -48,9 +48,9 @@ class IngameViewModel : ViewModel() {
     var powerPoints = 0
     val phrasesPerLevel = 1
 
-    var powerTryAmount = 3
+    var powerTryAmount = 4
     var powerRemoveAmount = 4
-    var clickPowerActive = true
+    var powerClickAmount = 4
 
     val observedTries: MutableLiveData<Int> by lazy {
         MutableLiveData<Int>(5)
@@ -100,9 +100,25 @@ class IngameViewModel : ViewModel() {
     val showInventory: MutableLiveData<Boolean> by lazy {
         MutableLiveData<Boolean>()
     }
+
+    val powersAvailable: MutableLiveData<Boolean> by lazy {
+        MutableLiveData<Boolean>()
+    }
+
+
     val powerUpUsed: MutableLiveData<PowerUp> by lazy {
         MutableLiveData<PowerUp>()
     }
+
+    val listeMode: MutableLiveData<Boolean> by lazy {
+        MutableLiveData<Boolean>()
+    }
+
+    val clickMode: MutableLiveData<Boolean> by lazy {
+        MutableLiveData<Boolean>()
+    }
+
+
 
 
     fun downloadPhrases(context: Context) {
@@ -119,8 +135,6 @@ class IngameViewModel : ViewModel() {
         queue.add(stringRequest)
     }
 
-
-
     private fun loadPhraseList(jsonString: String) {
         Log.d(TAG, "Försöker ladda")
         try {
@@ -132,7 +146,6 @@ class IngameViewModel : ViewModel() {
             e.printStackTrace()
         }
     }
-
 
     fun loadPhrase() {
         val div = getTextlengthAttributes()
@@ -161,18 +174,21 @@ class IngameViewModel : ViewModel() {
                 powerRemoveAmount--
             }
             PowerUp.EXTRATRY -> {
-                if (tries >= 5) return
                 if (powerTryAmount < 1) return
                 tries++
                 observedTries.value = tries
                 powerTryAmount--
+            }
+            PowerUp.CLICK -> {
+                if (powerTryAmount < 1) return
+                clickMode.value = true
+                powerClickAmount--
             }
         }
         powerPoints--
         observedPowerPoints.value = powerPoints
         powerUpUsed.value = powerUp
     }
-
 
     fun makeSlices(duration: Int) {
         //lista av sliceobjekt initialiseras
@@ -192,7 +208,6 @@ class IngameViewModel : ViewModel() {
         slices = superShuffle(sliceList)
         Log.d(TAG, "Skapade ${sliceList.size} slices med längd $sliceLength vardera")
     }
-
 
     fun checkAnswer(): Boolean {
         val sortedList = slices!!.sortedBy { it.number }
@@ -361,7 +376,6 @@ class IngameViewModel : ViewModel() {
 
     }
 
-
     fun prepareText(text : String): String {
         val preparedtext = text.uppercase().trim()
     //    preparedtext.replace("Â ", "’")
@@ -390,7 +404,7 @@ class IngameViewModel : ViewModel() {
     }
 
     var levels = listOf(
-        listOf(3, 3, 3, 3, 3, 3),
+        listOf(3, 4, 3, 3, 3, 3),
         listOf(4, 4, 4, 4, 4, 4),
         listOf(5, 5, 5, 5, 5, 5),
         listOf(6, 6, 6, 6, 6, 6),

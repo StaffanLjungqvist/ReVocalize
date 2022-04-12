@@ -35,7 +35,6 @@ class ScoreBoardFragment : Fragment() {
     private var moveInSpeed = 250
 
     private var points = 0
-    private var powers = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -52,16 +51,17 @@ class ScoreBoardFragment : Fragment() {
 
 
         val llCircleGreen = view.findViewById<LinearLayout>(R.id.llGuessesCircleGreen)
-        val tvScore = view.findViewById<TextView>(R.id.tvNumberOfTries)
+
 
         bonusPlayer = MediaPlayer.create(context, R.raw.good)
         warningPlayer = MediaPlayer.create(requireContext(), R.raw.fail)
+
         move(binding.llScoreCircle, "up", true){}
 
 
         model.numberOfphrasesDone.observe(viewLifecycleOwner) {
             view.findViewById<TextView>(R.id.tvCurrentPhrase).text = (it + 1).toString()
-            animateCircle(llCircleGreen)
+         //   animateCircle(llCircleGreen)
         }
 
         model.observedTries.observe(viewLifecycleOwner) {
@@ -76,7 +76,7 @@ class ScoreBoardFragment : Fragment() {
                 animateCircle(binding.llGuessesCircleGreen)
             }
             points = it
-            tvScore.text = points.toString()
+            binding.tvNumberOfTries.text = points.toString()
 
             if (it == 1) {
                 binding.llGuessesCircleRed.isVisible = true
@@ -88,15 +88,12 @@ class ScoreBoardFragment : Fragment() {
             }
         }
 
-        model.powerUpUsed.observe(viewLifecycleOwner) {
-            binding.tvPwrTryNumber.text = model.powerTryAmount.toString()
-            binding.tvPwrRemoveNumber.text = model.powerRemoveAmount.toString()
-        }
 
         model.observedlevel.observe(viewLifecycleOwner) {
             binding.tvLevelNumber.text = (model.level + 1).toString()
             binding.tvPwrTryNumber.text = model.powerTryAmount.toString()
             binding.tvPwrRemoveNumber.text = model.powerRemoveAmount.toString()
+            binding.tvPwrClickNumber.text = model.powerRemoveAmount.toString()
         }
 
         model.audioReady.observe(viewLifecycleOwner) {
@@ -127,13 +124,28 @@ class ScoreBoardFragment : Fragment() {
             powers = it
         }*/
 
+        binding.tvPowerClick.setOnClickListener {
+            if (model.powersAvailable.value == true) {
+                model.usePowerUp(PowerUp.CLICK)
+                binding.tvPwrClickNumber.text = model.powerClickAmount.toString()
+            }
+        }
+
         binding.tvPowerRemove.setOnClickListener {
-            Log.d(TAG, "Tryckte på Remove power")
-            model.usePowerUp(PowerUp.REMOVESLIZE)
+            if (model.powersAvailable.value == true) {
+                model.usePowerUp(PowerUp.REMOVESLIZE)
+                binding.tvPwrRemoveNumber.text = model.powerRemoveAmount.toString()
+            }
         }
 
         binding.tvPowerTry.setOnClickListener {
-            model.usePowerUp(PowerUp.EXTRATRY)
+            if (model.powersAvailable.value == true) {
+                model.usePowerUp(PowerUp.EXTRATRY)
+                binding.tvPwrTryNumber.text = model.powerTryAmount.toString()
+
+            }
+
+
         }
     }
 

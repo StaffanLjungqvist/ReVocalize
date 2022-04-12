@@ -31,10 +31,10 @@
         <entry key="app/src/main/res/layout/fragment_game_over.xml" value="0.4446482340494792" />
         <entry key="app/src/main/res/layout/fragment_in_game.xml" value="0.34210205078125006" />
         <entry key="app/src/main/res/layout/fragment_intro.xml" value="0.25831298828125004" />
-        <entry key="app/src/main/res/layout/fragment_inventory.xml" value="0.4364151000976562" />
+        <entry key="app/src/main/res/layout/fragment_inventory.xml" value="0.3440658569335937" />
         <entry key="app/src/main/res/layout/fragment_level_complete.xml" value="0.31875" />
         <entry key="app/src/main/res/layout/fragment_level_up.xml" value="0.33606627336830713" />
-        <entry key="app/src/main/res/layout/fragment_score.xml" value="0.30277454118083297" />
+        <entry key="app/src/main/res/layout/fragment_score.xml" value="0.856937138837083" />
         <entry key="app/src/main/res/layout/fragment_stage_select.xml" value="0.37970584115189604" />
         <entry key="app/src/main/res/layout/fragment_start.xml" value="0.31875" />
         <entry key="app/src/main/res/layout/fragment_success.xml" value="0.22420196533203116" />

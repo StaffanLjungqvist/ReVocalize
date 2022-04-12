@@ -6,6 +6,8 @@ import android.animation.ObjectAnimator
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -47,9 +49,8 @@ class InGameFragment : Fragment() {
     private var slizeRecAdapter: SlizeRecAdapter = SlizeRecAdapter()
     private lateinit var ttsAdapter: TTSAdapter
 
-    private var mediaPlayer: MediaPlayer? = null
+    var mediaPlayer: MediaPlayer? = null
     private lateinit var failPlayer: MediaPlayer
-    private var listenMode = true
     private var postTop = -400
     private var posBottom = 500
     private var moveOutSpeed = 230
@@ -130,6 +131,7 @@ class InGameFragment : Fragment() {
             if (it) {
                 Log.d(TAG, "Audio är redo att spelas")
                 makeSlices()
+                model.listeMode.value = true
                 binding.tvSentence.text = model.prepareText(model.currentPhrase.text)
                     move(binding.tvLoading, "down", false, 300) {
 
@@ -137,6 +139,7 @@ class InGameFragment : Fragment() {
                         move(binding.rvSlizes, "show") {
                             model.showSuccess.value = false
                             move(binding.tvSentence, "show") {
+                                model.powersAvailable.value = true
                                 animateButton(binding.btnListen, true)
                             }
                         }
@@ -154,15 +157,16 @@ class InGameFragment : Fragment() {
             slizeRecAdapter.blinknumber = it
             slizeRecAdapter.notifyDataSetChanged()
             if (it != -1 && it != -2 && wrongAnswer) playSlize(model.slices!![it])
-            if (it == -2 && mediaPlayer != null) mediaPlayer?.pause()
+          //  if (it == -2 && mediaPlayer != null) mediaPlayer?.pause()
         }
 
 
         model.doneIterating.observe(viewLifecycleOwner) {
             if (it) {
                 Log.d(TAG, "done iterating")
-                if (listenMode) {
-                    listenMode = false
+                if (model.listeMode.value == true) {
+                    model.powersAvailable.value = true
+                    model.listeMode.value = false
                     animateButton(binding.btnCheck, true)
                 } else {
                     if (model.makeGuess()) correctAnswer() else {
@@ -186,6 +190,17 @@ class InGameFragment : Fragment() {
             }
         }
 
+        model.clickMode.observe(viewLifecycleOwner) {
+            if (it) {
+                if (binding.btnListen.isVisible) {
+                    animateButton(binding.btnListen, false)
+                } else if (binding.btnCheck.isVisible) {
+                    animateButton(binding.btnCheck, false)
+                }
+                animateButton(binding.btnClickDone, true)
+            }
+        }
+
         model.showInventory.observe(viewLifecycleOwner) {
             if (it) {
                 if (!binding.btnListen.isVisible ) animateButton(binding.btnListen, true)
@@ -198,8 +213,8 @@ class InGameFragment : Fragment() {
 
         binding.btnListen.setOnClickListener {
             model.iterateSlices(model.slices!!)
-            listenMode = true
             animateButton(binding.btnListen, false)
+            model.powersAvailable.value = false
         }
 
         binding.btnCheck.setOnClickListener {
@@ -210,6 +225,13 @@ class InGameFragment : Fragment() {
             } else {
                 model.iterateSlices(model.slices!!)
             }
+            model.powersAvailable.value = false
+        }
+
+        binding.btnClickDone.setOnClickListener {
+            model.clickMode.value = false
+            animateButton(binding.btnClickDone, false)
+            animateButton(binding.btnCheck, true)
         }
     }
 
@@ -218,6 +240,7 @@ class InGameFragment : Fragment() {
         binding.btnListen.isVisible = false
             move(binding.tvSentence, "show") {
                 animateButton(binding.btnListen, true)
+                model.powersAvailable.value = true
         }
 
             move(binding.rvSlizes, "show") {}
@@ -241,7 +264,6 @@ class InGameFragment : Fragment() {
             model.audioReady.value = true
         }
     }
-
 
     private fun correctAnswer() {
         move(binding.tvSentence, "up") {
@@ -270,8 +292,10 @@ class InGameFragment : Fragment() {
                 .add(R.id.fragmentContainerView, theFragment).addToBackStack(null)
                 .commit()
             activity?.viewModelStore?.clear()
+        } else {
+            binding.btnCheck.isVisible = true
+            model.powersAvailable.value = true
         }
-        binding.btnCheck.isVisible = true
     }
 
     fun showLevelUp() {
@@ -326,9 +350,14 @@ class InGameFragment : Fragment() {
         Log.d(TAG, "Playing a slize")
         mediaPlayer?.seekTo(slize.start)
         mediaPlayer?.start()
+         val handler = Handler(Looper.getMainLooper())
+         handler.postDelayed({
+             mediaPlayer?.pause()
+         }, slize.length)
     }
 
     private fun playFullPhrase() {
+
         Log.d(TAG, "Playing full phrase")
         mediaPlayer?.seekTo(0)
         mediaPlayer?.start()

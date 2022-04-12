@@ -46,16 +46,15 @@ class SlizeRecAdapter() : RecyclerView.Adapter<SlizeRecAdapter.MyViewHolder>() {
             if (fragment.model.doneIterating.value!!) {
 
                 if (event.actionMasked == MotionEvent.ACTION_DOWN) {
-                    (fragment as InGameFragment).startDragging(holder)
-                    if (fragment.model.clickPowerActive) {
+                    if (fragment.model.clickMode.value == true) {
+                        fragment.mediaPlayer?.let {
+                            if (!it.isPlaying) fragment.playSlize(slice)
+                        }
+                    } else if (fragment.model.listeMode.value != true) {
+                                (fragment as InGameFragment).startDragging(holder)
 
                     }
                 }
-
-                if (event.actionMasked == MotionEvent.ACTION_DOWN) {
-                    (fragment as InGameFragment).startDragging(holder)
-                }
-
             }
             return@setOnTouchListener true
         }
@@ -66,8 +65,4 @@ class SlizeRecAdapter() : RecyclerView.Adapter<SlizeRecAdapter.MyViewHolder>() {
         return slizes.size
     }
 
-
-    fun playSlize(slize : Slize) {
-        fragment.playSlize(slize)
-    }
 }
