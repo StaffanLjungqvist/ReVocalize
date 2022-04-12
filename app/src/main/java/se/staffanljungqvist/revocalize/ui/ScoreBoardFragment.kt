@@ -56,23 +56,24 @@ class ScoreBoardFragment : Fragment() {
         bonusPlayer = MediaPlayer.create(context, R.raw.good)
         warningPlayer = MediaPlayer.create(requireContext(), R.raw.fail)
 
-        move(binding.llScoreCircle, "up", true){}
+        move(binding.llScoreCircle, "up", true) {}
+        move(binding.llInventory, "up", true) {}
 
 
         model.numberOfphrasesDone.observe(viewLifecycleOwner) {
             view.findViewById<TextView>(R.id.tvCurrentPhrase).text = (it + 1).toString()
-         //   animateCircle(llCircleGreen)
+            //   animateCircle(llCircleGreen)
         }
 
         model.observedTries.observe(viewLifecycleOwner) {
             if (it < points) {
 
-          //      animateTryChange(binding.tvTriesNumberChange, false)
+                //      animateTryChange(binding.tvTriesNumberChange, false)
                 animateCircle(binding.llGuessesCircleRed)
             }
 
             if (it > points) {
-       //         animateTryChange(binding.tvTriesNumberChange, true)
+                //         animateTryChange(binding.tvTriesNumberChange, true)
                 animateCircle(binding.llGuessesCircleGreen)
             }
             points = it
@@ -86,6 +87,26 @@ class ScoreBoardFragment : Fragment() {
 
                 binding.tvNumberOfTries.setTextColor(Color.parseColor("#000000"))
             }
+        }
+
+        model.powersAvailable.observe(viewLifecycleOwner) {
+            Log.d(TAG, "powersAvailable är satt till $it")
+
+            val textColor = if (it == true) "#38FF75" else "#B2B2B2"
+            binding.tvPowerUpText.setTextColor(Color.parseColor(textColor))
+
+            if (it == false && model.showInventory.value == true) {
+                model.showInventory.value = false
+            }
+        }
+        model.listenMode.observe(viewLifecycleOwner) {
+            Log.d(TAG, "listenMode är satt till $it")
+        }
+        model.clickMode.observe(viewLifecycleOwner) {
+            Log.d(TAG, "clickMode är satt till $it")
+        }
+        model.playMode.observe(viewLifecycleOwner) {
+            Log.d(TAG, "playMode är satt till $it")
         }
 
 
@@ -109,7 +130,16 @@ class ScoreBoardFragment : Fragment() {
         }
 
         model.loadUI.observe(viewLifecycleOwner) {
-            if (it) move(binding.llScoreCircle, "show", false, 300){}
+            if (it) move(binding.llScoreCircle, "show", false, 300) {}
+        }
+
+        model.showInventory.observe(viewLifecycleOwner) {
+            Log.d(TAG, "showInventory är satt till $it")
+            if (it) {
+                move(binding.llInventory, "show") {}
+            } else {
+                move(binding.llInventory, "up") {}
+            }
         }
 
 
@@ -124,33 +154,52 @@ class ScoreBoardFragment : Fragment() {
             powers = it
         }*/
 
+        binding.llShowPowers.setOnClickListener {
+            if (model.powersAvailable.value == true) {
+                model.showInventory.value = model.showInventory.value != true
+            }
+        }
+
         binding.tvPowerClick.setOnClickListener {
             if (model.powersAvailable.value == true) {
-                model.usePowerUp(PowerUp.CLICK)
-                binding.tvPwrClickNumber.text = model.powerClickAmount.toString()
+                if (model.powerClickAmount != 0) {
+                    model.usePowerUp(PowerUp.CLICK)
+                    model.showInventory.value = false
+                    binding.tvPwrClickNumber.text = model.powerClickAmount.toString()
+                }
             }
         }
 
         binding.tvPowerRemove.setOnClickListener {
             if (model.powersAvailable.value == true) {
-                model.usePowerUp(PowerUp.REMOVESLIZE)
-                binding.tvPwrRemoveNumber.text = model.powerRemoveAmount.toString()
+                if (model.powerRemoveAmount != 0) {
+                    model.usePowerUp(PowerUp.REMOVESLIZE)
+                    model.showInventory.value = false
+                    binding.tvPwrRemoveNumber.text = model.powerRemoveAmount.toString()
+                }
+
             }
         }
 
         binding.tvPowerTry.setOnClickListener {
             if (model.powersAvailable.value == true) {
-                model.usePowerUp(PowerUp.EXTRATRY)
-                binding.tvPwrTryNumber.text = model.powerTryAmount.toString()
-
+                if (model.powerTryAmount != 0) {
+                    model.usePowerUp(PowerUp.EXTRATRY)
+                    model.showInventory.value = false
+                    binding.tvPwrTryNumber.text = model.powerTryAmount.toString()
+                }
             }
-
-
         }
     }
 
-    fun move(view: View, direction : String, hide : Boolean = false, delay : Int = 0, doThis: () -> Unit) {
-        val moveTo = when(direction) {
+    fun move(
+        view: View,
+        direction: String,
+        hide: Boolean = false,
+        delay: Int = 0,
+        doThis: () -> Unit
+    ) {
+        val moveTo = when (direction) {
             "up" -> postTop
             "down" -> posBottom
             else -> 0

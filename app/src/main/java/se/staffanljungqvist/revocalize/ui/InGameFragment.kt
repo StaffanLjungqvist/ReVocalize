@@ -131,16 +131,16 @@ class InGameFragment : Fragment() {
             if (it) {
                 Log.d(TAG, "Audio är redo att spelas")
                 makeSlices()
-                model.listeMode.value = true
+                model.listenMode.value = true
                 binding.tvSentence.text = model.prepareText(model.currentPhrase.text)
                     move(binding.tvLoading, "down", false, 300) {
-
                         if (!model.levelUp) {
                         move(binding.rvSlizes, "show") {
                             model.showSuccess.value = false
                             move(binding.tvSentence, "show") {
                                 model.powersAvailable.value = true
                                 animateButton(binding.btnListen, true)
+                                model.playMode.value = true
                             }
                         }
                     }
@@ -164,16 +164,17 @@ class InGameFragment : Fragment() {
         model.doneIterating.observe(viewLifecycleOwner) {
             if (it) {
                 Log.d(TAG, "done iterating")
-                if (model.listeMode.value == true) {
-                    model.powersAvailable.value = true
-                    model.listeMode.value = false
+                if (model.listenMode.value == true) {
+                    model.listenMode.value = false
                     animateButton(binding.btnCheck, true)
                 } else {
                     if (model.makeGuess()) correctAnswer() else {
                         wrongAnswer()
+                        model.powersAvailable.value = true
                         animateButton(binding.btnCheck, true)
                     }
                 }
+
                 slizeRecAdapter.blinknumber = -1
                 slizeRecAdapter.notifyDataSetChanged()
             }
@@ -187,6 +188,10 @@ class InGameFragment : Fragment() {
                         move(binding.rvSlizes, "show"){}
                     }
                 }
+                PowerUp.CLICK -> {
+                    model.listenMode.value = false
+                }
+
             }
         }
 
@@ -203,18 +208,16 @@ class InGameFragment : Fragment() {
 
         model.showInventory.observe(viewLifecycleOwner) {
             if (it) {
-                if (!binding.btnListen.isVisible ) animateButton(binding.btnListen, true)
-                if (!binding.btnCheck.isVisible ) animateButton(binding.btnListen, true)
+                move(binding.tvSentence, "up"){}
             } else if (!it) {
-                if (!binding.btnListen.isVisible ) animateButton(binding.btnListen, false)
-                if (!binding.btnCheck.isVisible ) animateButton(binding.btnListen, false)
+                move(binding.tvSentence, "show"){}
             }
+
         }
 
         binding.btnListen.setOnClickListener {
             model.iterateSlices(model.slices!!)
             animateButton(binding.btnListen, false)
-            model.powersAvailable.value = false
         }
 
         binding.btnCheck.setOnClickListener {
@@ -299,11 +302,9 @@ class InGameFragment : Fragment() {
     }
 
     fun showLevelUp() {
-
                 requireActivity().supportFragmentManager.beginTransaction()
                     .add(R.id.fragmentContainerView, LevelUpFragment()).addToBackStack(null)
                     .commit()
-
         move(binding.rvSlizes, "down", true) {}
         move(binding.tvSentence, "up", true) {}
     }

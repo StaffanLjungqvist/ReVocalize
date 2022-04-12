@@ -92,11 +92,11 @@ class SuccessFragment : Fragment() {
             binding.llBonus.isVisible = false
             binding.llCorrect.isVisible = false
             binding.llLevelUp.isVisible = false
-            if (model.levelUp ) {
+/*            if (model.levelUp ) {
                 textToShow = binding.llLevelUp
                 model.showLevelUp.value = true
                 showSucces()
-            }
+            }*/
         }
     }
 

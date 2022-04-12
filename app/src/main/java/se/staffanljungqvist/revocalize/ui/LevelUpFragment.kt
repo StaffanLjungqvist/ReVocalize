@@ -46,8 +46,16 @@ class LevelUpFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         move(binding.btnContinuteLevelUp, "down", true) {}
-        move(binding.clStatistics, "left", true, 0, true) {
+        move(binding.clStatistics, "left", true, 0, true) {}
+        move(binding.tvLevelUp, "up", true) {
+            if (model.numberOfphrasesDone.value != 0) {
+                move(binding.tvLevelUp, "show"){}
+            }
         }
+        move(binding.llNextLevel, "right", true, 0, true){}
+
+
+        binding.tvNextLevelNumber.text = (model.level + 1).toString()
 
         val levelUpPlayer = MediaPlayer.create(requireContext(), R.raw.perfect2).setOnPreparedListener {
            if (model.numberOfphrasesDone.value != 0) it.start()
@@ -57,6 +65,7 @@ class LevelUpFragment : Fragment() {
             if (it) {
                 move(binding.btnContinuteLevelUp, "show", false, moveOutSpeed) {}
                 move(binding.clStatistics, "show", false, 0, true){}
+                move(binding.llNextLevel, "show", false, 0, true){}
             }
         }
 
@@ -65,12 +74,16 @@ class LevelUpFragment : Fragment() {
 
         view.findViewById<Button>(R.id.btnContinuteLevelUp).setOnClickListener {
 
+            move(binding.tvLevelUp, "up"){}
+            move(binding.llNextLevel, "left", false, 0, true){}
+            move(binding.clStatistics, "right", false, 0, true){}
             move(it, "down") {
                 requireActivity().supportFragmentManager.popBackStack(null, 0)
                 model.loadUI.value = true
                 model.loadUI.value = false
                 model.levelUp = false
                 model.showSuccess.value = false
+                model.playMode.value = true
             }
         }
 

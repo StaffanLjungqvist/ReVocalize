@@ -43,14 +43,15 @@ class SlizeRecAdapter() : RecyclerView.Adapter<SlizeRecAdapter.MyViewHolder>() {
         holder.highLight.isVisible = position == blinknumber
         holder.itemView.setOnTouchListener { view, event ->
 
-            if (fragment.model.doneIterating.value!!) {
+            if (fragment.model.playMode.value == true) {
 
                 if (event.actionMasked == MotionEvent.ACTION_DOWN) {
                     if (fragment.model.clickMode.value == true) {
                         fragment.mediaPlayer?.let {
+                            Log.d(TAG, "försöker trycka på slize")
                             if (!it.isPlaying) fragment.playSlize(slice)
                         }
-                    } else if (fragment.model.listeMode.value != true) {
+                    } else if (fragment.model.listenMode.value != true) {
                                 (fragment as InGameFragment).startDragging(holder)
 
                     }

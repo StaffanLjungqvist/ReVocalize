@@ -110,7 +110,11 @@ class IngameViewModel : ViewModel() {
         MutableLiveData<PowerUp>()
     }
 
-    val listeMode: MutableLiveData<Boolean> by lazy {
+    val listenMode: MutableLiveData<Boolean> by lazy {
+        MutableLiveData<Boolean>()
+    }
+
+    val playMode: MutableLiveData<Boolean> by lazy {
         MutableLiveData<Boolean>()
     }
 
@@ -182,6 +186,7 @@ class IngameViewModel : ViewModel() {
             PowerUp.CLICK -> {
                 if (powerTryAmount < 1) return
                 clickMode.value = true
+                listenMode.value = false
                 powerClickAmount--
             }
         }
@@ -340,6 +345,7 @@ class IngameViewModel : ViewModel() {
 
 
     fun iterateSlices(slizes: List<Slize>) {
+        playMode.value = false
         doneIterating.value = false
         var sliceNumber = -1
         slizeIndex.value = sliceNumber
@@ -353,6 +359,7 @@ class IngameViewModel : ViewModel() {
                     slizeIndex.value = -2
                     slizeIndex.value = -1
                     doneIterating.value = true
+                    playMode.value = true
                 }
             }
         })
@@ -404,7 +411,7 @@ class IngameViewModel : ViewModel() {
     }
 
     var levels = listOf(
-        listOf(3, 4, 3, 3, 3, 3),
+        listOf(3, 3, 3, 3, 3, 3),
         listOf(4, 4, 4, 4, 4, 4),
         listOf(5, 5, 5, 5, 5, 5),
         listOf(6, 6, 6, 6, 6, 6),
