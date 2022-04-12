@@ -56,6 +56,8 @@ class LevelUpFragment : Fragment() {
 
 
         binding.tvNextLevelNumber.text = (model.level + 1).toString()
+        binding.tvTotalPhrasesComplete.text = model.numberOfphrasesDone.value.toString()
+
 
         val levelUpPlayer = MediaPlayer.create(requireContext(), R.raw.perfect2).setOnPreparedListener {
            if (model.numberOfphrasesDone.value != 0) it.start()
@@ -63,6 +65,7 @@ class LevelUpFragment : Fragment() {
 
         model.audioReady.observe(viewLifecycleOwner) {
             if (it) {
+                binding.tvPhraseRecord.text = model.getUserHighScore(requireContext()).toString()
                 move(binding.btnContinuteLevelUp, "show", false, moveOutSpeed) {}
                 move(binding.clStatistics, "show", false, 0, true){}
                 move(binding.llNextLevel, "show", false, 0, true){}

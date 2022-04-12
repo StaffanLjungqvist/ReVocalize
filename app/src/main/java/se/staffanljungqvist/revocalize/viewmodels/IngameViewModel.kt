@@ -160,6 +160,8 @@ class IngameViewModel : ViewModel() {
         }
         guessesUsed = 0
         tries = startingTries
+        setStartPowers()
+
         observedTries.value = tries
         if (phraseIndex == 0) powerPoints += 2
         observedPowerPoints.value = powerPoints
@@ -219,10 +221,6 @@ class IngameViewModel : ViewModel() {
         return sortedList == slices
     }
 
-    //Kollar om listan är i rätt ordning
-    //Kollar om det va sista frasen. Sätter isåfall stageComplete
-    //Om gissningen är fel ökas antal gissningar, och ett poäng dras bort.
-    //Kollar om poängen är slut. Om så är fallet sätts gameOver
     fun makeGuess(): Boolean {
         var iscorrect: Boolean
         bonus = 0
@@ -281,6 +279,12 @@ class IngameViewModel : ViewModel() {
         }
 
         Log.d(TAG, "Sätter bonus till $bonus")
+    }
+
+    private fun setStartPowers(){
+        powerTryAmount = level
+        powerClickAmount = level
+        powerRemoveAmount = level
     }
 
     fun getUserHighScore(context: Context): Int {
@@ -342,7 +346,6 @@ class IngameViewModel : ViewModel() {
         }
         return listOf(minLength, maxLength)
     }
-
 
     fun iterateSlices(slizes: List<Slize>) {
         playMode.value = false
@@ -417,7 +420,13 @@ class IngameViewModel : ViewModel() {
         listOf(6, 6, 6, 6, 6, 6),
         listOf(7, 7, 7, 7, 7, 7),
         listOf(8, 8, 8, 8, 8, 8),
-        listOf(9, 9, 9, 9, 9),
+        listOf(9, 9, 9, 9, 9, 9),
+        listOf(9, 9, 9, 9, 9, 9),
+        listOf(9, 9, 9, 9, 9, 9),
+        listOf(9, 9, 9, 9, 9, 9),
+        listOf(9, 9, 9, 9, 9, 9),
+        listOf(9, 9, 9, 9, 9, 9),
+        listOf(9, 9, 9, 9, 9, 9),
     )
 }
 

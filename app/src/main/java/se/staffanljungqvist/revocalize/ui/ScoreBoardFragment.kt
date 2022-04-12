@@ -50,9 +50,6 @@ class ScoreBoardFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
-        val llCircleGreen = view.findViewById<LinearLayout>(R.id.llGuessesCircleGreen)
-
-
         bonusPlayer = MediaPlayer.create(context, R.raw.good)
         warningPlayer = MediaPlayer.create(requireContext(), R.raw.fail)
 
@@ -111,13 +108,14 @@ class ScoreBoardFragment : Fragment() {
 
 
         model.observedlevel.observe(viewLifecycleOwner) {
+
+        }
+
+        model.audioReady.observe(viewLifecycleOwner) {
             binding.tvLevelNumber.text = (model.level + 1).toString()
             binding.tvPwrTryNumber.text = model.powerTryAmount.toString()
             binding.tvPwrRemoveNumber.text = model.powerRemoveAmount.toString()
             binding.tvPwrClickNumber.text = model.powerRemoveAmount.toString()
-        }
-
-        model.audioReady.observe(viewLifecycleOwner) {
             if (model.phraseIndex != 0) {
                 if (it) move(binding.llScoreCircle, "show", false, 1000) {}
             }
