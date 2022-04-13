@@ -275,7 +275,7 @@ class IngameViewModel : ViewModel() {
         Log.d("gamedebug", "Giving bonus. guesses used : $guessesUsed")
         if (guessesUsed == 0) {
             bonus = 1
-            powerPoints++
+            powerTryAmount++
         }
 
         Log.d(TAG, "Sätter bonus till $bonus")
@@ -312,12 +312,12 @@ class IngameViewModel : ViewModel() {
         slizeDivisions = levels[level][phraseIndex]
         when (slizeDivisions) {
             2 -> {
-                minLength = 0
+                minLength = 35
                 maxLength = 60
             }
             3 -> {
-                minLength = 0
-                maxLength = 60
+                minLength = 35
+                maxLength = 65
             }
             4 -> {
                 minLength = 40
