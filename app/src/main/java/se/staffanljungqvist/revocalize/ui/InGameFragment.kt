@@ -181,7 +181,7 @@ class InGameFragment : Fragment() {
 
         model.powerUpUsed.observe(viewLifecycleOwner) {
             when (it) {
-                PowerUp.REMOVESLIZE -> {
+                PowerUp.REMOVE -> {
                     move(binding.rvSlizes, "down") {
                         makeSlices()
                         move(binding.rvSlizes, "show"){}
