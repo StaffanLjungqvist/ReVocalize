@@ -47,7 +47,7 @@
                 android:id="@+id/textView14"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginHorizontal="52dp"
+                android:layout_margin="20dp"
                 android:text="Revocalice is a puzzle game combining audio, text and sorting."
                 android:textAlignment="center"
                 android:textColor="@color/white"
@@ -69,7 +69,7 @@
             <ImageView
                 android:id="@+id/imageView2"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="300dp"
                 android:layout_marginHorizontal="32dp"
                 android:scaleType="fitCenter"
                 android:src="@drawable/instruction" />
@@ -78,6 +78,7 @@
                 android:id="@+id/textView16"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginTop="22dp"
                 android:layout_marginHorizontal="52dp"
                 android:text="Read the text and press play to hear it. Listen carefully and notice the blinking blocks. "
                 android:textAlignment="center"
@@ -126,9 +127,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="32dp"
-                android:layout_marginEnd="32dp"
-                android:text="Complete all the phrases to go up a level. There are now more subdivisions!"
                 android:layout_marginTop="32dp"
+                android:layout_marginEnd="32dp"
+                android:text="Complete all the phrases to go up a level, now with more subdivisions"
+                android:textAlignment="center"
                 android:textColor="@color/white"
                 android:textStyle="bold" />
 
