@@ -13,8 +13,8 @@ object Colors {
     )
 }
 
-enum class PowerUp {
-    REMOVESLIZE,
-    EXTRATRY,
-    CLICK
+enum class PowerUp(name : String, val RGB: String) {
+    REMOVE("REMOVE","#FF4BF8"),
+    TRY("TRY", "#38FF75"),
+    CLICK("CLICK", "#4BEBFF")
 }

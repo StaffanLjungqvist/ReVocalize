@@ -112,9 +112,6 @@ class ScoreBoardFragment : Fragment() {
 
         model.observedlevel.observe(viewLifecycleOwner) {
             binding.tvLevelNumber.text = (model.level + 1).toString()
-            binding.tvPwrTryNumber.text = model.powerTryAmount.toString()
-            binding.tvPwrRemoveNumber.text = model.powerRemoveAmount.toString()
-            binding.tvPwrClickNumber.text = model.powerRemoveAmount.toString()
         }
 
         model.audioReady.observe(viewLifecycleOwner) {
@@ -134,6 +131,9 @@ class ScoreBoardFragment : Fragment() {
         }
 
         model.showInventory.observe(viewLifecycleOwner) {
+            binding.tvPwrTryNumber.text = model.powerTryAmount.toString()
+            binding.tvPwrRemoveNumber.text = model.powerRemoveAmount.toString()
+            binding.tvPwrClickNumber.text = model.powerClickAmount.toString()
             Log.d(TAG, "showInventory är satt till $it")
             if (it) {
                 move(binding.llInventory, "show") {}
@@ -155,6 +155,11 @@ class ScoreBoardFragment : Fragment() {
         }*/
 
         binding.llShowPowers.setOnClickListener {
+
+
+
+
+
             if (model.powersAvailable.value == true) {
                 model.showInventory.value = model.showInventory.value != true
             }
@@ -173,7 +178,7 @@ class ScoreBoardFragment : Fragment() {
         binding.tvPowerRemove.setOnClickListener {
             if (model.powersAvailable.value == true) {
                 if (model.powerRemoveAmount != 0) {
-                    model.usePowerUp(PowerUp.REMOVESLIZE)
+                    model.usePowerUp(PowerUp.REMOVE)
                     model.showInventory.value = false
                     binding.tvPwrRemoveNumber.text = model.powerRemoveAmount.toString()
                 }
@@ -184,7 +189,7 @@ class ScoreBoardFragment : Fragment() {
         binding.tvPowerTry.setOnClickListener {
             if (model.powersAvailable.value == true) {
                 if (model.powerTryAmount != 0) {
-                    model.usePowerUp(PowerUp.EXTRATRY)
+                    model.usePowerUp(PowerUp.TRY)
                     model.showInventory.value = false
                     binding.tvPwrTryNumber.text = model.powerTryAmount.toString()
                 }

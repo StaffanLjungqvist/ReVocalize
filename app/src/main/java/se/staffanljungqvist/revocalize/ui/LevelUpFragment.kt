@@ -56,6 +56,8 @@ class LevelUpFragment : Fragment() {
 
 
         binding.tvNextLevelNumber.text = (model.level + 1).toString()
+        binding.tvPhrasesComplete.text = model.numberOfphrasesDone.value.toString()
+        binding.tvPhraseRecord.text = model.getUserHighScore(requireContext()).toString()
 
         val levelUpPlayer = MediaPlayer.create(requireContext(), R.raw.perfect2).setOnPreparedListener {
            if (model.numberOfphrasesDone.value != 0) it.start()

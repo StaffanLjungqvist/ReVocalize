@@ -32,9 +32,11 @@ class IngameViewModel : ViewModel() {
     var phraseIndex = 0
     var slices: List<Slize>? = null
     var currentPhrase: Phrase = Phrase("PHRASETEXT MISSING")
+    val bonusPowers = listOf(PowerUp.REMOVE, PowerUp.CLICK, PowerUp.TRY)
+    var bonusIndex = 0
 
     private var guessesUsed = 0
-    var bonus = 0
+    var bonus = false
     var levelUp = true
     var gameOver = false
     var newRecord = false
@@ -48,9 +50,11 @@ class IngameViewModel : ViewModel() {
     var powerPoints = 0
     val phrasesPerLevel = 1
 
-    var powerTryAmount = 4
-    var powerRemoveAmount = 4
-    var powerClickAmount = 4
+    var powerTryAmount = 0
+    var powerRemoveAmount = 0
+    var powerClickAmount = 0
+
+    val powers = listOf(PowerUp.TRY, PowerUp.REMOVE, PowerUp.CLICK)
 
     val observedTries: MutableLiveData<Int> by lazy {
         MutableLiveData<Int>(5)
@@ -123,17 +127,15 @@ class IngameViewModel : ViewModel() {
     }
 
 
-
-
     fun downloadPhrases(context: Context) {
         val url =
             "https://firebasestorage.googleapis.com/v0/b/revocalize-bf576.appspot.com/o/phrases.json?alt=media&token=3668417e-3ad4-4fd2-82e3-d1ffd1db073f"
         val queue = Volley.newRequestQueue(context)
 
-        val stringRequest = VolleyUTF8EncodingStringRequest(Request.Method.GET,url,
+        val stringRequest = VolleyUTF8EncodingStringRequest(Request.Method.GET, url,
             Response.Listener { response ->
                 loadPhraseList(response)
-            },Response.ErrorListener {error ->
+            }, Response.ErrorListener { error ->
                 Log.d(TAG, error.toString())
             })
         queue.add(stringRequest)
@@ -156,10 +158,12 @@ class IngameViewModel : ViewModel() {
 
         currentPhrase = phraseList.random()
         while (currentPhrase.text.length > div[1] || currentPhrase.text.length < div[0]) {
-            currentPhrase   = phraseList.random()
+            currentPhrase = phraseList.random()
         }
         guessesUsed = 0
         tries = startingTries
+        bonus = false
+
         observedTries.value = tries
         if (phraseIndex == 0) powerPoints += 2
         observedPowerPoints.value = powerPoints
@@ -172,12 +176,12 @@ class IngameViewModel : ViewModel() {
 
     fun usePowerUp(powerUp: PowerUp) {
         when (powerUp) {
-            PowerUp.REMOVESLIZE -> {
+            PowerUp.REMOVE -> {
                 if (powerRemoveAmount < 1) return
                 slizeDivisions--
                 powerRemoveAmount--
             }
-            PowerUp.EXTRATRY -> {
+            PowerUp.TRY -> {
                 if (powerTryAmount < 1) return
                 tries++
                 observedTries.value = tries
@@ -225,10 +229,12 @@ class IngameViewModel : ViewModel() {
     //Kollar om poängen är slut. Om så är fallet sätts gameOver
     fun makeGuess(): Boolean {
         var iscorrect: Boolean
-        bonus = 0
         if (checkAnswer()) {
             Log.d("gamedebug", "right answer, guesses is now $guessesUsed")
-            giveBonus()
+            if (guessesUsed == 0) {
+                bonus = true
+                giveBonus()
+            }
             advancePhrase()
             numberOfphrasesDone.value = numberOfphrasesDone.value?.plus(1)
             iscorrect = true
@@ -250,6 +256,10 @@ class IngameViewModel : ViewModel() {
         if (phraseIndex == phrasesPerLevel) {
             levelUp = true
             level++
+            giveBonus()
+/*            powerClickAmount++
+            powerRemoveAmount++
+            powerTryAmount++*/
             observedlevel.value = level
             Log.d(TAG, "Leveling up! New level : $level")
             phraseIndex = 0
@@ -275,12 +285,14 @@ class IngameViewModel : ViewModel() {
 
     private fun giveBonus() {
         Log.d("gamedebug", "Giving bonus. guesses used : $guessesUsed")
-        if (guessesUsed == 0) {
-            bonus = 1
-            powerPoints++
-        }
 
-        Log.d(TAG, "Sätter bonus till $bonus")
+        bonusIndex = (0..2).random()
+
+        when (bonusIndex) {
+            1 -> powerRemoveAmount++
+            2 -> powerClickAmount++
+            3 -> powerTryAmount++
+        }
     }
 
     fun getUserHighScore(context: Context): Int {
@@ -383,9 +395,9 @@ class IngameViewModel : ViewModel() {
 
     }
 
-    fun prepareText(text : String): String {
+    fun prepareText(text: String): String {
         val preparedtext = text.uppercase().trim()
-    //    preparedtext.replace("Â ", "’")
+        //    preparedtext.replace("Â ", "’")
         return preparedtext
     }
 

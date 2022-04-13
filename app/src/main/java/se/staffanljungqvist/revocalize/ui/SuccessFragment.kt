@@ -1,6 +1,7 @@
 package se.staffanljungqvist.revocalize.ui
 
 import android.animation.ObjectAnimator
+import android.graphics.Color
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.util.Log
@@ -58,8 +59,11 @@ class SuccessFragment : Fragment() {
         model.showSuccess.observe(viewLifecycleOwner) {
 
             if (it) {
+                val power = model.powers[model.bonusIndex]
+                binding.tvBonusPower.text = power.name
+                binding.tvBonusPower.setTextColor(Color.parseColor(power.RGB))
                 successPlayer.start()
-                textToShow = if (model.bonus > 0) {
+                textToShow = if (model.bonus) {
                     binding.llBonus
                 } else {
                     binding.llCorrect
