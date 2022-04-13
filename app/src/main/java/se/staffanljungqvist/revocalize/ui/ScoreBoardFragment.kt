@@ -1,5 +1,7 @@
 package se.staffanljungqvist.revocalize.ui
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import android.graphics.Color
 import android.media.MediaPlayer
@@ -49,16 +51,11 @@ class ScoreBoardFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
-        val llCircleGreen = view.findViewById<LinearLayout>(R.id.llGuessesCircleGreen)
-
-
         bonusPlayer = MediaPlayer.create(context, R.raw.good)
         warningPlayer = MediaPlayer.create(requireContext(), R.raw.fail)
 
         move(binding.llScoreCircle, "up", true) {}
         move(binding.llInventory, "up", true) {}
-
 
         model.numberOfphrasesDone.observe(viewLifecycleOwner) {
             view.findViewById<TextView>(R.id.tvCurrentPhrase).text = (it + 1).toString()
@@ -90,14 +87,7 @@ class ScoreBoardFragment : Fragment() {
         }
 
         model.powersAvailable.observe(viewLifecycleOwner) {
-            Log.d(TAG, "powersAvailable är satt till $it")
 
-            val textColor = if (it == true) "#38FF75" else "#B2B2B2"
-            binding.tvPowerUpText.setTextColor(Color.parseColor(textColor))
-
-            if (it == false && model.showInventory.value == true) {
-                model.showInventory.value = false
-            }
         }
         model.listenMode.observe(viewLifecycleOwner) {
             Log.d(TAG, "listenMode är satt till $it")
@@ -142,6 +132,27 @@ class ScoreBoardFragment : Fragment() {
             }
         }
 
+        model.showNewPower.observe(viewLifecycleOwner) {
+            if (it) {
+
+                binding.tvNewPower.apply {
+                    alpha = 0f
+                    visibility = View.VISIBLE
+                    animate()
+                        .alpha(1f)
+                        .setDuration(200.toLong())
+                        .setListener(object : AnimatorListenerAdapter() {
+                            override fun onAnimationEnd(animation: Animator) {
+                                    animate()
+                                        .setStartDelay(500.toLong())
+                                        .alpha(0f)
+                                        .setDuration(1000.toLong())
+                            }
+                        })
+                }
+            }
+        }
+
 
 /*        model.observedPowerPoints.observe(viewLifecycleOwner) {
             if (it < powers) {
@@ -155,11 +166,6 @@ class ScoreBoardFragment : Fragment() {
         }*/
 
         binding.llShowPowers.setOnClickListener {
-
-
-
-
-
             if (model.powersAvailable.value == true) {
                 model.showInventory.value = model.showInventory.value != true
             }

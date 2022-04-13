@@ -6,6 +6,8 @@
     android:layout_height="match_parent"
     tools:context=".ui.ScoreBoardFragment">
 
+
+
     <LinearLayout
         android:id="@+id/llInventory"
         android:layout_width="wrap_content"
@@ -21,16 +23,9 @@
             android:id="@+id/tvPowerClick"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
             android:paddingHorizontal="8dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="CLICK "
-                android:textColor="@color/silver"
-                android:textSize="26dp"
-                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tvPwrClickNumber"
@@ -38,6 +33,14 @@
                 android:layout_height="wrap_content"
                 android:text="1"
                 android:textColor="@color/white"
+                android:textSize="26dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="CLICK "
+                android:textColor="@color/silver"
                 android:textSize="26dp"
                 android:textStyle="bold" />
 
@@ -49,16 +52,9 @@
             android:id="@+id/tvPowerRemove"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
             android:paddingHorizontal="8dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="REMOVE "
-                android:textColor="#FFF384"
-                android:textSize="26dp"
-                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tvPwrRemoveNumber"
@@ -69,23 +65,24 @@
                 android:textSize="26dp"
                 android:textStyle="bold" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="REMOVE "
+                android:textColor="#FFF384"
+                android:textSize="26dp"
+                android:textStyle="bold" />
+
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/tvPowerTry"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
             android:paddingHorizontal="8dp">
 
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="+TRY "
-                android:textColor="@color/green"
-                android:textSize="26dp"
-                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tvPwrTryNumber"
@@ -95,6 +92,15 @@
                 android:textColor="@color/white"
                 android:textSize="26dp"
                 android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="+TRY "
+                android:textColor="@color/green"
+                android:textSize="26dp"
+                android:textStyle="bold" />
+
         </LinearLayout>
 
 
@@ -117,7 +123,8 @@
         android:layout_height="wrap_content"
         android:background="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/tv_tries_number_change"
@@ -268,6 +275,20 @@
         </LinearLayout>
 
 
+        <TextView
+            android:id="@+id/tvNewPower"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="NEW"
+            android:textColor="@color/green"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/llShowPowers"
+            app:layout_constraintEnd_toStartOf="@+id/llShowPowers"
+            app:layout_constraintTop_toTopOf="@+id/llShowPowers" />
+
+
+
+
         <LinearLayout
             android:id="@+id/llShowPowers"
             android:layout_width="wrap_content"
@@ -283,15 +304,14 @@
                 android:id="@+id/tvPowerUpText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="POWER-UPS"
-                android:textColor="@color/grey_light"
+                android:text="USE POWER-UP"
+                android:textColor="@color/silver"
                 android:textStyle="bold" />
 
         </LinearLayout>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
 
 

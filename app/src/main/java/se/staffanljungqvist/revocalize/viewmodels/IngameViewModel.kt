@@ -48,7 +48,7 @@ class IngameViewModel : ViewModel() {
     var tries = 3
     var startingTries = 3
     var powerPoints = 0
-    val phrasesPerLevel = 1
+    val phrasesPerLevel = 4
 
     var powerTryAmount = 0
     var powerRemoveAmount = 0
@@ -98,6 +98,10 @@ class IngameViewModel : ViewModel() {
     }
 
     val showLevelUp: MutableLiveData<Boolean> by lazy {
+        MutableLiveData<Boolean>(false)
+    }
+
+    val showNewPower: MutableLiveData<Boolean> by lazy {
         MutableLiveData<Boolean>(false)
     }
 
@@ -256,10 +260,9 @@ class IngameViewModel : ViewModel() {
         if (phraseIndex == phrasesPerLevel) {
             levelUp = true
             level++
-            giveBonus()
-/*            powerClickAmount++
+            powerClickAmount++
             powerRemoveAmount++
-            powerTryAmount++*/
+            powerTryAmount++
             observedlevel.value = level
             Log.d(TAG, "Leveling up! New level : $level")
             phraseIndex = 0
@@ -283,15 +286,16 @@ class IngameViewModel : ViewModel() {
         }
     }
 
-    private fun giveBonus() {
+     fun giveBonus() {
         Log.d("gamedebug", "Giving bonus. guesses used : $guessesUsed")
 
         bonusIndex = (0..2).random()
-
+        showNewPower.value = true
+        showNewPower.value = false
         when (bonusIndex) {
-            1 -> powerRemoveAmount++
-            2 -> powerClickAmount++
-            3 -> powerTryAmount++
+            0 -> powerRemoveAmount++
+            1 -> powerClickAmount++
+            2 -> powerTryAmount++
         }
     }
 
@@ -428,8 +432,11 @@ class IngameViewModel : ViewModel() {
         listOf(5, 5, 5, 5, 5, 5),
         listOf(6, 6, 6, 6, 6, 6),
         listOf(7, 7, 7, 7, 7, 7),
-        listOf(8, 8, 8, 8, 8, 8),
-        listOf(9, 9, 9, 9, 9),
+        listOf(7, 7, 7, 7, 7, 7),
+        listOf(7, 7, 7, 7, 7, 7),
+        listOf(7, 7, 7, 7, 7, 7),
+        listOf(7, 7, 7, 7, 7, 7),
+        listOf(7, 7, 7, 7, 7, 7),
     )
 }
 

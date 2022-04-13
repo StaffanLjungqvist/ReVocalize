@@ -31,13 +31,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/clLevelUpTop"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
 
 
         <LinearLayout
@@ -45,11 +48,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/btnContinuteLevelUp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.44">
+            app:layout_constraintTop_toBottomOf="@+id/llNextLevel"
+            app:layout_constraintVertical_bias="0.25">
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -111,6 +114,7 @@
             android:id="@+id/btnContinuteLevelUp"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
+            android:layout_marginBottom="32dp"
             android:background="@drawable/rounded_button"
             android:paddingHorizontal="34dp"
             android:soundEffectsEnabled="false"
@@ -119,29 +123,29 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.499"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/llNextLevel" />
+            app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
             android:id="@+id/tvLevelUp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="2dp"
             android:text="LEVEL UP!"
             android:textColor="@color/green"
-            android:textSize="38sp"
+            android:textSize="32sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/clStatistics"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_bias="0.499"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.298" />
 
         <LinearLayout
             android:id="@+id/llNextLevel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintBottom_toTopOf="@+id/clStatistics"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
@@ -165,7 +169,6 @@
                 android:textSize="30sp"
                 android:textStyle="bold" />
         </LinearLayout>
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

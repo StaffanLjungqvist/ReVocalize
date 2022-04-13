@@ -39,6 +39,7 @@ class LevelUpFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         _binding = FragmentLevelUpBinding.inflate(inflater, container, false)
+        model.giveBonus()
         return binding.root
     }
 
