@@ -160,7 +160,6 @@ class InGameFragment : Fragment() {
           //  if (it == -2 && mediaPlayer != null) mediaPlayer?.pause()
         }
 
-
         model.doneIterating.observe(viewLifecycleOwner) {
             if (it) {
                 Log.d(TAG, "done iterating")
@@ -286,9 +285,11 @@ class InGameFragment : Fragment() {
     private fun wrongAnswer() {
         failPlayer!!.start()
         if (model.gameOver) {
+            model.calculateScore(requireContext())
             val bundle = Bundle()
             model.numberOfphrasesDone.value?.let { it1 -> bundle.putInt("score", it1) }
             bundle.putBoolean("isRecord", model.newRecord)
+            Log.d(TAG, "Skickar med isRecord ${model.newRecord}")
             val theFragment = GameOverFragment()
             theFragment.arguments = bundle
             requireActivity().supportFragmentManager.beginTransaction()
