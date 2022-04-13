@@ -47,10 +47,9 @@
                 android:id="@+id/textView14"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="32dp"
-                android:layout_marginEnd="32dp"
-                android:text="Revocalice is a game where you have to use your ears to figure out the correct reading order of a spoken phrase."
+                android:layout_marginHorizontal="52dp"
+                android:text="Revocalice is a puzzle game combining audio, text and sorting."
+                android:textAlignment="center"
                 android:textColor="@color/white"
                 android:textStyle="bold" />
 
@@ -79,11 +78,9 @@
                 android:id="@+id/textView16"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="32dp"
-                android:layout_marginEnd="32dp"
-                android:text="When you start a stage, a phrase can be seen in text.
-When you press “listen”, you will hear it spoken out. "
+                android:layout_marginHorizontal="52dp"
+                android:text="Read the text and press play to hear it. Listen carefully and notice the blinking blocks. "
+                android:textAlignment="center"
                 android:textColor="@color/white"
                 android:textStyle="bold" />
 
@@ -94,7 +91,8 @@ When you press “listen”, you will hear it spoken out. "
                 android:layout_marginStart="32dp"
                 android:layout_marginTop="32dp"
                 android:layout_marginEnd="32dp"
-                android:text="BUT! The order of the words are shuffled.\nThe complete audio track is divided into smaller “audio slices”, and it is up to you to put them in the correct order."
+                android:text="The words spoken are in the wrong order! "
+                android:textAlignment="center"
                 android:textColor="@color/white"
                 android:textStyle="bold" />
 
@@ -105,29 +103,21 @@ When you press “listen”, you will hear it spoken out. "
                 android:layout_marginStart="32dp"
                 android:layout_marginTop="32dp"
                 android:layout_marginEnd="32dp"
-                android:text="The audio slices are represented by blocks, and by pressing one and dragging, you can place it somewhere else in the order."
+                android:text="Drag and sort the blocks to reorganize the audio in the correct order."
+                android:textAlignment="center"
                 android:textColor="@color/white"
                 android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/textView19"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="32dp"
-                android:layout_marginEnd="32dp"
-                android:text="When you think you have the slices in the correct order, or you have to hear the phrase again in the current order, press the “check sequence” button."
-                android:textColor="@color/white"
-                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/textView20"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="32dp"
-                android:layout_marginEnd="32dp"
-                android:text="The audio is now played in the order of the blocks again. If the phrase is read out correctly, congratulations! You finished that phrase and will be presented with a new one."
                 android:layout_marginTop="32dp"
+                android:layout_marginEnd="32dp"
+                android:text="You get 3 times per phrase. When they are out the game is over."
+                android:textAlignment="center"
                 android:textColor="@color/white"
                 android:textStyle="bold" />
 
@@ -137,7 +127,7 @@ When you press “listen”, you will hear it spoken out. "
                 android:layout_height="match_parent"
                 android:layout_marginStart="32dp"
                 android:layout_marginEnd="32dp"
-                android:text="However if the order is still wrong, you will loose one point!"
+                android:text="Complete all the phrases to go up a level. There are now more subdivisions!"
                 android:layout_marginTop="32dp"
                 android:textColor="@color/white"
                 android:textStyle="bold" />
@@ -147,9 +137,10 @@ When you press “listen”, you will hear it spoken out. "
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="32dp"
-                android:layout_marginEnd="32dp"
-                android:text="Pay close attention to the audio, and notice which blocks are correct and which ones still need to be reordered. You can try as many times you can before your points run out."
                 android:layout_marginTop="32dp"
+                android:layout_marginEnd="32dp"
+                android:text="To help you out you get a random power-up everytime you level up, or when you get it right on the first try."
+                android:textAlignment="center"
                 android:textColor="@color/white"
                 android:textStyle="bold" />
 
