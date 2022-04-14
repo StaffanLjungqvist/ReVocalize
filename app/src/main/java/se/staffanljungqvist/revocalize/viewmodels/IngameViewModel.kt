@@ -45,15 +45,15 @@ class IngameViewModel : ViewModel() {
     var phraseList = listOf<Phrase>()
     var slizeDivisions = 3
 
-    var tries = 3
-    var startingTries = 3
+    var tries = 5
+    var startingTries = 5
     var powerPoints = 0
     var totalPoints = 0
     var points = 100
     var userHighScore = 0
 
-    var levelUpIncrementPoints = 100
-    var pointsToLevelUp = 200
+    var levelUpIncrementPoints = 400
+    var pointsToLevelUp = 400
     var gameComplete = false
 
     var powerTryAmount = -1
@@ -63,7 +63,7 @@ class IngameViewModel : ViewModel() {
     val powers = listOf(PowerUp.TRY, PowerUp.REMOVE, PowerUp.CLICK)
 
     val observedTries: MutableLiveData<Int> by lazy {
-        MutableLiveData<Int>(3)
+        MutableLiveData<Int>(5)
     }
 
     val observedPowerPoints: MutableLiveData<Int> by lazy {
@@ -187,7 +187,7 @@ class IngameViewModel : ViewModel() {
 
     private fun advancePhrase() {
         Log.d(TAG, "advancing stage, guesses is now $guessesUsed")
-        if (totalPoints >= pointsToLevelUp) {
+        if (phraseIndex >= 4) {
             levelUp = true
             level++
             if (level == 5) {
@@ -284,7 +284,7 @@ class IngameViewModel : ViewModel() {
             numberOfphrasesDone.value = numberOfphrasesDone.value?.plus(1)
             iscorrect = true
         } else {
-            if (points > 25) points -= 25
+            if (points > 75) points -= 25
             guessesUsed++
             Log.d(TAG, "wrong answer, guesses is now $guessesUsed")
             tries--
@@ -351,7 +351,7 @@ class IngameViewModel : ViewModel() {
         val maxLength: Int
 
 
-        slizeDivisions = 2
+        slizeDivisions = level + 3
         when (slizeDivisions) {
             2 -> {
                 minLength = 0

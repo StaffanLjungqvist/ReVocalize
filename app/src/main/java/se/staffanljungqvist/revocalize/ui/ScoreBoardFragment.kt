@@ -35,7 +35,7 @@ class ScoreBoardFragment : Fragment() {
     private var moveOutSpeed = 230
     private var moveInSpeed = 250
 
-    private var tries = 3
+    private var tries = 5
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -60,8 +60,12 @@ class ScoreBoardFragment : Fragment() {
         model.numberOfphrasesDone.observe(viewLifecycleOwner) {
             if (it != 0) animateText(binding.tvPoints, "green", true)
             binding.tvPoints.text = model.totalPoints.toString()
-            binding.tvPointsToNextLevel.text =
-                ((model.levelUpIncrementPoints) * (model.level + 1)).toString()
+/*            binding.tvPointsToNextLevel.text =
+                ((model.levelUpIncrementPoints) * (model.level + 1)).toString()*/
+
+            if (model.numberOfphrasesDone.value != 0)binding.tvPhraseIndexNumber.text = " ${model.phraseIndex + 1}"
+            if (model.numberOfphrasesDone.value != 0) binding.tvLevelNumber.text = (model.level + 1).toString()
+
             binding.tvNoHelpers.isVisible = model.level == 0
         }
 
@@ -126,7 +130,7 @@ class ScoreBoardFragment : Fragment() {
             powers = it
         }*/
 
-        binding.llShowPowers.setOnClickListener {
+        binding.tvShowHelpers.setOnClickListener {
             showHelpers()
             if (model.powersAvailable.value == true) {
                 model.showInventory.value = model.showInventory.value != true
