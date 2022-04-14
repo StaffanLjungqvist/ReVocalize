@@ -17,8 +17,8 @@ android {
         applicationId "se.staffanljungqvist.revocalize"
         minSdk 23
         targetSdk 31
-        versionCode 13
-        versionName "2.5"
+        versionCode 14
+        versionName "2.6"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
