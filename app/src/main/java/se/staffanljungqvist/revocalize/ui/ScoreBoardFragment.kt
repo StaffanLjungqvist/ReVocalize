@@ -36,7 +36,7 @@ class ScoreBoardFragment : Fragment() {
     private var moveOutSpeed = 230
     private var moveInSpeed = 250
 
-    private var points = 0
+    private var tries = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -58,23 +58,22 @@ class ScoreBoardFragment : Fragment() {
         move(binding.llInventory, "up", true) {}
 
         model.numberOfphrasesDone.observe(viewLifecycleOwner) {
-            view.findViewById<TextView>(R.id.tvCurrentPhrase).text = (it + 1).toString()
-            //   animateCircle(llCircleGreen)
+            binding.tvPoints.text = model.totalPoints.toString()
         }
 
         model.observedTries.observe(viewLifecycleOwner) {
-            if (it < points) {
+            if (it < tries) {
 
                 //      animateTryChange(binding.tvTriesNumberChange, false)
                 animateCircle(binding.llGuessesCircleRed)
             }
 
-            if (it > points) {
+            if (it > tries) {
                 //         animateTryChange(binding.tvTriesNumberChange, true)
                 animateCircle(binding.llGuessesCircleGreen)
             }
-            points = it
-            binding.tvNumberOfTries.text = points.toString()
+            tries = it
+            binding.tvNumberOfTries.text = tries.toString()
 
             if (it == 1) {
                 binding.llGuessesCircleRed.isVisible = true
@@ -100,11 +99,10 @@ class ScoreBoardFragment : Fragment() {
         }
 
 
-        model.observedlevel.observe(viewLifecycleOwner) {
-            binding.tvLevelNumber.text = (model.level + 1).toString()
-        }
-
         model.audioReady.observe(viewLifecycleOwner) {
+
+
+
             if (model.phraseIndex != 0) {
                 if (it) move(binding.llScoreCircle, "show", false, 1000) {}
             }

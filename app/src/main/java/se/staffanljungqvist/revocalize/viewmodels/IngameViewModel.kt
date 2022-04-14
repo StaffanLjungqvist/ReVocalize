@@ -51,6 +51,7 @@ class IngameViewModel : ViewModel() {
     val phrasesPerLevel = 4
     var totalPoints = 0
     var points = 100
+    var pointsToLevelUp = 500
 
     var powerTryAmount = 0
     var powerRemoveAmount = 0
@@ -243,7 +244,7 @@ class IngameViewModel : ViewModel() {
             numberOfphrasesDone.value = numberOfphrasesDone.value?.plus(1)
             iscorrect = true
         } else {
-            if (points > 25) points - 25
+            if (points > 25) points -= 25
             guessesUsed++
             Log.d("gamedebug", "wrong answer, guesses is now $guessesUsed")
             tries--
@@ -258,7 +259,7 @@ class IngameViewModel : ViewModel() {
 
     fun advancePhrase() {
         Log.d("gamedebug", "advancing stage, guesses is now $guessesUsed")
-        if (phraseIndex == phrasesPerLevel) {
+        if (totalPoints == pointsToLevelUp) {
             levelUp = true
             level++
             powerClickAmount++
@@ -267,6 +268,7 @@ class IngameViewModel : ViewModel() {
             observedlevel.value = level
             Log.d(TAG, "Leveling up! New level : $level")
             phraseIndex = 0
+            pointsToLevelUp += 500
         } else {
             levelUp = false
             phraseIndex++
