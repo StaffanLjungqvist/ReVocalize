@@ -39,7 +39,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="TOUCH LISTEN "
+                android:text="TOUCH"
                 android:textColor="@color/silver"
                 android:textSize="26dp"
                 android:textStyle="bold" />
@@ -60,7 +60,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="BLOCK-1 "
+                android:text="REMOVE"
                 android:textColor="#FFF384"
                 android:textSize="26dp"
                 android:textStyle="bold" />
