@@ -1,7 +1,6 @@
 package se.staffanljungqvist.revocalize.ui
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
+import android.animation.ArgbEvaluator
 import android.animation.ObjectAnimator
 import android.graphics.Color
 import android.media.MediaPlayer
@@ -36,7 +35,7 @@ class ScoreBoardFragment : Fragment() {
     private var moveOutSpeed = 230
     private var moveInSpeed = 250
 
-    private var tries = 0
+    private var tries = 3
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -54,39 +53,37 @@ class ScoreBoardFragment : Fragment() {
         bonusPlayer = MediaPlayer.create(context, R.raw.good)
         warningPlayer = MediaPlayer.create(requireContext(), R.raw.fail)
 
-        move(binding.llScoreCircle, "up", true) {}
         move(binding.llInventory, "up", true) {}
 
 
 
         model.numberOfphrasesDone.observe(viewLifecycleOwner) {
+            if (it != 0) animateText(binding.tvPoints, "green", true)
             binding.tvPoints.text = model.totalPoints.toString()
-            binding.tvPointsToNextLevel.text = ((model.levelUpIncrementPoints) * (model.level + 1)).toString()
+            binding.tvPointsToNextLevel.text =
+                ((model.levelUpIncrementPoints) * (model.level + 1)).toString()
             binding.tvNoHelpers.isVisible = model.level == 0
         }
 
         model.observedTries.observe(viewLifecycleOwner) {
-            if (it < tries) {
+            if (model.tries == 1) {
+                binding.tvTriesLeft.setTextColor(Color.parseColor("#FF0000"))
+                binding.tvTriesLeftNumber.setTextColor(Color.parseColor("#FF0000"))
+            } else
 
+            if (it < tries) {
                 //      animateTryChange(binding.tvTriesNumberChange, false)
-                animateCircle(binding.llGuessesCircleRed)
+                animateText(binding.tvTriesLeft, "red", false)
+                animateText(binding.tvTriesLeftNumber, "red", true)
             }
 
             if (it > tries) {
                 //         animateTryChange(binding.tvTriesNumberChange, true)
-                animateCircle(binding.llGuessesCircleGreen)
+                animateText(binding.tvTriesLeftNumber, "green", true)
+                animateText(binding.tvTriesLeft, "green", false)
             }
             tries = it
-            binding.tvNumberOfTries.text = tries.toString()
-
-            if (it == 1) {
-                binding.llGuessesCircleRed.isVisible = true
-                binding.tvNumberOfTries.setTextColor(Color.parseColor("#FF0000"))
-                //    warningPlayer.start()
-            } else {
-
-                binding.tvNumberOfTries.setTextColor(Color.parseColor("#000000"))
-            }
+            binding.tvTriesLeftNumber.text = tries.toString()
         }
 
         model.powersAvailable.observe(viewLifecycleOwner) {
@@ -105,21 +102,8 @@ class ScoreBoardFragment : Fragment() {
 
         model.audioReady.observe(viewLifecycleOwner) {
             showHelpers()
-
-            if (model.phraseIndex != 0) {
-                if (it) move(binding.llScoreCircle, "show", false, 1000) {}
-            }
         }
 
-        model.showSuccess.observe(viewLifecycleOwner) {
-            if (it) {
-                move(binding.llScoreCircle, "up", false, 300) {}
-            }
-        }
-
-        model.loadUI.observe(viewLifecycleOwner) {
-            if (it) move(binding.llScoreCircle, "show", false, 300) {}
-        }
 
         model.showInventory.observe(viewLifecycleOwner) {
             Log.d(TAG, "showInventory är satt till $it")
@@ -217,15 +201,33 @@ class ScoreBoardFragment : Fragment() {
         binding.tvPowerRemove.alpha = if (model.powerRemoveAmount == 0) 0.5f else 1f
 
     }
+
     fun animateCircle(circle: LinearLayout) {
         circle.apply {
             alpha = 1f
+
             visibility = View.VISIBLE
             animate()
                 .alpha(0f)
                 .setDuration(1000.toLong())
                 .setListener(null)
         }
+    }
+
+    fun animateText(text: TextView, color: String, isNumber : Boolean) {
+        val colorToChange = if (color == "red") Color.RED else Color.parseColor("#38FF75")
+        val endColor = if (isNumber) "#FFFFFF" else "#B2B2B2"
+
+            text.setTextColor(colorToChange)
+            val animation = ObjectAnimator.ofObject(
+                text,  // Object to animating
+                "textColor",  // Property to animate
+                ArgbEvaluator(),  // Interpolation function
+                colorToChange,  // Start color
+                Color.parseColor(endColor) // End color
+            ).setDuration(1200)
+            animation.start()
+
     }
 
     fun animateTryChange(view: TextView, tryAdded: Boolean) {

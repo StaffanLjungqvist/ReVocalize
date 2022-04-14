@@ -63,7 +63,7 @@ class IngameViewModel : ViewModel() {
     val powers = listOf(PowerUp.TRY, PowerUp.REMOVE, PowerUp.CLICK)
 
     val observedTries: MutableLiveData<Int> by lazy {
-        MutableLiveData<Int>(5)
+        MutableLiveData<Int>(3)
     }
 
     val observedPowerPoints: MutableLiveData<Int> by lazy {
