@@ -75,6 +75,7 @@ class IngameViewModel : ViewModel() {
     }
 
     var level = 0
+
     val observedlevel: MutableLiveData<Int> by lazy {
         MutableLiveData<Int>(0)
     }
@@ -212,11 +213,11 @@ class IngameViewModel : ViewModel() {
 
         powerTryAmount = 1
 
-        powerClickAmount = when (level) {
+        powerRemoveAmount = when (level) {
             1 -> -1
             else -> 1
         }
-        powerRemoveAmount = when (level) {
+        powerClickAmount = when (level) {
             1 -> -1
             2 -> -1
             else -> 1
