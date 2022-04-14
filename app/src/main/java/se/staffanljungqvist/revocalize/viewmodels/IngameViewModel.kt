@@ -48,14 +48,17 @@ class IngameViewModel : ViewModel() {
     var tries = 3
     var startingTries = 3
     var powerPoints = 0
-    val phrasesPerLevel = 4
     var totalPoints = 0
     var points = 100
-    var pointsToLevelUp = 500
+    var userHighScore = 0
 
-    var powerTryAmount = 0
-    var powerRemoveAmount = 0
-    var powerClickAmount = 0
+    var levelUpIncrementPoints = 100
+    var pointsToLevelUp = 200
+    var gameComplete = false
+
+    var powerTryAmount = -1
+    var powerRemoveAmount = -1
+    var powerClickAmount = -1
 
     val powers = listOf(PowerUp.TRY, PowerUp.REMOVE, PowerUp.CLICK)
 
@@ -182,6 +185,44 @@ class IngameViewModel : ViewModel() {
         phraseLoaded.value = false
     }
 
+    private fun advancePhrase() {
+        Log.d(TAG, "advancing stage, guesses is now $guessesUsed")
+        if (totalPoints >= pointsToLevelUp) {
+            levelUp = true
+            level++
+            if (level == 5) {
+                Log.d(TAG, "Sätter gamecomplete till true")
+                gameComplete = true
+                gameOver = true
+                Log.d(TAG, "YOU BEAT THE GAME!")
+
+            }
+            setHelpers()
+            observedlevel.value = level
+            Log.d(TAG, "Leveling up! New level : $level")
+            phraseIndex = 0
+            pointsToLevelUp += levelUpIncrementPoints
+        } else {
+            levelUp = false
+            phraseIndex++
+        }
+    }
+
+    fun setHelpers() {
+
+        powerTryAmount = 1
+
+        powerClickAmount = when (level) {
+            1 -> -1
+            else -> 1
+        }
+        powerRemoveAmount = when (level) {
+            1 -> -1
+            2 -> -1
+            else -> 1
+        }
+    }
+
     fun usePowerUp(powerUp: PowerUp) {
         when (powerUp) {
             PowerUp.REMOVE -> {
@@ -191,7 +232,7 @@ class IngameViewModel : ViewModel() {
             }
             PowerUp.TRY -> {
                 if (powerTryAmount < 1) return
-                tries++
+                tries += 3
                 observedTries.value = tries
                 powerTryAmount--
             }
@@ -202,8 +243,7 @@ class IngameViewModel : ViewModel() {
                 powerClickAmount--
             }
         }
-        powerPoints--
-        observedPowerPoints.value = powerPoints
+        Log.d(TAG, "used helper ${powerUp}")
         powerUpUsed.value = powerUp
     }
 
@@ -234,19 +274,19 @@ class IngameViewModel : ViewModel() {
     fun makeGuess(): Boolean {
         var iscorrect: Boolean
         if (checkAnswer()) {
-            Log.d("gamedebug", "right answer, guesses is now $guessesUsed")
-            totalPoints += points
+            Log.d(TAG, "right answer, guesses is now $guessesUsed")
             if (guessesUsed == 0) {
                 bonus = true
-                giveBonus()
+                points += 50
             }
+            totalPoints += points
             advancePhrase()
             numberOfphrasesDone.value = numberOfphrasesDone.value?.plus(1)
             iscorrect = true
         } else {
             if (points > 25) points -= 25
             guessesUsed++
-            Log.d("gamedebug", "wrong answer, guesses is now $guessesUsed")
+            Log.d(TAG, "wrong answer, guesses is now $guessesUsed")
             tries--
             iscorrect = false
         }
@@ -257,64 +297,50 @@ class IngameViewModel : ViewModel() {
         return iscorrect
     }
 
-    fun advancePhrase() {
-        Log.d("gamedebug", "advancing stage, guesses is now $guessesUsed")
-        if (totalPoints == pointsToLevelUp) {
-            levelUp = true
-            level++
-            powerClickAmount++
-            powerRemoveAmount++
-            powerTryAmount++
-            observedlevel.value = level
-            Log.d(TAG, "Leveling up! New level : $level")
-            phraseIndex = 0
-            pointsToLevelUp += 500
-        } else {
-            levelUp = false
-            phraseIndex++
-        }
-    }
-
-    fun calculateScore(context: Context) {
-        val userRecord = getUserHighScore(context)
-        val userScore = numberOfphrasesDone.value
-        Log.d(TAG, "Game over. Antal fraser klarade : $userScore. Tidigare rekord: $userRecord")
-        //Kollar om nuvarande poängen är bättre än poängrekordet. Ändrar därefter.
-        if (userScore != null) {
-            if (userScore + 1 > userRecord || userRecord == 0) {
-                Log.d(TAG, "Nytt rekord; $userScore klarade fraser")
-                newRecord = true
-                saveUserData(context)
-            }
-        }
-    }
-
     fun giveBonus() {
         Log.d("gamedebug", "Giving bonus. guesses used : $guessesUsed")
 
-        bonusIndex = (0..2).random()
+        points += 50
+
+        //Ger en random bonuspower
+/*        bonusIndex = (0..2).random()
         showNewPower.value = true
         showNewPower.value = false
         when (bonusIndex) {
             0 -> powerRemoveAmount++
             1 -> powerClickAmount++
             2 -> powerTryAmount++
+        }*/
+    }
+
+    fun calculateScore(context: Context) {
+        val userRecord = getUserHighScore(context)
+        val userScore = totalPoints
+        Log.d(TAG, "Game over. Poäng : $userScore. Tidigare rekord: $userRecord")
+        //Kollar om nuvarande poängen är bättre än poängrekordet. Ändrar därefter.
+        if (userScore != null) {
+            if (userScore > userRecord || userRecord == 0) {
+                Log.d(TAG, "Nytt rekord; $userScore poäng")
+                newRecord = true
+                saveUserData(context)
+            }
         }
     }
 
     fun getUserHighScore(context: Context): Int {
         val sharedPref = context.getSharedPreferences("userScore", Context.MODE_PRIVATE)
-        return sharedPref.getInt("user_record", 0)
+        userHighScore = sharedPref.getInt("user_record", 0)
+        return userHighScore
     }
 
     private fun saveUserData(context: Context) {
-        val userScore = numberOfphrasesDone.value
+        val userScore = totalPoints
         if (userScore != null) {
             if (newRecord) {
                 Log.d(TAG, "Saving the new record : $userScore")
                 val sharedPref = context.getSharedPreferences("userScore", Context.MODE_PRIVATE)
                 val edit = sharedPref.edit()
-                edit.putInt("user_record", userScore + 1)
+                edit.putInt("user_record", userScore)
                 edit.commit()
             }
         }
@@ -324,7 +350,8 @@ class IngameViewModel : ViewModel() {
         val minLength: Int
         val maxLength: Int
 
-        slizeDivisions = levels[level][phraseIndex]
+
+        slizeDivisions = 2
         when (slizeDivisions) {
             2 -> {
                 minLength = 0
@@ -428,18 +455,6 @@ class IngameViewModel : ViewModel() {
         super.onCleared()
     }
 
-    var levels = listOf(
-        listOf(3, 3, 3, 3, 3, 3),
-        listOf(4, 4, 4, 4, 4, 4),
-        listOf(5, 5, 5, 5, 5, 5),
-        listOf(6, 6, 6, 6, 6, 6),
-        listOf(7, 7, 7, 7, 7, 7),
-        listOf(7, 7, 7, 7, 7, 7),
-        listOf(7, 7, 7, 7, 7, 7),
-        listOf(7, 7, 7, 7, 7, 7),
-        listOf(7, 7, 7, 7, 7, 7),
-        listOf(7, 7, 7, 7, 7, 7),
-    )
 }
 
 class VolleyUTF8EncodingStringRequest(

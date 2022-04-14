@@ -1,6 +1,7 @@
 package se.staffanljungqvist.revocalize.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,24 +27,27 @@ class ExitFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         view.findViewById<Button>(R.id.btnConfirm).setOnClickListener {
-
-            model.calculateScore(requireContext())
-
-            requireActivity().supportFragmentManager.popBackStack()
-
-            val bundle = Bundle()
-            model.numberOfphrasesDone.value?.let { it1 -> bundle.putInt("score", it1) }
-            bundle.putBoolean("isRecord", model.newRecord)
-            val theFragment = GameOverFragment()
-            theFragment.arguments = bundle
-            requireActivity().supportFragmentManager.beginTransaction()
-                .add(R.id.fragmentContainerView, theFragment).addToBackStack(null)
-                .commit()
-            activity?.viewModelStore?.clear()
+            gameOver()
         }
 
         view.findViewById<Button>(R.id.btnCancel).setOnClickListener {
             requireActivity().supportFragmentManager.popBackStack()
         }
+    }
+
+    private fun gameOver() {
+        model.calculateScore(requireContext())
+        val bundle = Bundle()
+        bundle.putInt("score", model.totalPoints)
+        bundle.putBoolean("isRecord", model.newRecord)
+        bundle.putInt("userRecord", model.userHighScore)
+        bundle.putBoolean("gameBeat", model.gameComplete)
+        Log.d(TAG, "Skickar med isRecord ${model.newRecord}")
+        val theFragment = GameOverFragment()
+        theFragment.arguments = bundle
+        requireActivity().supportFragmentManager.beginTransaction()
+            .add(R.id.fragmentContainerView, theFragment).addToBackStack(null)
+            .commit()
+        activity?.viewModelStore?.clear()
     }
 }

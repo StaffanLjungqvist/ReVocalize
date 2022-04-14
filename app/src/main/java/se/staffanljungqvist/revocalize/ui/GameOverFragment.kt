@@ -1,7 +1,9 @@
 package se.staffanljungqvist.revocalize.ui
 
+import android.graphics.Color
 import android.media.MediaPlayer
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,18 +37,43 @@ class GameOverFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
-        val gameOverPlayer = MediaPlayer.create(context, R.raw.game_over)
-        gameOverPlayer.start()
 
+        Log.d(TAG, "Gameoverfragment läser gamecomplete som ${model.gameComplete}")
+
+
+
+
+
+        val isBeat = arguments?.getBoolean("gameBeat")
         val score = arguments?.getInt("score")
+        val userRecord = arguments?.getInt("userRecord")
         val isRecord = arguments?.getBoolean("isRecord")
 
-        if (score != null) {
-            view.findViewById<TextView>(R.id.tvFinalScore).text = (score + 1).toString()
+        if (isBeat!!) {
+            val beatGamePlayer = MediaPlayer.create(context, R.raw.perfect3)
+            beatGamePlayer.start()
+            binding.tvGameOverMessage.setTextColor(Color.parseColor("#38FF75"))
+            binding.tvGameOverMessage.text = "CONGRATULATIONS!"
+            binding.tvYouBeatGame.isVisible = true
+        } else {
+            val gameOverPlayer = MediaPlayer.create(context, R.raw.game_over)
+            gameOverPlayer.start()
         }
 
+
+
+        if (score != null) {
+            view.findViewById<TextView>(R.id.tvFinalScore).text = (score).toString()
+        }
+
+
+
         if (isRecord == true) {
-            view.findViewById<TextView>(R.id.tvNewRecord).isVisible = true
+            binding.tvRecord.setTextColor(Color.parseColor("#38FF75"))
+            binding.tvRecord.text = "NEW RECORD!"
+            binding.tvRecord.textSize = 24f
+        } else {
+            binding.tvRecord.text = "YOUR RECORD IS " + userRecord
         }
 
         binding.btnBackToMain.setOnClickListener {

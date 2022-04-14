@@ -8,13 +8,13 @@
         <entry key="..\:/Users/Staffan/AndroidStudioProjects/ReVocalize/app/src/main/res/layout/activity_main.xml" value="0.3140625" />
         <entry key="..\:/Users/Staffan/AndroidStudioProjects/ReVocalize/app/src/main/res/layout/fragment_exit.xml" value="0.2578125" />
         <entry key="..\:/Users/Staffan/AndroidStudioProjects/ReVocalize/app/src/main/res/layout/fragment_game_beat.xml" value="0.5401041666666667" />
-        <entry key="..\:/Users/Staffan/AndroidStudioProjects/ReVocalize/app/src/main/res/layout/fragment_game_over.xml" value="0.2994791666666667" />
+        <entry key="..\:/Users/Staffan/AndroidStudioProjects/ReVocalize/app/src/main/res/layout/fragment_game_over.xml" value="0.33" />
         <entry key="..\:/Users/Staffan/AndroidStudioProjects/ReVocalize/app/src/main/res/layout/fragment_in_game.xml" value="0.3824200913242009" />
         <entry key="..\:/Users/Staffan/AndroidStudioProjects/ReVocalize/app/src/main/res/layout/fragment_intro.xml" value="0.33" />
         <entry key="..\:/Users/Staffan/AndroidStudioProjects/ReVocalize/app/src/main/res/layout/fragment_inventory.xml" value="0.33" />
         <entry key="..\:/Users/Staffan/AndroidStudioProjects/ReVocalize/app/src/main/res/layout/fragment_level_complete.xml" value="0.67" />
         <entry key="..\:/Users/Staffan/AndroidStudioProjects/ReVocalize/app/src/main/res/layout/fragment_level_up.xml" value="0.67" />
-        <entry key="..\:/Users/Staffan/AndroidStudioProjects/ReVocalize/app/src/main/res/layout/fragment_score.xml" value="0.5031271716469771" />
+        <entry key="..\:/Users/Staffan/AndroidStudioProjects/ReVocalize/app/src/main/res/layout/fragment_score.xml" value="0.5" />
         <entry key="..\:/Users/Staffan/AndroidStudioProjects/ReVocalize/app/src/main/res/layout/fragment_stage_select.xml" value="0.31354166666666666" />
         <entry key="..\:/Users/Staffan/AndroidStudioProjects/ReVocalize/app/src/main/res/layout/fragment_start.xml" value="0.3140625" />
         <entry key="..\:/Users/Staffan/AndroidStudioProjects/ReVocalize/app/src/main/res/layout/fragment_success.xml" value="0.5" />

@@ -215,11 +215,13 @@ class InGameFragment : Fragment() {
         }
 
         binding.btnListen.setOnClickListener {
+            model.showInventory.value = false
             model.iterateSlices(model.slices!!)
             animateButton(binding.btnListen, false)
         }
 
         binding.btnCheck.setOnClickListener {
+            model.showInventory.value = false
             animateButton(binding.btnCheck, false)
             if (model.checkAnswer()) {
                 model.iterateSlices(model.slices!!)
@@ -231,6 +233,7 @@ class InGameFragment : Fragment() {
         }
 
         binding.btnClickDone.setOnClickListener {
+            model.showInventory.value = false
             model.clickMode.value = false
             animateButton(binding.btnClickDone, false)
             animateButton(binding.btnCheck, true)
@@ -275,7 +278,14 @@ class InGameFragment : Fragment() {
                 if (model.levelUp) {
                     move(binding.rvSlizes, "down", false, 1000) {
                         model.showSuccess.value = false
-                        showLevelUp()
+                        if (model.gameComplete){
+                            Log.d(TAG, "visar gameover fragment")
+                            gameOver()
+                        } else {
+                            Log.d(TAG, "visar levelup fragment")
+                            showLevelUp()
+                        }
+
                     }
                 }
             }
@@ -285,21 +295,27 @@ class InGameFragment : Fragment() {
     private fun wrongAnswer() {
         failPlayer!!.start()
         if (model.gameOver) {
-            model.calculateScore(requireContext())
-            val bundle = Bundle()
-            model.numberOfphrasesDone.value?.let { it1 -> bundle.putInt("score", it1) }
-            bundle.putBoolean("isRecord", model.newRecord)
-            Log.d(TAG, "Skickar med isRecord ${model.newRecord}")
-            val theFragment = GameOverFragment()
-            theFragment.arguments = bundle
-            requireActivity().supportFragmentManager.beginTransaction()
-                .add(R.id.fragmentContainerView, theFragment).addToBackStack(null)
-                .commit()
-            activity?.viewModelStore?.clear()
+            gameOver()
         } else {
             binding.btnCheck.isVisible = true
             model.powersAvailable.value = true
         }
+    }
+
+    private fun gameOver() {
+        model.calculateScore(requireContext())
+        val bundle = Bundle()
+        bundle.putInt("score", model.totalPoints)
+        bundle.putBoolean("isRecord", model.newRecord)
+        bundle.putInt("userRecord", model.userHighScore)
+        bundle.putBoolean("gameBeat", model.gameComplete)
+        Log.d(TAG, "Skickar med isRecord ${model.newRecord}")
+        val theFragment = GameOverFragment()
+        theFragment.arguments = bundle
+        requireActivity().supportFragmentManager.beginTransaction()
+            .add(R.id.fragmentContainerView, theFragment).addToBackStack(null)
+            .commit()
+        activity?.viewModelStore?.clear()
     }
 
     fun showLevelUp() {
@@ -364,7 +380,6 @@ class InGameFragment : Fragment() {
         mediaPlayer?.seekTo(0)
         mediaPlayer?.start()
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()

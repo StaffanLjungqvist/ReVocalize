@@ -54,11 +54,11 @@ class LevelUpFragment : Fragment() {
             }
         }
         move(binding.llNextLevel, "right", true, 0, true){}
-
-
         binding.tvNextLevelNumber.text = (model.level + 1).toString()
-        binding.tvPhrasesComplete.text = model.numberOfphrasesDone.value.toString()
-        binding.tvPhraseRecord.text = model.getUserHighScore(requireContext()).toString()
+
+        showInfo()
+
+
 
         val levelUpPlayer = MediaPlayer.create(requireContext(), R.raw.perfect2).setOnPreparedListener {
            if (model.numberOfphrasesDone.value != 0) it.start()
@@ -93,7 +93,19 @@ class LevelUpFragment : Fragment() {
     }
 
 
+fun showInfo() {
 
+    val text = when (model.level) {
+        0 -> "PRESS PLAY TO HEAR THE PHRASE. IT IS IN THE WRONG ORDER! MOVE THE BLOCKS TO SORT IT. YOU GET 3 TRIES TO GET IT RIGHT. THE FIRST PLAYBACK IS FREE."
+        1 -> "GOOD WORK! YOU GET A NEW HELPER. UNDER THE HELPER MENU, PRESS \"TRY+3\" TO GET 3 EXTRA TRIES. HELPERS CAN BE USED ONCE PER LEVEL."
+        2 -> "WAY TO GO! YOU NOW GET ANOTHER HELPER. PRESS \"BLOCK-1\" TO SUBTRACT ONE DIVISION."
+        3 -> "WELL DONE! YOU GET ANOTHER HELPER. PRESS \"TOUCH LISTEN\" TO GO IN TO TOUCH MODE, THE BLOCKS CAN'T BE MOVED BUT YOU CAN HEAR EACH SOUND BY PRESSING THEM. MEMORIZE THE ORDER AND PRESS \"TOUCH DONE\" WHEN READY."
+        4 -> "WOW, YOU MADE IT FAR! YOU DON'T GET ANY NEW HELPERS FROM HERE ON SO MAKE THE MOST OF THE ONES YOU GOT!"
+        else -> "GREAT JOB! KEEP GOING!"
+    }
+
+    binding.tvInfoMessage.text = text
+}
     fun animateButton(button : Button, show: Boolean) {
         val duration = if (show) 200 else 100
         button.postDelayed({

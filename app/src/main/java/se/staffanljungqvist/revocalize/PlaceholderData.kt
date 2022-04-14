@@ -9,6 +9,7 @@ object Colors {
         "#DDA9FF",
         "#FF4B7C",
         "#9FFF94",
+        "#9FFF94",
 
     )
 }

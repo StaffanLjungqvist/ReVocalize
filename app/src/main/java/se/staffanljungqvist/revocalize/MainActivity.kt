@@ -25,17 +25,6 @@ class MainActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
-        //Kollar om ljudfilen har skapats/Det är första gången appen körs. Isåfall visas tutorial fragment
-        val file = File(this.filesDir.toString() + "/myreq.wav")
-        if(!file.exists()) {
-            Log.d(TAG, "the audio file doesnt exists")
-            supportFragmentManager.beginTransaction()
-                .add(R.id.fragmentContainerView, TutorialFragment()).addToBackStack(null).commit()
-        }
-
-
-
-
 /*        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_ITEM) {
             param(FirebaseAnalytics.Param.ITEM_ID, id)
             param(FirebaseAnalytics.Param.ITEM_NAME, name)

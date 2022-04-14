@@ -57,8 +57,12 @@ class ScoreBoardFragment : Fragment() {
         move(binding.llScoreCircle, "up", true) {}
         move(binding.llInventory, "up", true) {}
 
+
+
         model.numberOfphrasesDone.observe(viewLifecycleOwner) {
             binding.tvPoints.text = model.totalPoints.toString()
+            binding.tvPointsToNextLevel.text = ((model.levelUpIncrementPoints) * (model.level + 1)).toString()
+            binding.tvNoHelpers.isVisible = model.level == 0
         }
 
         model.observedTries.observe(viewLifecycleOwner) {
@@ -100,8 +104,7 @@ class ScoreBoardFragment : Fragment() {
 
 
         model.audioReady.observe(viewLifecycleOwner) {
-
-
+            showHelpers()
 
             if (model.phraseIndex != 0) {
                 if (it) move(binding.llScoreCircle, "show", false, 1000) {}
@@ -119,35 +122,11 @@ class ScoreBoardFragment : Fragment() {
         }
 
         model.showInventory.observe(viewLifecycleOwner) {
-            binding.tvPwrTryNumber.text = model.powerTryAmount.toString()
-            binding.tvPwrRemoveNumber.text = model.powerRemoveAmount.toString()
-            binding.tvPwrClickNumber.text = model.powerClickAmount.toString()
             Log.d(TAG, "showInventory är satt till $it")
             if (it) {
                 move(binding.llInventory, "show") {}
             } else {
                 move(binding.llInventory, "up") {}
-            }
-        }
-
-        model.showNewPower.observe(viewLifecycleOwner) {
-            if (it) {
-
-                binding.tvNewPower.apply {
-                    alpha = 0f
-                    visibility = View.VISIBLE
-                    animate()
-                        .alpha(1f)
-                        .setDuration(200.toLong())
-                        .setListener(object : AnimatorListenerAdapter() {
-                            override fun onAnimationEnd(animation: Animator) {
-                                    animate()
-                                        .setStartDelay(500.toLong())
-                                        .alpha(0f)
-                                        .setDuration(1000.toLong())
-                            }
-                        })
-                }
             }
         }
 
@@ -164,6 +143,7 @@ class ScoreBoardFragment : Fragment() {
         }*/
 
         binding.llShowPowers.setOnClickListener {
+            showHelpers()
             if (model.powersAvailable.value == true) {
                 model.showInventory.value = model.showInventory.value != true
             }
@@ -174,7 +154,6 @@ class ScoreBoardFragment : Fragment() {
                 if (model.powerClickAmount != 0) {
                     model.usePowerUp(PowerUp.CLICK)
                     model.showInventory.value = false
-                    binding.tvPwrClickNumber.text = model.powerClickAmount.toString()
                 }
             }
         }
@@ -184,7 +163,6 @@ class ScoreBoardFragment : Fragment() {
                 if (model.powerRemoveAmount != 0) {
                     model.usePowerUp(PowerUp.REMOVE)
                     model.showInventory.value = false
-                    binding.tvPwrRemoveNumber.text = model.powerRemoveAmount.toString()
                 }
 
             }
@@ -195,7 +173,6 @@ class ScoreBoardFragment : Fragment() {
                 if (model.powerTryAmount != 0) {
                     model.usePowerUp(PowerUp.TRY)
                     model.showInventory.value = false
-                    binding.tvPwrTryNumber.text = model.powerTryAmount.toString()
                 }
             }
         }
@@ -229,6 +206,17 @@ class ScoreBoardFragment : Fragment() {
     }
 
 
+    fun showHelpers() {
+        Log.d(TAG, "tryhelper amount is ${model.powerTryAmount}")
+        binding.tvPowerTry.isVisible = model.powerTryAmount != -1
+        binding.tvPowerClick.isVisible = model.powerClickAmount != -1
+        binding.tvPowerRemove.isVisible = model.powerRemoveAmount != -1
+
+        binding.tvPowerTry.alpha = if (model.powerTryAmount == 0) 0.5f else 1f
+        binding.tvPowerClick.alpha = if (model.powerClickAmount == 0) 0.5f else 1f
+        binding.tvPowerRemove.alpha = if (model.powerRemoveAmount == 0) 0.5f else 1f
+
+    }
     fun animateCircle(circle: LinearLayout) {
         circle.apply {
             alpha = 1f

@@ -80,21 +80,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
-                    android:text="FIRST TRY!"
+                    android:text="FIRST TRY! NICE!"
                     android:textColor="@color/green"
                     android:textSize="32sp"
                     android:textStyle="bold"
                     tools:visibility="visible" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="EXTRA POWER!"
-                    android:textColor="@color/white"
-                    android:textSize="32sp"
-                    android:textStyle="bold"
-                    tools:visibility="visible" />
-
 
             </LinearLayout>
 
